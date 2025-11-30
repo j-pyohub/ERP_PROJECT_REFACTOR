@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @Data
 @Builder
 public class ItemOrderDetailDTO {
-    private Long itemOrderNo;
+    private Long itemOrderDetailNo;
     private String itemCode;
     private String itemName;
     private String itemCategoryName;

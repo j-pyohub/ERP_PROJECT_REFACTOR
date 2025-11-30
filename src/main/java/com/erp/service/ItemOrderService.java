@@ -1,12 +1,13 @@
 package com.erp.service;
 
 import com.erp.controller.exception.ItemOrderNotFoundException;
+import com.erp.controller.exception.StoreItemNotFoundException;
 import com.erp.dto.ItemOrderDetailDTO;
+import com.erp.dto.ItemProposalDTO;
 import com.erp.repository.*;
 import com.erp.dto.ItemOrderDTO;
-import com.erp.repository.entity.ItemOrder;
-import com.erp.repository.entity.ItemOrderDetail;
-import com.erp.repository.entity.Store;
+import com.erp.repository.entity.*;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +27,8 @@ public class ItemOrderService {
     final private ItemOrderDetailRepository orderDetailRepo;
     final private ItemProposalRepository proposalRepo;
     final private StoreRepository storeRepo;
+    final private StoreItemRepository storeItemRepo;
+    final private StoreStockRepository storeStockRepo;
 
     @Transactional(readOnly = true)
     public List<ItemOrderDTO> getAllItemOrder() {
@@ -63,10 +66,7 @@ public class ItemOrderService {
     public void cancelItemOrder(Long orderNo) {
         // 대기 중 발주 선택
         boolean result = false;
-        ItemOrder itemOrder = repoOrder.findByItemOrderStatusAndStoreNo(
-                "대기",
-                Store.builder().storeNo(orderNo).build() // 직영점 번호 지정
-        ).get(0);
+        ItemOrder itemOrder = repoOrder.findByItemOrderNo(orderNo);
 
         if(itemOrder == null){
             throw new ItemOrderNotFoundException(orderNo);
@@ -75,5 +75,74 @@ public class ItemOrderService {
         // 선택한 발주 요청 번호 데이터 상태 취소 변경
         itemOrder.setItemOrderStatus("취소"); // 상태 변경
         itemOrder.setProcessDatetime(new Timestamp(System.currentTimeMillis())); // 처리 시간
+        repoOrder.save(itemOrder);
+    }
+
+    @Transactional
+    public void receiveItem(Long itemOrderDetailNo){;
+        ItemOrderDetail orderDetail = orderDetailRepo.findByItemOrderDetailNo(itemOrderDetailNo);
+
+
+        System.out.println(orderDetail.getItemOrderNo().getStoreNo().getStoreNo() +" - "+ orderDetail.getItemNo().getItemNo());
+        // 재고 수량 변경
+        StoreItem storeItem = null;
+        List<StoreItem> storeItemList = storeItemRepo.findByStoreNoAndItemNo(orderDetail.getItemOrderNo().getStoreNo().getStoreNo(), orderDetail.getItemNo().getItemNo()); // 매장 품목 정보 획득
+        if(storeItemList.isEmpty()){
+            storeItem = storeItemRepo.save(StoreItem.builder()
+                    .itemNo(orderDetail.getItemNo().getItemNo())
+                    .storeNo(orderDetail.getItemOrderNo().getStoreNo().getStoreNo())
+                    .build());
+        }
+        else storeItem = storeItemList.get(0);
+
+        if(storeItem == null) throw new StoreItemNotFoundException(orderDetail.getItemOrderNo().getStoreNo().getStoreNo());
+
+        StoreStock storeStock = storeStockRepo.findFirstByStoreItemNoOrderByStoreStockNoDesc(storeItem.getStoreItemNo()); // 현재 매장 품목의 수량 데이터 획득
+
+        // 현재 보유 중인 품목이 아닌 경우 0부터 추가
+        Integer currentQuantity = 0;
+        if(storeStock != null){
+            currentQuantity = storeStock.getCurrentQuantity();
+        }
+        
+        // 재고 변동사항 등록(추가)
+        storeStockRepo.save(
+                StoreStock.builder()
+                        .storeItemNo(storeItem.getStoreItemNo())
+                        .changeDatetime(new Timestamp(System.currentTimeMillis()))
+                        .changeQuantity(orderDetail.getOrderDetailQuantity())
+                        .changeReason("입고")
+                        .currentQuantity(currentQuantity + orderDetail.getOrderDetailQuantity())
+                        .build()
+        ); // 입고 수량 반영
+
+        // 발주 상세 상태 변경(입고 완료)
+        orderDetail.setReceiveDatetime(new Timestamp(System.currentTimeMillis()));
+        orderDetail.setReceiveQuantity(orderDetail.getOrderDetailQuantity());
+        orderDetailRepo.save(orderDetail);
+    }
+
+    @Transactional
+    public List<ItemProposalDTO> getItemProposalHistoryByStoreNo(Long storeNo) {
+        List<ItemProposalDTO> list = new ArrayList<>();
+        proposalRepo.findByStoreNo(Store.builder().storeNo(storeNo).build()).forEach(prop -> {
+            list.add(ItemProposalDTO.from(prop));
+        });
+        return list;
+    }
+
+    @Transactional
+    public List<ItemProposalDTO> getItemProposalByStoreNo(Long storeNo) {
+        List<ItemProposalDTO> list = new ArrayList<>();
+        proposalRepo.findByStoreNoAndResponseDateNull(Store.builder().storeNo(storeNo).build()).forEach(prop -> {
+            list.add(ItemProposalDTO.from(prop));
+        });
+        return list;
+    }
+
+    public void responseProposal(Long proposalNo) {
+        ItemProposal proposal = proposalRepo.findById(proposalNo).orElseThrow(()-> new EntityNotFoundException("ItemProposal not found"));
+        proposal.setResponseDate(new Timestamp(System.currentTimeMillis()));
+        proposalRepo.save(proposal);
     }
 }

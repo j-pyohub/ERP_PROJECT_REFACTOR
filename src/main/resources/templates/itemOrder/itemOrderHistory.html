@@ -113,7 +113,7 @@
         </table>
 
         <div class="d-flex justify-content-between mt-3">
-          <div>품목수 : <strong>2 개</strong></div>
+          <div>품목수 : <strong id="total_cnt">2 개</strong></div>
           <div>총 발주액 : <strong>164,000 원</strong></div>
         </div>
       </div>
@@ -171,7 +171,7 @@
     // body 설정
     data.forEach(item => {
       let row = `
-          <tr>
+          <tr data-item_order_detail_no="${item.itemOrderDetailNo}">
             <td>${item.itemCode}</td>
             <td class="fw-bold">${item.itemName}</td>
             <td>${item.itemCategoryName}</td>
@@ -182,7 +182,7 @@
         if (item.receiveDatetime != null)
           row += `<td><button class="btn btn-outline-secondary btn-sm">입고완료</button></td>`;
         else
-          row += `<td><button class="btn btn-outline-warning btn-sm">입고</button></td>`;
+          row += `<td><button class="btn btn-outline-warning btn-sm receive_btn">입고</button></td>`;
       }
       row += `</tr>`;
       tbody.append(row);
@@ -246,10 +246,11 @@
 
   function cancelItemOrder(itemOrderNo){
     fetchUtil(`/itemOrder/cancelItemOrder/${itemOrderNo}`, (data)=>{
-      console.log(data);
-      selectedRow.find(".req_status").text("취소");
-      document.activeElement.blur();   // 포커스 제거
-      $("#orderDetailCancelModal").modal("hide");
+      if(data.message === "Cancel ItemOrder Success"){
+        selectedRow.find(".req_status").text("취소");
+        document.activeElement.blur();   // 포커스 제거
+        $("#orderItemDetailModal").modal("hide");
+      }
     }, "PUT");
   }
 
@@ -265,10 +266,18 @@
     $("#orderDetailModal").modal("hide");
   });
 
-  // 클릭 시 조건 검색
-  $(document).on("click", "#view-btn", function(){
-
+  $(document).on("click", ".receive_btn", function(){
+    receiveItem($(this), $(this).closest("tr").data("item_order_detail_no"));
   });
+
+  function receiveItem(btn, itemOrderDetailNo){
+    fetchUtil(`/itemOrder/receiveItemOrder/${itemOrderDetailNo}`,(data)=>{
+      if(data.message === "Receive ItemOrderDetail Success"){
+        btn.closest("td").html(`<button class="btn btn-outline-secondary btn-sm">입고완료</button>`);
+      }
+    }, "PUT");
+  }
+
 
 </script>
 </body>

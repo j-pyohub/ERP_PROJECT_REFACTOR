@@ -1,9 +1,13 @@
 package com.erp.controller;
 
 import com.erp.controller.exception.ItemOrderNotFoundException;
+import com.erp.controller.exception.StoreItemNotFoundException;
 import com.erp.dto.ItemOrderDTO;
 import com.erp.dto.ItemOrderDetailDTO;
+import com.erp.dto.ItemProposalDTO;
+import com.erp.repository.entity.ItemProposal;
 import com.erp.service.ItemOrderService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -46,5 +50,37 @@ public class ItemOrderRestController {
             return ResponseEntity.status(400).build();
         }
         return ResponseEntity.ok().body(Map.of("message", "Cancel ItemOrder Success"));
+    }
+
+    @PutMapping("/itemOrder/receiveItemOrder/{itemOrderDetailNo}")
+    public ResponseEntity<Map<String, String>> receiveItemOrder(@PathVariable Long itemOrderDetailNo) {
+        try{
+            itemOrderService.receiveItem(itemOrderDetailNo);
+        }
+        catch (StoreItemNotFoundException e) {
+            System.err.println(e.getMessage());
+            return ResponseEntity.status(400).build();
+        }
+        return ResponseEntity.ok().body(Map.of("message", "Receive ItemOrderDetail Success"));
+    }
+
+    @GetMapping("/itemOrder/itemProposalHistory/{storeNo}")
+    public List<ItemProposalDTO> proposalItemOrderHistory(@PathVariable Long storeNo) {
+        return itemOrderService.getItemProposalHistoryByStoreNo(storeNo);
+    }
+    @GetMapping("/itemOrder/itemProposal/{storeNo}")
+    public List<ItemProposalDTO> proposalItemOrder(@PathVariable Long storeNo) {
+        return itemOrderService.getItemProposalByStoreNo(storeNo);
+    }
+    @PutMapping("/itemOrder/respondItemProposal/{proposalNo}")
+    public ResponseEntity<Map<String, String>> responseProposal(@PathVariable Long proposalNo) {
+        try {
+            itemOrderService.responseProposal(proposalNo);
+        }
+        catch (EntityNotFoundException e) {
+            System.err.println(e.getMessage());
+            return ResponseEntity.status(400).build();
+        }
+        return ResponseEntity.ok().body(Map.of("message", "Response Proposal Success"));
     }
 }

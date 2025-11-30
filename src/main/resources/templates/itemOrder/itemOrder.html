@@ -6,6 +6,7 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.slim.min.js" integrity="sha256-kmHvs0B+OpCW5GVHUNjv9rOmY0IvSIRcf7zGUDTDQM8=" crossorigin="anonymous"></script>
+<script src="/js/util.js"></script>
 
 <style>
     /* 전체 화면 설정 */
@@ -79,6 +80,7 @@
         background:white;
         width:100%;
         table-layout: fixed;
+        text-align: center;
     }
 
     .table-rounded thead {
@@ -117,7 +119,7 @@
     <div class="panel">
         <div>
             <h5 class="fw-semibold mb-3">발주 추천 목록</h5>
-            <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#proposalModal">
+            <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#proposalModal" id="item_proposal_history">
                 제안 내역
             </button>
         </div>
@@ -133,8 +135,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr><td>2025.09.19</td><td>페페로니 1kg</td><td>2</td><td>-</td><td class="text-center"><button class="btn btn-warning btn-sm approve_btn">확인</button> <button class="btn btn-outline-secondary btn-sm cancel_btn">취소</button></td></tr>
-                    <tr><td>2025.09.19</td><td>도우 M 230g</td><td>5</td><td>-</td><td class="text-center"><button class="btn btn-warning btn-sm approve_btn">확인</button> <button class="btn btn-outline-secondary btn-sm cancel_btn">취소</button></td></tr>
                 </tbody>
             </table>
         </div>
@@ -228,7 +228,7 @@
 
             <div class="modal-body">
 
-                <table class="table table-bordered table-hover align-middle">
+                <table class="table table-bordered table-hover align-middle" id="proposal_history_table">
                     <thead>
                     <tr>
                         <th>제안 일자</th>
@@ -317,6 +317,7 @@
        $(this).closest("tr").remove();
     });
 
+
     // 제안 확인 이벤트
     itemProposal.on("click", ".approve_btn", function (){
         const oldRow = $(this).closest("tr");
@@ -328,6 +329,10 @@
             return;
         }
 
+        const proposalNo = $(this).closest("tr").data("proposal_no");
+        fetchUtil(`/itemOrder/respondItemProposal/${proposalNo}`, (data)=>{
+            console.log("test");
+        }, "PUT");
         const itemRow = $("#item_toOrder tbody tr").filter(function(){
             return $(this).find("td").eq(1).text().trim() === itemName;
         });
@@ -360,6 +365,8 @@
 
         $("#item_selected tbody").append(newRow);
         oldRow.remove();
+
+
 
     });
 
@@ -507,6 +514,58 @@
 
 
 <script>
+    function load_proposal(data){
+        const tbody = $("#item_proposal tbody");
+        tbody.empty();
+
+        data.forEach((item) => {
+            const date = new Date(item.proposalDate);
+            let row = `<tr data-proposal_no="${item.proposalNo}">
+                   <td>${date.getFullYear()+"-"+String(date.getMonth()).padStart(2, "0")+"-"+String(date.getDate()).padStart(2, "0")}</td>
+                   <td>${item.itemName}</td>
+                   <td>${item.quantity}</td>
+                   <td>${item.reason == null ? "-" : item.reason}</td>
+                   <td class="text-center">
+                       <button class="btn btn-warning btn-sm approve_btn">확인</button>
+                       <button class="btn btn-outline-secondary btn-sm cancel_btn">취소</button>
+                   </td>
+                   </tr>`;
+
+            tbody.append(row);
+        });
+    }
+    $(window).on("load", function(){
+        fetchUtil(`/itemOrder/itemProposal/1`, (data)=>{
+            load_proposal(data);
+        });
+    });
+
+    function load_proposal_history(data){
+        const tbody = $("#proposal_history_table tbody");
+        tbody.empty();
+
+        data.forEach((item) => {
+            const date = new Date(item.proposalDate);
+            let row = `<tr>
+                        <td>${date.getFullYear()+"-"+String(date.getMonth()).padStart(2, "0")+"-"+String(date.getDate()).padStart(2, "0")}</td>
+                        <td class="fw-bold">${item.itemName}</td>
+                        <td>${item.quantity +" "+ item.supplyUnit}</td>
+                        <td>${item.reason == null ? "-" : item.reason}</td>
+                        <td>${item.managerName}</td>`;
+
+            if(item.responseDate == null)
+                row += `<td class="text-danger fw-bold">응답대기</td>`;
+            else
+                row += `<td class="text-success fw-bold">응답완료</td>`;
+
+            tbody.append(row+`<tr>`);
+        });
+    }
+    $(document).on("click", "#item_proposal_history", function(){
+        fetchUtil(`/itemOrder/itemProposalHistory/1`, (data)=>{
+            load_proposal_history(data);
+        });
+    });
 
 </script>
 
