@@ -166,9 +166,36 @@
     });
     $(document).on('input', '#limitSupplyCount', function () {
         const boxes = parseFloat(this.value) || 0;
+        theConstFix();
         const conv = Number($('#limitModal').data('convertStock') || 0);
         if (conv > 0 && boxes >= 0) $('#limitNew').val(boxes * conv).trigger('input');
     });
+
+    // === 소유자 라벨/입력 토글 유틸 추가 ===
+    function setOwnerLabel(owner) {
+        const $o = $('#limitOwnerText');
+        $o.removeClass('text-muted text-secondary text-danger text-success');
+        if (owner === 'MANAGER') {
+            $o.text('본사에서 설정한 하한선입니다.').addClass('text-danger'); // 빨강
+        } else if (owner === 'STORE') {
+            $o.text('직영점에서 설정한 하한선입니다.').addClass('text-success'); // 초록
+        } else {
+            $o.text('현재 설정된 하한선이 없습니다.').addClass('text-secondary'); // 회색
+        }
+    }
+    function setLimitInputsEnabled(enabled) {
+        $('#limitNew').prop('disabled', !enabled);
+        $('#limitUseSupply').prop('disabled', !enabled);
+        const useSupply = $('#limitUseSupply').is(':checked');
+        $('#limitSupplyCount').prop('disabled', !enabled || !useSupply);
+        $('#btnSaveLimit').prop('disabled', !enabled);
+        if (!enabled) {
+            $('#limitErrorText').addClass('d-none');
+            $('#limitNew').attr('placeholder', '본사 설정 수정불가');
+        } else {
+            $('#limitNew').attr('placeholder', '');
+        }
+    }
 
     /*** 하한선 모달 열기 ***/
     function openLimitModalByRow($row) {
@@ -192,13 +219,16 @@
             $('#limitCurrentText').text(Number(rawLimit).toLocaleString() + ' ' + stockUnit);
         }
 
-        if (owner === 'MANAGER') $('#limitOwnerText').text('본사에서 설정한 하한선입니다.');
-        else if (owner === 'STORE') $('#limitOwnerText').text('직영점에서 설정한 하한선입니다.');
-        else $('#limitOwnerText').text('현재 설정된 하한선이 없습니다.');
+        // 소유자 문구 + 색상
+        setOwnerLabel(owner);
 
-        $('#limitNew').val('').prop('disabled', false);
+        // 입력 가능 여부: 직영점 화면에서 본사 설정이면 금지
+        if (!IS_MANAGER && owner === 'MANAGER') setLimitInputsEnabled(false);
+        else setLimitInputsEnabled(true);
+
+        $('#limitNew').val('');
         $('#limitUnit2').text(stockUnit);
-        $('#limitUseSupply').prop('checked', false).prop('disabled', false);
+        $('#limitUseSupply').prop('checked', false);
         $('#limitSupplyCount').prop('disabled', true).val('');
         $('#limitSupplyUnit').text(supplyUnit);
         $('#limitConvertInfo').text(
@@ -206,12 +236,13 @@
         );
 
         $('#limitErrorText').addClass('d-none');
-        $('#btnSaveLimit').prop('disabled', false);
 
+        // 모달 메타
         $('#limitModal').data('storeItemNo', storeItemNo);
         $('#limitModal').data('convertStock', conv || 0);
         $('#limitModal').data('supplyUnit', supplyUnit);
         $('#limitModal').data('stockUnit', stockUnit);
+        $('#limitModal').data('owner', owner); // 저장 가드용
 
         if (!limitModalInstance) {
             const el = document.getElementById('limitModal');
@@ -246,6 +277,13 @@
         const $modal = $('#limitModal');
         const storeItemNo = $modal.data('storeItemNo');
         if (!storeItemNo) { toast('선택된 품목 정보가 없습니다.', 'warning'); return; }
+
+        // 직영점 화면 + 본사 설정이면 저장 금지 (이중 방어)
+        const ownerNow = String($modal.data('owner') || 'NONE').toUpperCase();
+        if (!IS_MANAGER && ownerNow === 'MANAGER') {
+            toast('본사 설정 중에는 직영점에서 수정할 수 없습니다.', 'warning');
+            return;
+        }
 
         const val = $('#limitNew').val().trim();
         let newLimit = null;
@@ -287,7 +325,6 @@
                         // 본사에서 저장 → managerLimit 갱신
                         man = (newLimit == null) ? null : Number(newLimit);
                         $row.data('managerlimit', man != null ? man : '');
-                        // final = manager ?? store
                         const final = (man != null) ? man : (sto != null ? sto : null);
                         const owner = (man != null) ? 'MANAGER' : (sto != null ? 'STORE' : 'NONE');
                         applyLimitToRow($row, final, owner, unit);
@@ -295,8 +332,7 @@
                         // 직영점에서 저장 → storeLimit 갱신
                         sto = (newLimit == null) ? null : Number(newLimit);
                         $row.data('storelimit', sto != null ? sto : '');
-                        // final = manager ?? store (본사값 우선)
-                        const final = (man != null) ? man : (sto != null ? sto : null);
+                        const final = (man != null) ? man : (sto != null ? sto : null); // 본사 우선
                         const owner = (man != null) ? 'MANAGER' : (sto != null ? 'STORE' : 'NONE');
                         applyLimitToRow($row, final, owner, unit);
                     }
@@ -607,5 +643,8 @@
     });
 
     $('#storeSearchKeyword').on('input change', updateOverlay);
+
+    // 내부 미세수정: 오타 방지용 no-op (문맥 유지)
+    function theConstFix(){}
 
 })(jQuery);
