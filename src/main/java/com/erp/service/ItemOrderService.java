@@ -2,10 +2,8 @@ package com.erp.service;
 
 import com.erp.controller.exception.ItemOrderNotFoundException;
 import com.erp.controller.exception.StoreItemNotFoundException;
-import com.erp.dto.ItemOrderDetailDTO;
-import com.erp.dto.ItemProposalDTO;
+import com.erp.dto.*;
 import com.erp.repository.*;
-import com.erp.dto.ItemOrderDTO;
 import com.erp.repository.entity.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +29,7 @@ public class ItemOrderService {
     final private StoreRepository storeRepo;
     final private StoreItemRepository storeItemRepo;
     final private StoreStockRepository storeStockRepo;
+    final private ItemRepository itemRepo;
 
     @Transactional(readOnly = true)
     public List<ItemOrderDTO> getAllItemOrder() {
@@ -39,7 +40,16 @@ public class ItemOrderService {
     }
 
     public Page<ItemOrderDTO> getItemOrderList(Integer pageNo) {
-        return repoOrder.findAllItemOrderList(PageRequest.of(pageNo, 10, Sort.by("itemOrderNo").descending()));
+        return repoOrder.findAllItemOrderList(PageRequest.of(pageNo, 10, Sort.by("itemOrderNo").descending()), null, null, null);
+    }
+    public Page<ItemOrderDTO> getItemOrderList(Integer pageNo, String orderStatus, String startDate, String endDate) {
+        LocalDateTime startDateTime = startDate.isEmpty() ? null : LocalDate.parse(startDate).atStartOfDay();
+        LocalDateTime endDateTime = endDate.isEmpty() ? null : LocalDate.parse(endDate).atStartOfDay();
+
+        if(startDate.equals(endDate)) {endDateTime = endDateTime.plusDays(1);}
+        String status = orderStatus.equals("전체") ? "" : orderStatus;
+
+        return repoOrder.findAllItemOrderList(PageRequest.of(pageNo, 10, Sort.by("itemOrderNo").descending()), status, startDateTime, endDateTime);
     }
 
     public Page<ItemOrderDTO> getItemOrderListByDate(Integer pageNo, LocalDate startDate, LocalDate endDate) {
@@ -144,5 +154,42 @@ public class ItemOrderService {
         ItemProposal proposal = proposalRepo.findById(proposalNo).orElseThrow(()-> new EntityNotFoundException("ItemProposal not found"));
         proposal.setResponseDate(new Timestamp(System.currentTimeMillis()));
         proposalRepo.save(proposal);
+    }
+
+    public List<ItemStoreQuantityDTO> itemList(Long storeNo){
+        return itemRepo.findAllWithQuantity(storeNo);
+    }
+
+    // 발주 요청 생성(관리자)
+    private ItemOrder makeOrder(ItemOrderRequestDTO request){
+        Long storeNo = request.getStoreNo();
+        Integer totalItem = request.getTotalItem();
+        Integer totalAmount = request.getTotalAmount();
+
+        ItemOrder newOrder = ItemOrder.builder() // 발주 요청 발생
+                .storeNo(Store.builder().storeNo(storeNo).build()) // 요청한 직영점 정보
+                .totalItem(totalItem)
+                .totalAmount(totalAmount)
+                .itemOrderStatus("대기")
+                .requestDatetime(new Timestamp(System.currentTimeMillis()))
+                .build();
+        return repoOrder.save(newOrder);
+    }
+
+    public void requestItemOrder(ItemOrderRequestDTO request) {
+
+        ItemOrder itemOrder = makeOrder(request);
+
+        request.getOrderList().forEach((item)->{
+            ItemOrderDetail orderDetail = ItemOrderDetail
+                    .builder()
+                    .itemNo(Item.builder().itemNo(item.getItemNo()).build())
+                    .itemOrderNo(itemOrder)
+                    .orderDetailQuantity(item.getItemQuantity())
+                    .orderDetailPrice(item.getItemOrderPrice())
+                    .build();
+
+            orderDetailRepo.save(orderDetail);
+        });
     }
 }

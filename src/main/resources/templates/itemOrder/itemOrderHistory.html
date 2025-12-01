@@ -26,20 +26,13 @@
 
  <div class="row g-3 mb-3">
    <div class="col-auto">
-     <input type="date" class="form-control">
+     <input type="date" class="form-control" id="start-date">
    </div>
    <div class="col-auto">
-     <input type="date" class="form-control">
-   </div>
-   <div class="col-auto d-flex align-items-center">
-     <select class="form-select">
-       <option value="">요일 전체</option>
-       <option>월</option><option>화</option><option>수</option>
-       <option>목</option><option>금</option><option>토</option><option>일</option>
-     </select>
+     <input type="date" class="form-control" id="end-date">
    </div>
    <div class="col-auto">
-     <select class="form-select">
+     <select class="form-select" id="order-status">
        <option>전체</option><option>대기</option><option>승인</option><option>취소</option>
      </select>
    </div>
@@ -130,10 +123,20 @@
   const itemOrderTable = $("#item_order_list");
 
   function loadPage(pageNo) {
-    fetchUtil(`/itemOrder/itemOrderList/${pageNo - 1}`, data => {
+    const params = new URLSearchParams({
+      orderStatus: $("#order-status").val(),
+      startDate: $("#start-date").val(),
+      endDate: $("#end-date").val(),
+      pageNo: pageNo-1
+    });
+    fetchUtil(`/itemOrder/itemOrderListFilter?${params.toString()}`, (data)=>{
       loadItemOrderTable(data);
       updatePaginationUI(data.pageNo, data.totalPages);
     });
+    // fetchUtil(`/itemOrder/itemOrderListAll?pageNo=` + (pageNo - 1), data => {
+    //   loadItemOrderTable(data);
+    //   updatePaginationUI(data.pageNo, data.totalPages);
+    // });
   }
 
   // 발주 상세 조회
@@ -278,7 +281,9 @@
     }, "PUT");
   }
 
-
+  $(document).on("click", "#view-btn", function(){
+    loadPage(1);
+  });
 </script>
 </body>
 </html>

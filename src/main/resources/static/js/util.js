@@ -1,5 +1,21 @@
-function fetchUtil(url, action, method="GET"){
-    fetch(url, {method: method})
+function fetchUtil(url, action, method="GET", json=null){
+    const options = {
+        method: method
+    };
+
+    if(method !== "GET" && json !== null){
+        options.headers = {
+            "Content-Type" : "application/json"
+        };
+
+        if(typeof json === "object"){
+            options.body = JSON.stringify(json);
+        }else{
+            options.body = json;
+        }
+    }
+
+    fetch(url, options)
     .then(data => data.json())
     .then(action)
     .catch(err => console.error(err));
