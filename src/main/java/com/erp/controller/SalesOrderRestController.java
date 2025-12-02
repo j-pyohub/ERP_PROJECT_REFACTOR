@@ -1,9 +1,12 @@
 package com.erp.controller;
 
 import com.erp.dto.SalesOrderDTO;
+import com.erp.dto.SalesOrderRequestDTO;
 import com.erp.service.SalesOrderService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -39,9 +42,11 @@ public class SalesOrderRestController {
         return salesOrderService.getSalesOrderDetail(salesOrderNo);
     }
 
-//    @PostMapping("/addSalesOrder/{}")
-//    public Map<String, Object> addSalesOrder(
-//
-//    )
+    @PostMapping("/addSalesOrder")
+    public ResponseEntity<Map<String, Object>> addSalesOrder(@RequestBody SalesOrderRequestDTO request) {
+        salesOrderService.addSalesOrder(request);
+
+        return ResponseEntity.ok().body(Map.of("message", "Request addSalesOrder success"));
+    }
 
 }

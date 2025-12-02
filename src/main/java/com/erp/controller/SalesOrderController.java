@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequiredArgsConstructor
 @RequestMapping("sales")
 public class SalesOrderController {
-    @GetMapping("/salesOrder")
+    @GetMapping("/salesOrderUI")
     public String salesOrder() {
         return "sales/salesOrderManagerUI";
     }
 
-    @GetMapping("/addSalesOrder")
+    @GetMapping("/addSalesOrderUI")
     public String addSalesOrder() {
         return "sales/salesOrderAddUI";
     }
