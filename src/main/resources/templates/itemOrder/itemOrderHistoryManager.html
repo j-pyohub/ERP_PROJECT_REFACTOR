@@ -39,7 +39,7 @@
      <button class="btn btn-dark" id="view-btn">조회</button>
    </div>
    <div>
-     <button class="btn btn-outline-secondary">일괄 승인</button>
+     <button class="btn btn-outline-secondary" id="approve-all-btn">일괄 승인</button>
    </div>
  </div>
 
@@ -280,6 +280,20 @@
       }
     }, "PUT");
   }
+
+  function approveItemOrderAsync(orderNo) {
+    return fetch(`/itemOrder/approveItemOrder/${orderNo}`, {
+      method: "PUT",
+    })
+        .then(res => res.json())
+        .then(data => {
+          if (data.message === "Approve ItemOrder Success") {
+            return true;
+          } else {
+            throw new Error("Approve failed for orderNo: " + orderNo);
+          }
+        });
+  }
   // 발주 승인 버튼
   $(document).on("click", ".approve-btn", function(){
     // 이곳에 구현부
@@ -314,6 +328,33 @@
 
   $(document).on("click", "#view-btn", function(){
     loadPage(1);
+  });
+
+  $(document).on("click", "#approve-all-btn", function(){
+    const orderNos = [];
+
+    $(".row-check:checked").each(function(){
+      const row = $(this).closest("tr");
+      const status = row.find("td").eq(8).text();
+      if(status === "대기") orderNos.push(row.find("td").eq(1).data("orderno"));
+    });
+
+    if(orderNos.length === 0) {
+      alert("승인할 항목이 없습니다.");
+      return;
+    }
+
+    const promises = orderNos.map(no => approveItemOrderAsync(no));
+    Promise.all(promises)
+        .then(() => {
+          loadPage(currentPage);
+          $("#orderItemDetailModal").modal("hide");
+          alert("전체 승인 완료!");
+        })
+        .catch(err => {
+          console.error(err);
+          alert("일부 승인 중 오류가 발생했습니다.");
+        });
   });
 </script>
 </body>
