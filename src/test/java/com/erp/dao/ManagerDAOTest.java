@@ -24,12 +24,12 @@ public class ManagerDAOTest {
     @Test
     void addManager() {
         ManagerDTO manager = ManagerDTO.builder()
-                .managerId("testStore")
+                .managerId("testAdmin")
                 .pw(encoder.encode("1234"))
                 .email("test@test.com")
-                .managerName("테스트직영점")
+                .managerName("테스트관리자")
                 .phoneNumber("010-1111-2222")
-                .role("ROLE_STORE")
+                .role("ROLE_ADMIN")
                 .build();
 
         managerDAO.addManager(manager);
