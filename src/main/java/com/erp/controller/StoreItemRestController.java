@@ -1,6 +1,6 @@
 package com.erp.controller;
 
-import com.erp.controller.request.StoreItemSearchRequestDTO;
+import com.erp.controller.request.SearchRequestDTO;
 import com.erp.dto.PageResponseDTO;
 import com.erp.dto.StoreItemDTO;
 import com.erp.service.StoreItemService;
@@ -25,7 +25,7 @@ public class StoreItemRestController {
      */
     @GetMapping("/manager/list/{pageNo}")
     public PageResponseDTO<StoreItemDTO> getManagerItems(@PathVariable int pageNo,
-                                                         StoreItemSearchRequestDTO request) {
+                                                         SearchRequestDTO request) {
         request.setPage(pageNo - 1);   // 1 → 0, 2 → 1 ...
         return storeItemService.getStoreItems(request);
     }
@@ -36,7 +36,7 @@ public class StoreItemRestController {
      */
     @GetMapping("/store/list/{pageNo}")
     public PageResponseDTO<StoreItemDTO> getStoreItems(@PathVariable int pageNo,
-                                                       StoreItemSearchRequestDTO request) {
+                                                       SearchRequestDTO request) {
         request.setPage(pageNo - 1);
         return storeItemService.getStoreItems(request);
     }

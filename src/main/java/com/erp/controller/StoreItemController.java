@@ -1,6 +1,7 @@
 package com.erp.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,9 +27,10 @@ public class StoreItemController {
      *  - URL : /stock/storeItem/store?storeNo=1
      */
     @GetMapping("/store")
-    public String storeItemStore(@RequestParam Long storeNo,
-                                 Model model) {
-        model.addAttribute("storeNo", storeNo);
+    public String storeItemStore(Model model,
+                                 @AuthenticationPrincipal com.erp.auth.PrincipalDetails p) {
+        model.addAttribute("role", "STORE");
+        model.addAttribute("storeNo", p != null ? p.getStoreNo() : null);
         return "stock/storeItemStoreUI";
     }
 }
