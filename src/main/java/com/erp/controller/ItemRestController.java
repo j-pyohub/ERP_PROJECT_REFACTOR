@@ -32,14 +32,14 @@ public class ItemRestController {
             @RequestParam(required = false, name="code") String itemCode,
             @RequestParam(required = false, name="ingredient") String ingredient
     ){
-        if (category != null && !category.isBlank())   return ResponseEntity.ok(itemService.getItemsByCategory(category));
-        if (itemName != null && !itemName.isBlank())   return ResponseEntity.ok(itemService.getItemsByItemName(itemName));
-        if (itemCode != null && !itemCode.isBlank())   return ResponseEntity.ok(itemService.getItemsByItemCode(itemCode));
+        if (category != null && !category.isBlank())     return ResponseEntity.ok(itemService.getItemsByCategory(category));
+        if (itemName != null && !itemName.isBlank())     return ResponseEntity.ok(itemService.getItemsByItemName(itemName));
+        if (itemCode != null && !itemCode.isBlank())     return ResponseEntity.ok(itemService.getItemsByItemCode(itemCode));
         if (ingredient != null && !ingredient.isBlank()) return ResponseEntity.ok(itemService.getItemsByIngredient(ingredient));
         return ResponseEntity.ok(itemService.getItemList());
     }
 
-    /** 등록 (ADMIN/MANAGER만) */
+    /** 등록 (ADMIN/MANAGER만) — UI에서 버튼 숨겨도 서버는 최소 권한 보호 */
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @PostMapping
     public ResponseEntity<?> create(@RequestBody ItemDTO dto){
