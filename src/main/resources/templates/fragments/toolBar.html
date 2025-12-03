@@ -132,8 +132,8 @@
                 <div class="dropdown-menu">
                     <a href="/menu/menuAddUI" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">메뉴 등록</a>
                     <a href="/menu/menuUI">메뉴 조회</a>
-                    <a href="#" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">판매 메뉴 관리</a>
-                    <a href="#" sec:authorize="hasRole('ROLE_STORE')">판매 메뉴 관리</a>
+                    <a href="/manager/storeMenu" sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">판매 메뉴 관리</a>
+                    <a href="/store/storeMenu" sec:authorize="hasRole('ROLE_STORE')">판매 메뉴 관리</a>
                 </div>
             </div>
 
