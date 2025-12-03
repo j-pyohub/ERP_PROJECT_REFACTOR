@@ -27,12 +27,13 @@
                 throw new UsernameNotFoundException("해당 아이디가 존재하지 않습니다: " + managerId);
             }
 
-            PrincipalDetails pd = new PrincipalDetails(manager);
-            if ("ROLE_STORE".equals(manager.getRole())) {
-                Long storeNo = storeDAO.getStoreNoByManager(managerId);
-                StoreDTO storeDTO = storeDAO.getStoreDetail(storeNo);  // storeName, phone, address 등 가져오기
-                pd.setStore(storeDTO);
-            }
+        PrincipalDetails pd = new PrincipalDetails(manager);
+        if ("ROLE_STORE".equals(manager.getRole())) {
+            Long storeNo = storeDAO.getStoreNoByManager(managerId);
+            StoreDTO storeDTO = storeDAO.getStoreDetail(storeNo);  // storeName, phone, address 등 가져오기
+
+            pd.setStore(storeDTO);
+        }
 
             return pd;
         }
