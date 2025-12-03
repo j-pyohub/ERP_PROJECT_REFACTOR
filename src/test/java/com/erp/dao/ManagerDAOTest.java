@@ -24,12 +24,12 @@ public class ManagerDAOTest {
     @Test
     void addManager() {
         ManagerDTO manager = ManagerDTO.builder()
-                .managerId("test123")
+                .managerId("testAdmin")
                 .pw(encoder.encode("1234"))
                 .email("test@test.com")
-                .managerName("테스트매니저")
+                .managerName("테스트관리자")
                 .phoneNumber("010-1111-2222")
-                .role("ROLE_MANAGER")
+                .role("ROLE_ADMIN")
                 .build();
 
 //        if ("test123".equals(manager.getManagerId())){
@@ -42,11 +42,11 @@ public class ManagerDAOTest {
     @Test
     void setManager() {
         ManagerDTO manager = new ManagerDTO();
-        manager.setManagerId("test123");
-        manager.setPw(encoder.encode("1233"));
-        manager.setEmail("test12@test.com");
-        manager.setManagerName("김삿갓");
-        manager.setPhoneNumber("010-1111-2222");
+        manager.setManagerId("kosta123");
+        manager.setPw(encoder.encode("123"));
+        manager.setEmail("kosta123@gmail.com");
+        manager.setManagerName("표수정");
+        manager.setPhoneNumber("010-9876-5432");
 
         managerDAO.setManager(manager);
 
