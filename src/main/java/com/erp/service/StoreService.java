@@ -30,8 +30,7 @@ public class StoreService {
 
         List<StoreDTO> content = storeDAO.getStoresList(params);
         long total = storeDAO.countStoreList(params);
-
-        Pageable pageable = PageRequest.of(offset, pageSize);
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
         return new PageImpl<>(content, pageable, total);
     }
 
