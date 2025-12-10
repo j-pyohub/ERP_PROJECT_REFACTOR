@@ -353,4 +353,9 @@ public class MenuService {
     }
 
 
+    public void removeMenu(Long menuNo) {
+        MenuDTO menu = menuDAO.getMenuByMenuNo(menuNo);
+        if (menu == null) throw new NoMenuException("없는 메뉴입니다.");
+        menuDAO.removeMenu(menuNo);
+    }
 }
