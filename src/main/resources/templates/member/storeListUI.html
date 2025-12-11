@@ -400,7 +400,8 @@
 
     $("#storeMenuBtn").on("click", function () {
         const storeNo = currentStore.storeNo;
-        location.href = `/manager/storeMenu/storeNo=${storeNo}`;
+        const storeName = currentStore.storeName;
+        location.href = `/manager/storeMenu?storeNo=${storeNo}&storeName=${encodeURIComponent(storeName)}`;
     })
 
 </script>
