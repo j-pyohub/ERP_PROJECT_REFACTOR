@@ -88,4 +88,7 @@ public class MemberRestController {
         memberService.setStoreMenuStopRole(dto.getStoreNo(), dto.getMenuStopRole());
         return Map.of("message", "ok");
     }
+
+
+
 }
