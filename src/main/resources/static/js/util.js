@@ -13,9 +13,36 @@ function fetchUtil(url, action, method="GET", data=null){
     }
 
     fetch(url, options)
-    .then(data => data.json())
+    .then(async dat => {
+        const json = await dat.json();
+        json.status = dat.status;
+        json.ok = dat.ok;
+        return json;
+    })
     .then(action)
     .catch(err => console.error(err));
+}
+
+function showAlert(message, onConfirm, modal) {
+    let modalId = "#alertModal";
+    if(modal === "check")
+        modalId = "#alertModalConfirm";
+
+    $(modalId).find(".alertMessage").text(message);
+    $(modalId).find(".alert-confirm-btn").off("click").on("click", function () {
+        if (typeof onConfirm === "function") onConfirm();
+        $(modalId).modal("hide");
+    });
+    $(modalId).modal("show");
+
+    // $("#alertMessage").text(message);
+    // $(".alert-confirm-btn").off("click").on("click", function () {
+    //     if (typeof onConfirm === "function") onConfirm();
+    //     $(modalId).modal("hide");
+    // });
+}
+function isEmpty(value) {
+    return !value || value.trim() === "";
 }
 
 let currentPage = 1;
