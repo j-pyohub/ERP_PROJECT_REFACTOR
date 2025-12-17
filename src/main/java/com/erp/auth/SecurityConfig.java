@@ -15,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.web.filter.CorsFilter;
 
 import java.io.IOException;
 
@@ -24,7 +25,7 @@ import java.io.IOException;
 @EnableMethodSecurity(securedEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
-
+    private final CorsFilter corsFilter;
     private final LoginSuccessHandler loginSuccessHandler;
 
     @Bean
@@ -36,7 +37,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
         http.csrf(csrf -> csrf.disable());
-
+        http.addFilter(corsFilter);
         http.authorizeHttpRequests(auth ->
                 auth
                 .requestMatchers("/image/**", "/css/**", "/js/**").permitAll()
