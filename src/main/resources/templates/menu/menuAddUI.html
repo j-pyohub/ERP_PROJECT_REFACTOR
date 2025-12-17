@@ -346,31 +346,36 @@
             menuPriceLarge: isSize ? parseInt(largePrice || 0) : null,
             menuPriceMedium: isSize ? parseInt(mediumPrice || 0) : null,
             menuPrice: !isSize ? parseInt(singlePrice || 0) : null,
-
-            menuImage: null,      // 파일 업로드는 나중에
-
             ingredients: ingredients
         };
 
-        console.log("보내는 JSON:", requestBody);
+        const formData = new FormData();
+        formData.append(
+            "menuDTO",
+            new Blob([JSON.stringify(requestBody)], { type: "application/json" })
+        );
+
+        const menuImage = $("#menuImage")[0].files[0];
+        if(menuImage){
+            formData.append("menuImage", menuImage);
+        }
 
         fetchUtil(`/menu/addMenu`,
             result => {
-                if (result.message === "fail") {
-                    showAlert("메뉴 등록 실패", () => {
-                        location.href = `/menu/addMenuUI`;
-                    })
-                } else {
+                    if (!result.ok) {
+                        showAlert(result.message, () => {
+                            location.href = "/menu/addMenuUI";
+                        });
+                        return;
+                    }
                     showAlert("메뉴 등록 성공", () => {
-                        location.href = `/menu/menuUI`;
+                        location.href = "/menu/menuUI";
                     });
-                }
-            },
+                },
             "POST",
-            requestBody
+            formData
         )
     }
-
     function showAlert(message, onClose) {
         $("#alertMessage").text(message);
         $("#alertModal").off("hidden.bs.modal").on("hidden.bs.modal", function () {

@@ -9,6 +9,16 @@ import java.util.Map;
 
 @RestControllerAdvice(assignableTypes = StoreItemRestController.class)
 public class RestAdviceController {
+
+    // 발주에 대한 예외 처리
+    @ExceptionHandler(ItemOrderException.class)
+    public ResponseEntity<ItemOrderException> handleItemOrderException(ItemOrderException e) {
+        ItemOrderErrorCode errCode = e.getErrorCode();
+        return ResponseEntity
+                .status(errCode.getStatus())
+                .body(e);
+    }
+
     @ExceptionHandler(StoreItemNotFoundException.class)
     public ResponseEntity<Map<String, String>> StoreItemNotFoundException(StoreItemNotFoundException e) {
         return ResponseEntity.status(404)
@@ -28,11 +38,16 @@ public class RestAdviceController {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> RuntimeException(RuntimeException e) {
-        return ResponseEntity.status(500).body(Map.of("message", e.getMessage()));
+        return ResponseEntity.status(404).body(Map.of("message", e.getMessage()));
     }
 
     @ExceptionHandler(StoreNotFoundException.class)
     public ResponseEntity<Map<String, String>> StoreNotFoundException(StoreNotFoundException e) {
+        return ResponseEntity.status(400).body(Map.of("message", e.getMessage()));
+    }
+
+    @ExceptionHandler(InvalidDateRangeException.class)
+    public ResponseEntity<Map<String, String>> InvalidDateRangeException(InvalidDateRangeException e) {
         return ResponseEntity.status(400).body(Map.of("message", e.getMessage()));
     }
 }

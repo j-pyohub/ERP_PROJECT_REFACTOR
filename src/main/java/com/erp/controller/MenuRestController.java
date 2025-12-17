@@ -5,8 +5,10 @@ import com.erp.dto.MenuDTO;
 import com.erp.service.ItemService;
 import com.erp.service.MenuService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,13 @@ public class MenuRestController {
     private final MenuService menuService;
     private final ItemService itemService;
 
+    @DeleteMapping("/delMenu")
+    public ResponseEntity<Map<String, String>> removeMenu(@RequestParam Long menuNo) {
+        menuService.removeMenu(menuNo);
+        return ResponseEntity.ok(Map.of("message","delete Menu success"));
+    }
+
+
     @GetMapping("/menuList")
     public ResponseEntity<List<MenuDTO>> getMenuList(
             @RequestParam(required = false) String menuCategory,
@@ -26,13 +35,20 @@ public class MenuRestController {
         List<MenuDTO> menuList = menuService.getMenuList(menuCategory, releaseStatus);
         return ResponseEntity.ok(menuList);
     }
+    @PutMapping(value = "/setMenu", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, String>> setMenu(@RequestPart MenuDTO menuDTO,
+                                                       @RequestPart(value = "menuImage", required = false) MultipartFile menuImage) {
+        menuService.updateMenu(menuDTO,menuImage);
+        return ResponseEntity.ok(Map.of("message", "set Menu success"));
+    }
 
-    @PostMapping("/addMenu")
+    @PostMapping(value = "/addMenu", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> addMenu(
-            @RequestBody MenuDTO menuDTO
+            @RequestPart MenuDTO menuDTO,
+            @RequestPart(value = "menuImage", required = false) MultipartFile menuImage
     ){
-        menuService.addMenu(menuDTO);
-        return ResponseEntity.ok().body(Map.of("message", "Request addSalesOrder success"));
+        menuService.addMenu(menuDTO, menuImage);
+        return ResponseEntity.ok().body(Map.of("message", "add Menu success"));
     }
 
     @GetMapping("/itemList")

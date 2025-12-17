@@ -1,5 +1,8 @@
 package com.erp.service;
 
+import com.erp.awss3.S3Uploader;
+import com.erp.controller.exception.ItemNotFoundException;
+import com.erp.controller.exception.MenuCreateException;
 import com.erp.controller.exception.NoMenuException;
 import com.erp.dao.ItemDAO;
 import com.erp.dao.MenuDAO;
@@ -14,6 +17,7 @@ import com.erp.repository.entity.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +32,7 @@ public class MenuService {
     private final ItemDAO itemDAO;
     private final MenuIngredientRepository menuIngredientRepository;
     private final StoreMenuRepository storeMenuRepository;
+    private final S3Uploader s3Uploader;
 
     //전체 메뉴 조회
     public List<MenuDTO> getMenuList(String menuCategory, String releaseStatus) {
@@ -40,7 +45,7 @@ public class MenuService {
 
         // 1) 단일 메뉴 조회
         MenuDTO menu = menuDAO.getMenuByMenuNo(menuNo);
-        if (menu == null) throw new NoMenuException("없는 메뉴입니다.");
+        if (menu == null) throw new NoMenuException("존재하지 않는 메뉴입니다. : " + menuNo);
 
         // 2) 코드로 전체 사이즈 메뉴 조회 (L/M/단일)
         List<MenuDTO> sizeList = menuDAO.getMenuByMenuCode(menu.getMenuCode());
@@ -107,7 +112,12 @@ public class MenuService {
         return new ArrayList<>(merged.values());
     }
 
-    public void addMenu(MenuDTO menuRequest) {
+    public void addMenu(MenuDTO menuRequest, MultipartFile menuImage) {
+        if (menuImage != null && !menuImage.isEmpty()) {
+            String imageUrl = s3Uploader.uploadMenuImage(menuImage, menuRequest.getMenuCode());
+            menuRequest.setMenuImage(imageUrl);
+        }
+
         if ("Y".equals(menuRequest.getSize())) {
             MenuDTO largeDTO = MenuDTO.builder()
                     .menuName(menuRequest.getMenuName())
@@ -122,7 +132,7 @@ public class MenuService {
             menuDAO.addMenu(largeDTO);
             Long largeMenuNo = largeDTO.getMenuNo();
             if (largeMenuNo == null) {
-                throw new RuntimeException("fail");
+                throw new MenuCreateException("라지 메뉴 등록 실패");
             }
 
             for (MenuIngredientDTO ing : menuRequest.getIngredients()) {
@@ -131,7 +141,7 @@ public class MenuService {
                 ItemDTO itemDTO = itemDAO.getItemByItemNo(ing.getItemNo());
 
                 if (itemDTO == null) {
-                    throw new RuntimeException("Item not found: " + ing.getItemNo());
+                    throw new ItemNotFoundException("재료 정보 조회 실패: " + ing.getItemNo());
                 }
 
                 Item item = Item.builder()
@@ -162,7 +172,7 @@ public class MenuService {
             menuDAO.addMenu(mediumDTO);
             Long mediumMenuNo = mediumDTO.getMenuNo();
             if (mediumMenuNo == null) {
-                throw new RuntimeException("fail");
+                throw new MenuCreateException("미디움 메뉴 등록 실패");
             }
 
             for (MenuIngredientDTO ing : menuRequest.getIngredients()) {
@@ -170,7 +180,7 @@ public class MenuService {
                 if (ing.getQuantityMedium() == null) continue;
 
                 ItemDTO itemDTO = itemDAO.getItemByItemNo(ing.getItemNo());
-                if (itemDTO == null) throw new RuntimeException("Item not found: " + ing.getItemNo());
+                if (itemDTO == null) throw new ItemNotFoundException("재료 정보 조회 실패: " + ing.getItemNo());
 
                 MenuIngredient entity = MenuIngredient.builder()
                         .menu(Menu.builder().menuNo(mediumMenuNo).build())
@@ -201,13 +211,13 @@ public class MenuService {
             Long menuNo = oneDTO.getMenuNo();
 
             if (menuNo == null) {
-                throw new RuntimeException("fail");
+                throw new MenuCreateException("단일 메뉴 등록 실패");
             }
 
             for (MenuIngredientDTO ing : menuRequest.getIngredients()) {
 
                 ItemDTO itemDTO = itemDAO.getItemByItemNo(ing.getItemNo());
-                if (itemDTO == null) throw new RuntimeException("Item not found: " + ing.getItemNo());
+                if (itemDTO == null) throw new ItemNotFoundException("재료 정보 조회 실패: " + ing.getItemNo());
 
                 MenuIngredient entity = MenuIngredient.builder()
                         .menu(Menu.builder().menuNo(menuNo).build())
@@ -234,6 +244,152 @@ public class MenuService {
                     .salesStatus("판매중단")
                     .build();
             storeMenuRepository.save(storeMenu);
+        }
+    }
+
+    @Transactional
+    public void updateMenu(MenuDTO menuRequest, MultipartFile menuImage) {
+
+        if (menuRequest.isRemoveImage()) {
+            menuRequest.setMenuImage(null);
+
+        } else if (menuImage != null && !menuImage.isEmpty()) {
+            String imageUrl =
+                    s3Uploader.uploadMenuImage(menuImage, menuRequest.getMenuCode());
+            menuRequest.setMenuImage(imageUrl);
+
+        } else {
+            menuRequest.setMenuImage(menuRequest.getOriginImage());
+        }
+
+        List<MenuDTO> oldList = menuDAO.getMenuByMenuCode(menuRequest.getMenuCode());
+        if (oldList == null || oldList.isEmpty()) {
+            throw new RuntimeException("메뉴 정보를 찾을 수 없습니다.");
+        }
+
+        // 기존 상태
+        String oldStatus = oldList.get(0).getReleaseStatus();
+        // 새 상태
+        String newStatus = menuRequest.getReleaseStatus();
+
+        boolean hasSize = "Y".equals(menuRequest.getSize());
+
+        for (MenuDTO old : oldList) {
+
+            Integer menuPrice = null;
+
+            if (hasSize) {
+                if (old.getSize().equals("라지")) {
+                    menuPrice = menuRequest.getMenuPriceLarge();
+                } else if (old.getSize().equals("미디움")) {
+                    menuPrice = menuRequest.getMenuPriceMedium();
+                }
+            } else {
+                menuPrice = menuRequest.getMenuPrice();
+            }
+
+            MenuDTO updateDTO = MenuDTO.builder()
+                    .menuNo(old.getMenuNo())
+                    .menuCode(menuRequest.getMenuCode())
+                    .menuName(menuRequest.getMenuName())
+                    .menuCategory(old.getMenuCategory())
+                    .menuExplain(menuRequest.getMenuExplain())
+                    .menuImage(menuRequest.getMenuImage())
+                    .menuPrice(menuPrice)
+                    .releaseStatus(newStatus)
+                    .build();
+
+            menuDAO.setMenu(updateDTO);
+        }
+
+        for (MenuDTO old : oldList) {
+            menuIngredientRepository.deleteByMenu_MenuNo(old.getMenuNo());
+        }
+
+        for (MenuIngredientDTO ing : menuRequest.getIngredients()) {
+
+            if (!hasSize) {
+                Integer qty = ing.getQuantity();
+                if (qty == null) continue;
+
+                Long menuNo = oldList.get(0).getMenuNo();
+
+                MenuIngredient entity = MenuIngredient.builder()
+                        .menu(Menu.builder().menuNo(menuNo).build())
+                        .item(Item.builder().itemNo(ing.getItemNo()).build())
+                        .ingredientQuantity(qty)
+                        .build();
+
+                menuIngredientRepository.save(entity);
+                continue;
+            }
+
+            for (MenuDTO m : oldList) {
+
+                Integer qty = null;
+
+                if (m.getSize().equals("라지")) {
+                    qty = ing.getQuantityLarge();
+                } else if (m.getSize().equals("미디움")) {
+                    qty = ing.getQuantityMedium();
+                }
+
+                if (qty == null) continue;
+
+                MenuIngredient entity = MenuIngredient.builder()
+                        .menu(Menu.builder().menuNo(m.getMenuNo()).build())
+                        .item(Item.builder().itemNo(ing.getItemNo()).build())
+                        .ingredientQuantity(qty)
+                        .build();
+
+                menuIngredientRepository.save(entity);
+            }
+        }
+
+        if (!"출시 중".equals(oldStatus) && "출시 중".equals(newStatus)) {
+
+            List<StoreDTO> stores = storeDAO.getActiveStores();
+
+            for (StoreDTO store : stores) {
+
+                for (MenuDTO m : oldList) {
+
+                    boolean exists =
+                            storeMenuRepository.existsByStore_StoreNoAndMenu_MenuNo(
+                                    store.getStoreNo(),
+                                    m.getMenuNo()
+                            );
+
+                    if (!exists) {
+                        StoreMenu storeMenu = StoreMenu.builder()
+                                .store(Store.builder().storeNo(store.getStoreNo()).build())
+                                .menu(Menu.builder().menuNo(m.getMenuNo()).build())
+                                .salesStatus("판매중단")
+                                .build();
+
+                        storeMenuRepository.save(storeMenu);
+                    }
+                }
+            }
+        }
+    }
+
+
+    @Transactional
+    public void removeMenu(Long menuNo) {
+
+        MenuDTO menu = menuDAO.getMenuByMenuNo(menuNo);
+        if (menu == null) {
+            throw new NoMenuException("존재하지 않는 메뉴입니다: " + menuNo);
+        }
+
+        List<MenuDTO> sameCodeMenus = menuDAO.getMenuByMenuCode(menu.getMenuCode());
+
+        for (MenuDTO m : sameCodeMenus) {
+            Long targetMenuNo = m.getMenuNo();
+            storeMenuRepository.deleteByMenu_MenuNo(targetMenuNo);
+            menuIngredientRepository.deleteByMenu_MenuNo(targetMenuNo);
+            menuDAO.removeMenu(targetMenuNo);
         }
     }
 }
