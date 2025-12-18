@@ -1,0 +1,1 @@
+export type MenuCategory = '피자' | '사이드디시' | '음료' | '기타';
