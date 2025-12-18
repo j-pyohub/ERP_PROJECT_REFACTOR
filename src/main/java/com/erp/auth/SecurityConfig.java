@@ -1,6 +1,10 @@
 package com.erp.auth;
 
 import com.erp.auth.LoginSuccessHandler;
+import com.erp.dao.ManagerDAO;
+import com.erp.jwt.JwtAuthenticationFilter;
+import com.erp.jwt.JwtBasicAuthenticationFilter;
+import com.erp.jwt.JwtProperties;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -8,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.web.filter.CorsFilter;
 
 import java.io.IOException;
 
@@ -24,8 +31,14 @@ import java.io.IOException;
 @EnableMethodSecurity(securedEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
-
+    private final CorsFilter corsFilter;
     private final LoginSuccessHandler loginSuccessHandler;
+    private final JwtProperties jwtProperties;
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration ac) throws Exception {
+        return ac.getAuthenticationManager();
+    }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -33,10 +46,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager am, ManagerDAO managerDAO) throws Exception {
 
         http.csrf(csrf -> csrf.disable());
-
+        http.addFilter(corsFilter);
+        http.addFilter(new JwtAuthenticationFilter(am, jwtProperties));
+        http.addFilter(new JwtBasicAuthenticationFilter(am,managerDAO, jwtProperties));
         http.authorizeHttpRequests(auth ->
                 auth
                 .requestMatchers("/image/**", "/css/**", "/js/**").permitAll()
@@ -47,15 +62,15 @@ public class SecurityConfig {
                 .anyRequest().authenticated());
 
 
-        http
-                .formLogin(form -> form
-                        .loginPage("/loginView")
-                        .loginProcessingUrl("/login")
-                        .usernameParameter("managerId")
-                        .passwordParameter("pw")
-                        .successHandler(loginSuccessHandler)
-                        .failureUrl("/loginView")
-                );
+//        http
+//                .formLogin(form -> form
+//                        .loginPage("/loginView")
+//                        .loginProcessingUrl("/login")
+//                        .usernameParameter("managerId")
+//                        .passwordParameter("pw")
+//                        .successHandler(loginSuccessHandler)
+//                        .failureUrl("/loginView")
+//                );
 
         http.exceptionHandling(ex -> {
            ex.accessDeniedHandler(new AccessDeniedHandler() {
