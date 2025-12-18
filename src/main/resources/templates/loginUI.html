@@ -44,18 +44,48 @@
             </div>
         </div>
 
-        <button type="submit" id="loginBtn" class="btn btn-warning px-4 mt-3">로그인</button>
-
+        <button type="button" id="loginBtn" class="btn btn-warning px-4 mt-3">로그인</button>
 </div>
 <script>
-    $("#loginBtn").on("click", function (){
-        fetchUtil("/login", ()=>{
-            alert("로그인 성공")
-        }, "POST", {
-            managerId : $("#managerId").val(),
-            pw : $("#pw").val()
+    function parseAuthResponse(res) {
+        const token = res.headers.get("Authorization");
+
+        if (!res.ok) {
+            throw new Error("로그인 실패");
+        }
+        if (!token) {
+            throw new Error("토큰 없음");
+        }
+
+        return res.json().then(data => ({
+            token,
+            role: data.role
+        }));
+    }
+    function loginHandling() {
+        fetch("/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                managerId: $("#managerId").val(),
+                pw: $("#pw").val()
+            })
         })
-    })
+            .then(parseAuthResponse)
+            .then(result => {
+                sessionStorage.setItem("au", result.token);
+                sessionStorage.setItem("role", result.role);
+
+                if (result.role === "ROLE_ADMIN" || result.role === "ROLE_MANAGER") {
+                    location.href = "/manager/salesMain";
+                } else {
+                    location.href = "/store/storeSalesMain";
+                }
+            })
+            .catch(err => alert(err.message));
+    }
+    $("#loginBtn").on("click", loginHandling);
+
 </script>
 </body>
 </html>

@@ -50,6 +50,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withClaim("role", principalDetails.getManager().getRole())
                 .sign(Algorithm.HMAC512(jwtProperties.getSECRET().getBytes()));
         response.addHeader(jwtProperties.getHEADER(), jwtProperties.getTOKEN_PREFIX()+jwtToken); //이름 상관없는데, Properties에 설정해둔 거 있으니 그거 씀 & 토큰 이름 접두사 넣음
-        response.getWriter().println(Map.of("message", "login OK"));
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        new ObjectMapper().writeValue(
+                response.getWriter(),
+                Map.of(
+                        "message", "login OK",
+                        "role", principalDetails.getManager().getRole()
+                )
+        );
     }
 }
