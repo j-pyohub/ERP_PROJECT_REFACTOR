@@ -1,7 +1,9 @@
+import MenuListPage from "../features/menu/pages/MenuListPage";
+
 function AppRoute() {
     return (
         <div>
-            페이지 라우트할 곳
+            <MenuListPage />
         </div>
     );
 }
