@@ -1,5 +1,5 @@
 export type ReleaseStatus = '출시 예정' | '출시 중' | '출시 중단';
-export type MenuCategory = '피자' | '사이드디시' | '음료' | '기타';
+import type { MenuCategory } from "../../../shared/types/MenuCategory"; 
 
 export interface Menu {
     menuNo: number;
