@@ -9,9 +9,9 @@ interface PageLayoutProps {
 
 function PageLayout({ children }: PageLayoutProps) {
     return (
-        <div className="page-layout bg-light">
+        <div className="container custom-container mt-5 my-5">
             <Header />
-            <main className="page-content">
+            <main className="bg-white border rounded p-5">
                 {children}
             </main>
             <Footer />
