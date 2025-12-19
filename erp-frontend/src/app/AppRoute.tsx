@@ -1,12 +1,13 @@
 import MenuListPage from "../features/menu/pages/MenuListPage";
 import StoreMenuListPage from "../features/storeMenu/pages/StoreMenuListPage";
+import PageLayout from "../shared/components/PageLayout";
 
 function AppRoute() {
     return (
-        <div>
+        <PageLayout>
             <MenuListPage />
             <StoreMenuListPage />
-        </div>
+        </PageLayout>
     );
 }
 export default AppRoute;

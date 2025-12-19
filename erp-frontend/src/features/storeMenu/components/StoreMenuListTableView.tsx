@@ -1,4 +1,10 @@
+import { Table, TableBody, TableHeader } from "../../../shared/components/Table";
+
 function StoreMenuListTableView() {
+    const columns = [
+        '직영점', '메뉴 코드', '메뉴 명', '사이즈', '가격', '판매 상태', '상태 변경', <input key="checkbox" type="checkbox" id="checkAll"/>
+    ];
+
     return (
         <>
             <div className="text-end pb-1">
@@ -8,24 +14,10 @@ function StoreMenuListTableView() {
             </div>
 
             <div className="scroll-area">
-                <table className="table align-middle text-center table-fixed-header">
-                    <thead className="table-light">
-                        <tr>
-                            <th>직영점</th>
-                            <th>메뉴코드</th>
-                            <th>메뉴명</th>
-                            <th>사이즈</th>
-                            <th>가격</th>
-                            <th>판매 상태</th>
-                            <th>상태 변경</th>
-                            <th>
-                                <input type="checkbox" id="checkAll" />
-                            </th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="menuTableBody"></tbody>
-                </table>
+                <Table className = "text-center table-fixed-header">
+                    <TableHeader columns={columns}/>
+                    <TableBody id="storeMenuTableBody"/>
+                </Table>
             </div>
         </>         
     );
