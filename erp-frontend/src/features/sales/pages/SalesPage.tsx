@@ -1,7 +1,7 @@
 import { useState } from "react";
 import SalesViewToggle from "../components/SalesViewToggle";
 import SalesChartSection from "../components/SalesChartSection";
-// import SalesListSection from "../components/SalesListSection";
+import SalesListSection from "../components/SalesListSection";
 
 function SalesPage() {
     const [viewMode, setViewMode] = useState<"chart" | "list">("chart");
@@ -15,7 +15,7 @@ function SalesPage() {
             <SalesViewToggle viewMode={viewMode} onChange={setViewMode} />
 
             {viewMode === "chart" && <SalesChartSection />}
-            {/*{viewMode === "list" && <SalesListSection />}*/}
+            {viewMode === "list" && <SalesListSection />}
         </>
     );
 }
