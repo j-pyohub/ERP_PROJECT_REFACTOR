@@ -2,14 +2,14 @@ import { useEffect } from "react";
 import { Table, TableHeader} from "../../../shared/components/Table";
 import { useAxios } from "../../../shared/hooks/useAxios";
 import type { Menu } from "../types/Menu";
-import { MenuGroupTable } from "./MenuGroupTable";
+import { MenuTableBody } from "./MenuTableBody";
 
-interface MenuListTableViewProps {
+interface MenuTableViewProps {
   menuCategory: string;
   releaseStatus: string;
 }
 
-function MenuListTableView({ menuCategory, releaseStatus }: MenuListTableViewProps) {
+function MenuTableView({ menuCategory, releaseStatus }: MenuTableViewProps) {
     const columns = [
         "카테고리", "메뉴 코드", "메뉴 명", "사이즈", "가격", "출시 상태", "상세"
     ];
@@ -33,9 +33,9 @@ useEffect(() => {
         <div className="tab-content-area tab-active list scroll-area">
       <Table gridColumns="repeat(7, 1fr)" className="text-center">
         <TableHeader columns={columns} />
-        <MenuGroupTable menus={data} />
+        <MenuTableBody menus={data} />
       </Table>
     </div>
     )
 };
-export default MenuListTableView;
+export default MenuTableView;

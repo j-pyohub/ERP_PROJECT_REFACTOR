@@ -6,22 +6,35 @@ type LabeledInputProps = {
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   error?: string;
+  wrapperClassName?: string;
+  labelClassName?: string;
+  inputClassName?: string;
 };
 
 export function LabeledInput({
   label,
   id,
-  type = "text",
+  type,
   placeholder,
   value,
   onChange,
   error,
+
+  wrapperClassName = "",
+  labelClassName = "",
+  inputClassName = "",
 }: LabeledInputProps) {
+  const baseLabel =
+    "block font-semibold mb-1";
+
+  const baseInput =
+    "block w-full rounded-md border px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2";
+
   return (
-    <div className="w-full">
+    <div className={`w-full ${wrapperClassName}`}>
       <label
         htmlFor={id}
-        className="block text-sm font-medium text-gray-700 mb-1"
+        className={`${baseLabel} ${labelClassName}`}
       >
         {label}
       </label>
@@ -33,9 +46,8 @@ export function LabeledInput({
         value={value}
         onChange={onChange}
         className={`
-          w-full rounded-md border px-3 py-2 text-sm
-          placeholder-gray-400
-          focus:outline-none focus:ring-2
+          ${baseInput}
+          ${inputClassName}
           ${
             error
               ? "border-red-500 focus:ring-red-500"

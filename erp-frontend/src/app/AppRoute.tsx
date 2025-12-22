@@ -4,6 +4,7 @@ import StoreMenuListPage from "../features/storeMenu/pages/StoreMenuListPage";
 import PageLayout from "../shared/components/PageLayout";
 import SalesPage from "../features/sales/pages/SalesPage";
 import LoginPage from "../features/login/pages/LoginPage";
+import MenuAddPage from "../features/menu/pages/MenuAddPage";
 
 function AppRoute() {
     return (
@@ -13,6 +14,7 @@ function AppRoute() {
                 <Route path="/sales" element={<PageLayout><SalesPage /></PageLayout>} />
                 <Route path="/menu" element={<PageLayout><MenuListPage /></PageLayout>} />
                 <Route path="/store-menu" element={<PageLayout><StoreMenuListPage /></PageLayout>} />
+                <Route path="/menu/add" element={<PageLayout><MenuAddPage /></PageLayout>} />
             </Routes>
         </BrowserRouter>
     );
