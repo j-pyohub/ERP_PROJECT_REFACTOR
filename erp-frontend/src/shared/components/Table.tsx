@@ -10,59 +10,82 @@ interface TableHeaderProps {
     className?: string;
 }
 
-interface TableBodyProps {
-    children: React.ReactNode;
-    id?: string;
+interface TableCellProps {
+  children?: React.ReactNode;
+  hideTopBorder?: boolean;
+  hideBottomBorder?: boolean;
+  hideText?: boolean;
 }
 
-function Table({children, className = "", headerClassName = "", gridColumns = "repeat(auto-fit, minmax(100px, 1fr))" }: TableProps){
-    const defaultClasses = "bg-white rounded shadow-sm";
-    const tableClasses = `${defaultClasses} ${className}`.trim();
+function Table({children, className = "", gridColumns}: TableProps){
 
     return(
-        <div className={tableClasses}
-            style={{
-                display: 'grid',
-                gridTemplateColumns: gridColumns, 
-                gap: '0',
-                border: '1px solid #dee2e6',
-                borderRadius: '0.375rem',
-                overflow: 'hidden'
-            }}
+        <div
+        className={`bg-white rounded shadow-sm ${className}`}
+        style={{
+            display: "grid",
+            gridTemplateColumns: gridColumns,
+            border: "1px solid #dee2e6",
+            borderRadius: "6px",
+            overflow: "hidden",
+      }}
         >
             {children}
         </div>
     )
 }
 
-function TableHeader({columns, className}: TableHeaderProps){
-    const defaultClasses = "bg-gray-50 font-medium";
-    const headerClasses = `${defaultClasses} ${className}`.trim();
-
-    return (
-        <div style={{ display: 'contents' }}>
-            {columns.map((column, index) => (
-                <div key={index}
-                className={headerClasses}
-                style={{
-                    padding: '8px',
-                    borderBottom: '1px solid #ddd',
-                    borderRight: '1px solid #ddd',
-                    fontWeight: 'bold'
-                }}>
-                    {column}
-                </div>
-            ))}
+function TableHeader({ columns }: TableHeaderProps) {
+  return (
+    <>
+      {columns.map((column, idx) => (
+        <div
+          key={idx}
+          style={{
+            padding: "10px",
+            fontWeight: "bold",
+            background: "#f8f9fa",
+            borderBottom: "1px solid #ddd",
+            borderRight: "1px solid #ddd",
+          }}
+        >
+          {column}
         </div>
-    )
+      ))}
+    </>
+  );
 }
 
-function TableBody({children, id}: TableBodyProps){
-    return (
-        <div id = {id} style={{display: 'contents'}}>
-            {children}
-        </div>
-    )
+function TableRow({ children }: { children: React.ReactNode }) {
+  return (
+    <>
+      {children}
+    </>
+  );
 }
 
-export {Table, TableHeader, TableBody};
+
+function TableCell({
+  children,
+  hideTopBorder,
+  hideBottomBorder,
+  hideText,
+}: TableCellProps) {
+  return (
+    <div
+      style={{
+        padding: "8px",
+        textAlign: "center",
+        borderRight: "1px solid #ddd",
+        borderTop: hideTopBorder ? "none" : "1px solid #ddd",
+        borderBottom: hideBottomBorder ? "none" : "1px solid #ddd",
+        color: hideText ? "transparent" : "inherit",
+      }}
+    >
+      {children}
+    </div>
+  );
+}
+
+
+export {Table, TableHeader, TableRow, TableCell};
