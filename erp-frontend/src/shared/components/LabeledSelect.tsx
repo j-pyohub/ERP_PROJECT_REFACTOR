@@ -9,9 +9,11 @@ interface LabeledSelectProps {
     options: Option[];
     className? : string;
     stacked?: boolean;
+    value?: string;
+    onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 };
 
-function LabeledSelect({id, label, options, className, stacked}: LabeledSelectProps) {
+function LabeledSelect({id, label, options, className, stacked, value, onChange}: LabeledSelectProps) {
     const containerClass = stacked
         ? `d-flex flex-column ${className ?? ""}`
         : `d-flex align-items-center ${className ?? ""}`;
@@ -26,17 +28,22 @@ function LabeledSelect({id, label, options, className, stacked}: LabeledSelectPr
 
     return (
         <div className={containerClass}>
-            <label className={labelClass} htmlFor={id}>
-                {label}
-            </label>
-            <select className={selectClass} id={id}>
-                {options.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                        {opt.label}
-                    </option>
-                ))}
-            </select>
-        </div>
+      <label className={labelClass} htmlFor={id}>
+        {label}
+      </label>
+      <select
+        id={id}
+        className={selectClass}
+        value={value}
+        onChange={onChange}
+      >
+        {options.map(opt => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </select>
+    </div>
     );
 }
 export default LabeledSelect;

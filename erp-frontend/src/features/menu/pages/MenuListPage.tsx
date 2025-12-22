@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Button from "../../../shared/components/Button";
 import useNavigateTo from "../../../shared/hooks/useNavigateTo";
 import MenuFilterBar from "../components/MenuFilterBar";
@@ -6,6 +7,9 @@ import MenuListTableView from "../components/MenuListTableView";
 
 function MenuListPage() {
     const goToStoreMenu = useNavigateTo()("/api/store-menu");
+const [menuCategory, setMenuCategory] = useState("");
+const [releaseStatus, setReleaseStatus] = useState("");
+
     return (
         <>
             <div className="flex justify-between items-center mb-4">
@@ -17,8 +21,11 @@ function MenuListPage() {
                     <Button className="me-2 custom-btn" onClick={goToStoreMenu}>판매 메뉴 보기</Button>
                 </div>
             </div>
-        <MenuFilterBar />
-        <MenuListTableView />
+        <MenuFilterBar  menuCategory={menuCategory}
+                        releaseStatus={releaseStatus}
+                        onChangeCategory={setMenuCategory}
+                        onChangeStatus={setReleaseStatus} />
+        <MenuListTableView menuCategory={menuCategory} releaseStatus={releaseStatus} />
         <MenuImageGridView />
         </>
     );

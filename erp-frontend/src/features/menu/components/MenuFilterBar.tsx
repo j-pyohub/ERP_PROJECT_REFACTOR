@@ -1,12 +1,26 @@
 import LabeledSelect from "../../../shared/components/LabeledSelect";
 
-function MenuFilterBar() {
+interface MenuFilterBarProps {
+  menuCategory: string;
+  releaseStatus: string;
+  onChangeCategory: (value: string) => void;
+  onChangeStatus: (value: string) => void;
+}
+
+function MenuFilterBar({
+  menuCategory,
+  releaseStatus,
+  onChangeCategory,
+  onChangeStatus,
+}: MenuFilterBarProps) {
     return (
     <div className="flex items-center mb-3">
         <LabeledSelect
             id="menuCategory"
             label="카테고리"
             className="me-4"
+            value={menuCategory}
+            onChange={(e) => onChangeCategory(e.target.value)}
             options={[
                 { value: "", label: "전체" },
                 { value: "피자", label: "피자" },
@@ -19,6 +33,8 @@ function MenuFilterBar() {
         id="releaseStatus"
         label="출시 상태"
         className="me-4"
+        value={releaseStatus}
+        onChange={(e) => onChangeStatus(e.target.value)}
         options={[
           { value: "", label: "전체" },
           { value: "출시 예정", label: "출시 예정" },
