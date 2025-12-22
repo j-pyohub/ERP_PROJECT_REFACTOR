@@ -17,12 +17,12 @@ function LabeledSelect({id, label, options, className, stacked}: LabeledSelectPr
         : `d-flex align-items-center ${className ?? ""}`;
 
     const labelClass = stacked
-        ? "fw-semibold mb-1"
-        : "fw-semibold me-2 mb-0";
+        ? "font-semibold mb-1"
+        : "font-semibold me-2 mb-0";
 
     const selectClass = stacked
-        ? "form-select form-select-sm"
-        : "form-select form-select-sm w-auto";
+        ? "form-select border border-gray-300 rounded px-2 py-1 text-sm"
+        : "form-select border border-gray-300 rounded px-2 py-1 text-sm w-auto";
 
     return (
         <div className={containerClass}>

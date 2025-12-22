@@ -7,9 +7,9 @@ function AppRoute() {
     return (
         <BrowserRouter>
             <PageLayout>
-                <MenuListPage />
                 <Routes>
-                <Route path="/store-menu" element={<StoreMenuListPage />} />
+                    <Route path="/" element={<MenuListPage />} />
+                    <Route path="/store-menu" element={<StoreMenuListPage />} />
                 </Routes>
             </PageLayout>
         </BrowserRouter>
