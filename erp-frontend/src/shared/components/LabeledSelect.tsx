@@ -1,41 +1,51 @@
 type Option = {
-    label : string;
-    value : string;
+  label: string;
+  value: string;
 };
 
 interface LabeledSelectProps {
-    id : string;
-    label : string;
-    options: Option[];
-    className? : string;
-    stacked?: boolean;
-    value?: string;
-    onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-};
+  id: string;
+  label: string;
+  options: Option[];
 
-function LabeledSelect({id, label, options, className, stacked, value, onChange}: LabeledSelectProps) {
-    const containerClass = stacked
-        ? `d-flex flex-column ${className ?? ""}`
-        : `d-flex align-items-center ${className ?? ""}`;
+  value?: string;
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 
-    const labelClass = stacked
-        ? "font-semibold mb-1"
-        : "font-semibold me-2 mb-0";
+  wrapperClassName?: string;
+  labelClassName?: string;
+  selectClassName?: string;
+}
+function LabeledSelect({
+  id,
+  label,
+  options,
+  value,
+  onChange,
 
-    const selectClass = stacked
-        ? "form-select border border-gray-300 rounded px-2 py-1 text-sm"
-        : "form-select border border-gray-300 rounded px-2 py-1 text-sm w-auto";
+  wrapperClassName = "",
+  labelClassName = "",
+  selectClassName = "",
+}: LabeledSelectProps) {
+  const baseLabel =
+    "block font-semibold mb-1";
 
-    return (
-        <div className={containerClass}>
-      <label className={labelClass} htmlFor={id}>
+  const baseSelect =
+    "block rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500";
+
+  return (
+    <div className={`${wrapperClassName}`}>
+      <label
+        htmlFor={id}
+        className={`${baseLabel} ${labelClassName}`}
+      >
         {label}
       </label>
+
       <select
         id={id}
-        className={selectClass}
         value={value}
         onChange={onChange}
+        className={`${baseSelect} ${selectClassName}`}
       >
         {options.map(opt => (
           <option key={opt.value} value={opt.value}>
@@ -44,6 +54,7 @@ function LabeledSelect({id, label, options, className, stacked, value, onChange}
         ))}
       </select>
     </div>
-    );
+  );
 }
+
 export default LabeledSelect;

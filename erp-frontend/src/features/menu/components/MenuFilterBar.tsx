@@ -14,12 +14,14 @@ function MenuFilterBar({
   onChangeStatus,
 }: MenuFilterBarProps) {
     return (
-    <div className="flex items-center mb-3">
+    <div className="flex items-center mb-4 gap-4">
         <LabeledSelect
             id="menuCategory"
             label="카테고리"
-            className="me-4"
             value={menuCategory}
+            wrapperClassName="flex items-center gap-1"
+            labelClassName="font-semibold block"
+            selectClassName="border rounded px-3 py-2"
             onChange={(e) => onChangeCategory(e.target.value)}
             options={[
                 { value: "", label: "전체" },
@@ -32,7 +34,9 @@ function MenuFilterBar({
         <LabeledSelect
         id="releaseStatus"
         label="출시 상태"
-        className="me-4"
+        wrapperClassName="flex items-center gap-1"
+        labelClassName="font-semibold block"
+        selectClassName="border rounded px-3 py-2"
         value={releaseStatus}
         onChange={(e) => onChangeStatus(e.target.value)}
         options={[
