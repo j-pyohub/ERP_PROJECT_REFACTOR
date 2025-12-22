@@ -10,10 +10,10 @@ function AppRoute() {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<PageLayout showHeader={false}><LoginPage /></PageLayout>} />
-                <Route path="/api/auth/login" element={<PageLayout showHeader={false}><LoginPage /></PageLayout>} />
-                <Route path="/api/sales" element={<PageLayout><SalesPage /></PageLayout>} />
-                <Route path="/api/menu" element={<PageLayout><MenuListPage /></PageLayout>} />
-                <Route path="/api/store-menu" element={<PageLayout><StoreMenuListPage /></PageLayout>} />
+                <Route path="/auth/login" element={<PageLayout showHeader={false}><LoginPage /></PageLayout>} />
+                <Route path="/sales" element={<PageLayout><SalesPage /></PageLayout>} />
+                <Route path="/menu" element={<PageLayout><MenuListPage /></PageLayout>} />
+                <Route path="/store-menu" element={<PageLayout><StoreMenuListPage /></PageLayout>} />
             </Routes>
         </BrowserRouter>
     );
