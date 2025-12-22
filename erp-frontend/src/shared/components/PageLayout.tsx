@@ -9,7 +9,7 @@ interface PageLayoutProps {
 
 function PageLayout({ children }: PageLayoutProps) {
     return (
-        <div className="container custom-container mt-5 my-5">
+        <div className="max-w-7xl mx-auto mt-5 mb-5">
             <Header />
             <main className="bg-white border rounded p-5">
                 {children}

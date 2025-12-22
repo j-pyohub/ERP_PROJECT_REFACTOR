@@ -7,14 +7,14 @@ function StoreMenuListTableView() {
 
     return (
         <>
-            <div className="text-end pb-1">
-                <button className="btn custom-btn" id="statusSetAllBtn">
+            <div className="text-right pb-1">
+                <button className="custom-btn" id="statusSetAllBtn">
                     선택 일괄 변경
                 </button>
             </div>
 
             <div className="scroll-area">
-                <Table className = "text-center table-fixed-header">
+                <Table className = "text-center">
                     <TableHeader columns={columns}/>
                     <TableBody id="storeMenuTableBody"/>
                 </Table>

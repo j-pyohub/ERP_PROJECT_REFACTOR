@@ -1,7 +1,8 @@
 interface TableProps {
     children: React.ReactNode;
     className?: string;
-    headerClassName?: string
+    headerClassName?: string;
+    gridColumns?: string;
 }
 
 interface TableHeaderProps {
@@ -14,37 +15,55 @@ interface TableBodyProps {
     id?: string;
 }
 
-function Table({children, className = "", headerClassName = ""}: TableProps){
-    const defaultClasses = "table align-middle bg-white rounded shadow-sm";
+function Table({children, className = "", headerClassName = "", gridColumns = "repeat(auto-fit, minmax(100px, 1fr))" }: TableProps){
+    const defaultClasses = "bg-white rounded shadow-sm";
     const tableClasses = `${defaultClasses} ${className}`.trim();
 
     return(
-        <table className={tableClasses}>
+        <div className={tableClasses}
+            style={{
+                display: 'grid',
+                gridTemplateColumns: gridColumns, 
+                gap: '0',
+                border: '1px solid #dee2e6',
+                borderRadius: '0.375rem',
+                overflow: 'hidden'
+            }}
+        >
             {children}
-        </table>
+        </div>
     )
 }
 
 function TableHeader({columns, className}: TableHeaderProps){
-    const defaultClasses = "table-light";
+    const defaultClasses = "bg-gray-50 font-medium";
     const headerClasses = `${defaultClasses} ${className}`.trim();
 
     return (
-        <thead className={headerClasses}>
-            <tr>
-                {columns.map((column, index) => (
-                    <th key={index}>{column}</th>
-                ))}
-            </tr>
+        <>
+        <thead >
+            {columns.map((column, index) => (
+                <div key={index}
+                className={headerClasses}
+                style={{
+                    padding: '8px',
+                    borderBottom: '1px solid #ddd',
+                    borderRight: '1px solid #ddd',
+                    fontWeight: 'bold'
+                }}>
+                    {column}
+                </div>
+            ))}
         </thead>
+        </>
     )
 }
 
 function TableBody({children, id}: TableBodyProps){
     return (
-        <tbody id = {id}>
+        <div id = {id} style={{display: 'contents'}}>
             {children}
-        </tbody>
+        </div>
     )
 }
 

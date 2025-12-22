@@ -2,7 +2,7 @@ import LabeledSelect from "../../../shared/components/LabeledSelect";
 
 function MenuFilterBar() {
     return (
-    <div className="d-flex align-items-center mb-3">
+    <div className="flex items-center mb-3">
         <LabeledSelect
             id="menuCategory"
             label="카테고리"
@@ -28,10 +28,10 @@ function MenuFilterBar() {
       />
 
         {/* 탭 버튼 */}
-        <div className="ms-auto d-flex align-items-center gap-2">
-            <span className="fw-semibold">보기</span>
-            <button className="btn btn-dark btn-sm" data-tab="list">목록</button>
-            <button className="btn btn-outline-dark btn-sm" data-tab="image">이미지</button>
+        <div className="ml-auto flex items-center gap-2">
+            <span className="font-semibold">보기</span>
+            <button className="bg-gray-800 text-white px-2 py-1 text-sm rounded" data-tab="list">목록</button>
+            <button className="border border-gray-800 text-gray-800 px-2 py-1 text-sm rounded hover:bg-gray-800 hover:text-white" data-tab="image">이미지</button>
         </div>
     </div>);
 }

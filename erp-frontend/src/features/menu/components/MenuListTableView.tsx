@@ -8,7 +8,7 @@ function MenuListTableView() {
 
     return (
         <div className="tab-content-area tab-active list scroll-area">
-           <Table className="text-center table-fixed-header">
+           <Table className="text-center">
                 <TableHeader columns={columns}/>
                 <TableBody id="menuListBody"/>
            </Table>
