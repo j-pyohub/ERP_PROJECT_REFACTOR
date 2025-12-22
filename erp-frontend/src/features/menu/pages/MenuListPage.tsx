@@ -5,7 +5,7 @@ import MenuImageGridView from "../components/MenuImageGridView";
 import MenuListTableView from "../components/MenuListTableView";
 
 function MenuListPage() {
-    const goToStoreMenu = useNavigateTo()("/store-menu");
+    const goToStoreMenu = useNavigateTo()("/api/store-menu");
     return (
         <>
             <div className="flex justify-between items-center mb-4">
