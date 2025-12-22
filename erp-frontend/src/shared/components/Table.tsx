@@ -40,8 +40,7 @@ function TableHeader({columns, className}: TableHeaderProps){
     const headerClasses = `${defaultClasses} ${className}`.trim();
 
     return (
-        <>
-        <thead >
+        <div style={{ display: 'contents' }}>
             {columns.map((column, index) => (
                 <div key={index}
                 className={headerClasses}
@@ -54,8 +53,7 @@ function TableHeader({columns, className}: TableHeaderProps){
                     {column}
                 </div>
             ))}
-        </thead>
-        </>
+        </div>
     )
 }
 
