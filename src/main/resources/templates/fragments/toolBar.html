@@ -157,16 +157,37 @@
         </div>
 
         <div class="right-section">
-            <span sec:authorize="hasAnyRole('ROLE_MANAGER', 'ROLE_ADMIN')">본사</span>
-            <span class="store-name"
-                  sec:authorize="hasRole('ROLE_STORE')"
-                  sec:authentication="principal.store.storeName"></span>
-            <span class="name"
-                  sec:authentication="principal.manager.managerName"></span>
 
-            <!-- 로그아웃: a -> span 으로 변경 (CSS는 그대로 사용) -->
-            <span class="logout-btn" id="logoutBtn"
-                  onclick="location.href='/logout'">로그아웃</span>
+            <!-- 본사(ADMIN, MANAGER) -->
+            <span sec:authorize="hasAnyRole('ADMIN','MANAGER')">
+                본사
+            </span>
+
+            <!-- 매장(STORE)명 -->
+            <span class="store-name"
+                sec:authorize="hasRole('STORE')"
+                sec:authentication="principal.store.storeName">
+            </span>
+
+            <!-- 관리자 이름 (ADMIN, MANAGER만 접근) -->
+            <span class="name"
+                sec:authorize="hasAnyRole('ADMIN','MANAGER')"
+                sec:authentication="principal.manager.managerName">
+            </span>
+
+            <!-- 로그인 안 한 사용자 -->
+            <span sec:authorize="isAnonymous()">
+                로그인 필요
+            </span>
+
+            <!-- 로그아웃 버튼 (로그인한 경우만) -->
+            <span class="logout-btn"
+                sec:authorize="isAuthenticated()"
+                onclick="location.href='/logout'">
+                로그아웃
+            </span>
+
         </div>
+
     </div>
 </div>

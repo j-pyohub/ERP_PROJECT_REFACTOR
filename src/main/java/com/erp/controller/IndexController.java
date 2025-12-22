@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 @RequiredArgsConstructor
 public class IndexController {
 
-    @GetMapping("/loginView")
-    public String loginView() {
-        return "loginUI";   // 너의 loginUI.html 경로에 맞춰서
+    @GetMapping("/login")
+    public String loginRedirect() {
+        return "redirect:http://localhost:5173/react/auth/login";
     }
 
     @GetMapping("/noPermission")

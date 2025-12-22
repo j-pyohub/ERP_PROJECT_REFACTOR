@@ -3,6 +3,8 @@ package com.erp.controller;
 import com.erp.dao.StoreDAO;
 import com.erp.dto.StoreDTO;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +30,8 @@ public class SalesController {
 
         return "sales/salesDetailUI";
     }
-    @GetMapping("/manager/salesMain")
+    @GetMapping("/")
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     private String salesMain(){ return "sales/salesMainUI"; }
 
     @GetMapping("/store/storeSalesMain")

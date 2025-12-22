@@ -21,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
 import java.io.IOException;
@@ -52,12 +53,18 @@ public class SecurityConfig {
             jwtAuthFilter.setFilterProcessesUrl("/api/auth/login");
         http.csrf(csrf -> csrf.disable());
         http.addFilter(corsFilter);
-        http.addFilter(jwtAuthFilter);
-        http.addFilter(new JwtBasicAuthenticationFilter(am,managerDAO, jwtProperties));
+        http
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(
+                new JwtBasicAuthenticationFilter(am, managerDAO, jwtProperties),
+                UsernamePasswordAuthenticationFilter.class
+            );
         http.authorizeHttpRequests(auth ->
                 auth
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/**","/login", "/react/**", "/api/auth/**").permitAll()
                 .requestMatchers("/api/**").authenticated()
+                .requestMatchers("/react/**").permitAll()
+
                 .anyRequest().authenticated());
 
         http.exceptionHandling(ex -> {
