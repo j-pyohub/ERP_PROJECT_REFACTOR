@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +22,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/sales")
 public class SalesRestController {
 
     private final StoreDAO storeDAO;
@@ -28,7 +30,7 @@ public class SalesRestController {
     private final SalesKPIService salesKPIService;
     private final SalesListService salesListService;
 
-    @GetMapping("/detail/init")
+    @GetMapping("/")
     public SalesDetailResponse getSalesDetailInit(
             @RequestParam Long storeNo,
             @RequestParam String salesDate
