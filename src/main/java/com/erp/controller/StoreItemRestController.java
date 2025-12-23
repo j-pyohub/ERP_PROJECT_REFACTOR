@@ -2,14 +2,19 @@ package com.erp.controller;
 
 import com.erp.auth.PrincipalDetails;
 import com.erp.controller.request.SearchRequestDTO;
+import com.erp.dao.StoreDAO;
 import com.erp.dto.PageResponseDTO;
+import com.erp.dto.StoreDTO;
 import com.erp.dto.StoreItemDTO;
 import com.erp.service.StoreItemService;
 import com.erp.service.StoreStockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,6 +22,16 @@ public class StoreItemRestController {
 
     private final StoreItemService storeItemService;
     private final StoreStockService storeStockService;
+    private final StoreDAO storeDAO;
+
+    @GetMapping("/store/stock/storeItem/data")
+    public Map<String,Object> storeItemStore(@AuthenticationPrincipal PrincipalDetails p) {
+
+        return Map.of(
+                "storeNo", storeDAO.getStoreNoByManager(p.getManager().getManagerId()),
+                "role", "STORE"
+        );
+    }
 
     /** 본사 목록 API → /manager/stock/storeItem/list/{pageNo}  (pageNo: 1-base) */
     @GetMapping("/manager/stock/storeItem/list/{pageNo}")
