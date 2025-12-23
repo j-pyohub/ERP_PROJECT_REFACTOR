@@ -1,16 +1,16 @@
 /* 노란 버튼 - 확인, 조회, 검색, 수정, 등록, 저장, 승인, 닫기, 이동(뒤로가기)*/
-.custom-btn {
+.yellow-btn {
     background-color: #FFEEAA !important;
     border-color: #FFEEAA !important;
     color: #000;
     border-radius: 7px;
 }
 
-.custom-btn:hover {
+.yellow-btn:hover {
     background-color: #f2da84 !important;
     border-color: #f2da84 !important;
 }
-.custom-btn:focus {
+.yellow-btn:focus {
   outline: none;
   box-shadow: 0 0 0 0.2rem rgba(252, 242, 201, 0.5) !important;
 }
