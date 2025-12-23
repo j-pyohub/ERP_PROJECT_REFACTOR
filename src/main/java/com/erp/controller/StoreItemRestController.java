@@ -27,9 +27,8 @@ public class StoreItemRestController {
     @GetMapping("/store/stock/storeItem/data")
     public Map<String,Object> storeItemStore(@AuthenticationPrincipal PrincipalDetails p) {
 
-        StoreDTO store =  storeDAO.getStoreDetail(storeDAO.getStoreNoByManager(p.getManager().getManagerId()));
         return Map.of(
-                "storeNo", store.getStoreNo(),
+                "storeNo", storeDAO.getStoreNoByManager(p.getManager().getManagerId()),
                 "role", "STORE"
         );
     }

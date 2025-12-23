@@ -24,9 +24,8 @@ public class StoreStockRestController {
     // 직영점 화면에 보여 줄 데이터
     @GetMapping("/store/stock/storeStock/data")
     public Map<String, Object> storeStock(@AuthenticationPrincipal PrincipalDetails p){
-        StoreDTO store =  storeDAO.getStoreDetail(storeDAO.getStoreNoByManager(p.getManager().getManagerId()));
         return Map.of(
-                "storeNo", store.getStoreNo(),
+                "storeNo", storeDAO.getStoreNoByManager(p.getManager().getManagerId()),
                 "role", "STORE"
         );
     }
