@@ -5,7 +5,6 @@ import './PageLayout.css';
 
 interface PageLayoutProps {
     children: ReactNode;
-    showHeader?: boolean;
 }
 
 function PageLayout({ children, showHeader = true }: PageLayoutProps) {

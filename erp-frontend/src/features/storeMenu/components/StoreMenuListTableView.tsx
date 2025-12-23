@@ -1,4 +1,4 @@
-import { Table, TableBody, TableHeader } from "../../../shared/components/Table";
+import { Table, TableHeader } from "../../../shared/components/Table";
 
 function StoreMenuListTableView() {
     const columns = [
@@ -16,7 +16,6 @@ function StoreMenuListTableView() {
             <div className="scroll-area">
                 <Table className = "text-center">
                     <TableHeader columns={columns}/>
-                    <TableBody id="storeMenuTableBody"/>
                 </Table>
             </div>
         </>         

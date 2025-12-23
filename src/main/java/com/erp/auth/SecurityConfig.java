@@ -21,6 +21,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
 import java.io.IOException;
@@ -47,45 +48,34 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, AuthenticationManager am, ManagerDAO managerDAO) throws Exception {
-
+        JwtAuthenticationFilter jwtAuthFilter =
+                    new JwtAuthenticationFilter(am, jwtProperties);
+            jwtAuthFilter.setFilterProcessesUrl("/api/auth/login");
         http.csrf(csrf -> csrf.disable());
         http.addFilter(corsFilter);
-        http.addFilter(new JwtAuthenticationFilter(am, jwtProperties));
-        http.addFilter(new JwtBasicAuthenticationFilter(am,managerDAO, jwtProperties));
+        http
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(
+                new JwtBasicAuthenticationFilter(am, managerDAO, jwtProperties),
+                UsernamePasswordAuthenticationFilter.class
+            );
         http.authorizeHttpRequests(auth ->
                 auth
-                .requestMatchers("/image/**", "/css/**", "/js/**").permitAll()
-                .requestMatchers("/loginView").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .requestMatchers("/manager/**").hasAnyRole("ADMIN", "MANAGER")
-                .requestMatchers("/store/**").hasRole("STORE"   )
+                .requestMatchers("/**","/login", "/react/**", "/api/auth/**").permitAll()
+                .requestMatchers("/api/**").authenticated()
+                .requestMatchers("/react/**").permitAll()
+
                 .anyRequest().authenticated());
-
-
-//        http
-//                .formLogin(form -> form
-//                        .loginPage("/loginView")
-//                        .loginProcessingUrl("/login")
-//                        .usernameParameter("managerId")
-//                        .passwordParameter("pw")
-//                        .successHandler(loginSuccessHandler)
-//                        .failureUrl("/loginView")
-//                );
 
         http.exceptionHandling(ex -> {
            ex.accessDeniedHandler(new AccessDeniedHandler() {
                @Override
                public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                   request.getRequestDispatcher("/noP ermission").forward(request, response);
+                   request.getRequestDispatcher("/no Permission").forward(request, response);
                }
            });
         });
-//        http.logout(logout -> logout
-//                .logoutUrl("/logout")
-//                .logoutSuccessUrl("/loginView")
-//                .invalidateHttpSession(true)
-//        );
 
         return http.build();
     }
