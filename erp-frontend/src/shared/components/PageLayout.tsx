@@ -3,9 +3,9 @@ import Header from './Header';
 import Footer from './Footer';
 import './PageLayout.css';
 
+
 interface PageLayoutProps {
     children: ReactNode;
-    showHeader?: boolean; // 헤더 표시 여부 추가
 }
 
 function PageLayout({ children, showHeader = true }: PageLayoutProps) {

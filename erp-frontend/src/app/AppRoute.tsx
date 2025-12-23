@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from "react-router";
 import MenuListPage from "../features/menu/pages/MenuListPage";
 import StoreMenuListPage from "../features/storeMenu/pages/StoreMenuListPage";
 import PageLayout from "../shared/components/PageLayout";
+<<<<<<< HEAD
 import SalesPage from "../features/sales/pages/SalesPage";
 import LoginPage from "../features/login/pages/LoginPage";
 import MenuAddPage from "../features/menu/pages/MenuAddPage";
@@ -18,7 +19,20 @@ function AppRoute() {
                 <Route path="/menu/add" element={<PageLayout><MenuAddPage /></PageLayout>} />
                 <Route path="/test" element={<PageLayout><TestPage /></PageLayout>} />
             </Routes>
+=======
+
+function AppRoute() {
+    return (
+        <BrowserRouter>
+            <PageLayout>
+                <Routes>
+                    <Route path="/" element={<MenuListPage />} />
+                    <Route path="/store-menu" element={<StoreMenuListPage />} />
+                </Routes>
+            </PageLayout>
+>>>>>>> d2469c37f3e308712d22081ae9022307c4ee0a8d
         </BrowserRouter>
+
     );
 }
 export default AppRoute;
