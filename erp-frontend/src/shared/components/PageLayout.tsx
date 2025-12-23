@@ -5,12 +5,13 @@ import './PageLayout.css';
 
 interface PageLayoutProps {
     children: ReactNode;
+    showHeader?: boolean;
 }
 
-function PageLayout({ children }: PageLayoutProps) {
+function PageLayout({ children, showHeader = true }: PageLayoutProps) {
     return (
         <div className="max-w-7xl mx-auto mt-5 mb-5">
-            <Header />
+            {showHeader && <Header />}
             <main className="bg-white border rounded p-5">
                 {children}
             </main>
