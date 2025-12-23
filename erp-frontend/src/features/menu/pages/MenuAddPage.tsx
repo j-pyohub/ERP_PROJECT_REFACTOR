@@ -2,7 +2,7 @@ import { useState } from "react";
 import { LabeledInput } from "../../../shared/components/LabeledInput";
 import { LabeledInputWithAddon } from "../../../shared/components/LabeledInputAddon";
 import LabeledSelect from "../../../shared/components/LabeledSelect";
-import { MenuIngredientModal } from "../components/MenuIngredientModal";
+import { MenuIngredientModal } from "../components/menuIngredientModal/MenuIngredientModal";
 import Button from "../../../shared/components/Button";
 
 export default function MenuCreate() {

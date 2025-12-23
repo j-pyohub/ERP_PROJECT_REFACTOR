@@ -8,7 +8,7 @@ interface MenuFilterBarProps {
   onChangeStatus: (value: string) => void;
 }
 
-function MenuFilterBar({
+export default function MenuFilterBar({
   menuCategory,
   releaseStatus,
   onChangeCategory,
@@ -58,4 +58,3 @@ function MenuFilterBar({
         </div>
     </div>);
 }
-export default MenuFilterBar;
