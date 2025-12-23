@@ -1,9 +1,21 @@
-function SalesListSection() {
+import { SalesFilterBar } from "./SalesFilterBar";
+
+export function SalesListSection() {
+    const handleListSearch  = () => {
+        console.log("차트 조회");
+    };
+
+
     return (
         <div className="section-box mt-3">
             <h6 className="fw-bold mb-3">직영점별 매출 리스트</h6>
 
-            <div className="mb-3 bg-light rounded p-3">검색 영역</div>
+            <div className="mb-3">
+                <SalesFilterBar
+                    showPeriodType={false}
+                    onSearch={handleListSearch }
+                />
+            </div>
 
             <table className="table table-hover align-middle">
                 <thead>
@@ -34,4 +46,3 @@ function SalesListSection() {
     );
 }
 
-export default SalesListSection;

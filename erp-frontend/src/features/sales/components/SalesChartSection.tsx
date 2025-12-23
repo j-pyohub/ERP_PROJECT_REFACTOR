@@ -1,6 +1,25 @@
-function SalesChartSection() {
+import { useState } from "react";
+import { SalesFilterBar } from "./SalesFilterBar";
+
+export function SalesChartSection() {
+    const handleChartSearch = () => {
+        // 페이지 0으로 초기화
+        // 리스트 API 호출
+        console.log("리스트 조회");
+    };
+
+    const [period, setPeriod] = useState<"day" | "month">("day");
+
     return (
         <>
+            <div className="mb-4">
+                <SalesFilterBar
+                    showPeriodType
+                    periodType={period}
+                    onChangePeriodType={setPeriod}
+                    onSearch={handleChartSearch}
+                />
+            </div>
             <div className="mb-4">
                 <div className="bg-light rounded p-3">필터 영역</div>
             </div>
@@ -55,4 +74,3 @@ function SalesChartSection() {
     );
 }
 
-export default SalesChartSection;

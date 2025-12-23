@@ -1,7 +1,7 @@
 import { useState } from "react";
-import SalesViewToggle from "../components/SalesViewToggle";
-import SalesChartSection from "../components/SalesChartSection";
-import SalesListSection from "../components/SalesListSection";
+import {SalesViewToggle} from "../components/SalesViewToggle";
+import {SalesChartSection} from "../components/SalesChartSection";
+import {SalesListSection} from "../components/SalesListSection";
 
 function SalesPage() {
     const [viewMode, setViewMode] = useState<"chart" | "list">("chart");
