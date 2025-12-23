@@ -1,22 +1,19 @@
 package com.erp.controller;
 
-import com.erp.auth.PrincipalDetails;
-import com.erp.awss3.S3Uploader;
 import com.erp.dto.ItemDTO;
 import com.erp.dto.PageResponseDTO;
 import com.erp.service.ItemService;
+import com.erp.awss3.S3Uploader;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,46 +23,31 @@ public class ItemRestController {
     private final ItemService itemService;
     private final S3Uploader s3Uploader;
 
-    // 로그인 사용자 role/storeNo 추출 (추가 API 없이 여기서 같이 내려주기)
-    private String roleOf(PrincipalDetails p) {
-        return (p == null || p.getManager() == null) ? null : p.getManager().getRole();
-    }
-
-    private Long storeNoOf(PrincipalDetails p) {
-        return (p == null || p.getStore() == null) ? null : p.getStore().getStoreNo();
-    }
 
     /* -----------------------------------------
-       1) 단건 조회 (+ role/storeNo 포함)
+       1) 단건 조회
      ----------------------------------------- */
     @GetMapping("/{itemNo}")
-    public ResponseEntity<?> findOne(@PathVariable Long itemNo,
-                                     @AuthenticationPrincipal PrincipalDetails p) {
-
+    public ResponseEntity<ItemDTO> findOne(@PathVariable Long itemNo){
         ItemDTO dto = itemService.getDetail(itemNo);
-        if (dto == null) return ResponseEntity.notFound().build();
-
-        Map<String, Object> body = new HashMap<>();
-        body.put("role", roleOf(p));
-        body.put("storeNo", storeNoOf(p));
-        body.put("item", dto);
-
-        return ResponseEntity.ok(body);
+        return (dto == null)
+                ? ResponseEntity.notFound().build()
+                : ResponseEntity.ok(dto);
     }
 
+
     /* -----------------------------------------
-       2) 목록 + 검색 + 페이징 (+ role/storeNo 포함)
+       2) 목록 + 검색 + 페이징
      ----------------------------------------- */
     @GetMapping("/list/{page}")
-    public ResponseEntity<Map<String, Object>> listPaged(
+    public PageResponseDTO<ItemDTO> listPaged(
             @PathVariable int page,
             @RequestParam(required = false) String itemCategory,
             @RequestParam(required = false) String itemName,
             @RequestParam(required = false) String itemCode,
             @RequestParam(required = false) String ingredientName,
             @RequestParam(required = false) String supplier,
-            @RequestParam(required = false, defaultValue = "10") Integer size,
-            @AuthenticationPrincipal PrincipalDetails p
+            @RequestParam(required = false, defaultValue = "10") Integer size
     ) {
 
         List<ItemDTO> list;
@@ -82,7 +64,6 @@ public class ItemRestController {
             list = itemService.getItemList(null, null, null);
         }
 
-        // supplier 필터
         if (supplier != null && !supplier.isBlank()) {
             String kw = supplier.trim();
             List<ItemDTO> filtered = new ArrayList<>();
@@ -111,7 +92,7 @@ public class ItemRestController {
         int startPage = blockIdx * blockSize + 1;
         int endPage = Math.min(totalPages, startPage + blockSize - 1);
 
-        PageResponseDTO<ItemDTO> pageDto = PageResponseDTO.<ItemDTO>builder()
+        return PageResponseDTO.<ItemDTO>builder()
                 .content(pageContent)
                 .page(currentPage - 1)
                 .size(pageSize)
@@ -122,14 +103,8 @@ public class ItemRestController {
                 .hasPrevBlock(startPage > 1)
                 .hasNextBlock(endPage < totalPages)
                 .build();
-
-        Map<String, Object> body = new HashMap<>();
-        body.put("role", roleOf(p));
-        body.put("storeNo", storeNoOf(p));
-        body.put("page", pageDto);
-
-        return ResponseEntity.ok(body);
     }
+
 
     /* -----------------------------------------
        3) 품목 등록
@@ -144,6 +119,7 @@ public class ItemRestController {
         return ResponseEntity.created(URI.create("/api/items/" + dto.getItemNo())).body(dto);
     }
 
+
     /* -----------------------------------------
        4) 이미지 S3 업로드 (S3Uploader 사용)
      ----------------------------------------- */
@@ -157,14 +133,14 @@ public class ItemRestController {
 
         try {
             String url = s3Uploader.uploadItemImage(file);
-            // 문자열 그대로 내려줘도 되지만, 프론트 편의상 JSON 권장
-            return ResponseEntity.ok(Map.of("url", url));
+            return ResponseEntity.ok(url);
 
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.internalServerError().body("업로드 실패");
         }
     }
+
 
     /* -----------------------------------------
        5) 수정
@@ -183,12 +159,13 @@ public class ItemRestController {
                 : ResponseEntity.badRequest().body("수정 실패");
     }
 
+
     /* -----------------------------------------
        6) 삭제 (소프트)
      ----------------------------------------- */
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @DeleteMapping("/{itemNo}")
-    public ResponseEntity<?> delete(@PathVariable Long itemNo) {
+    public ResponseEntity<?> delete(@PathVariable Long itemNo){
         int r = itemService.removeItem(itemNo);
         return (r == 1)
                 ? ResponseEntity.ok().build()
