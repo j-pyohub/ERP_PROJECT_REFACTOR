@@ -21,3 +21,4 @@ function SalesPage() {
 }
 
 export default SalesPage;
+

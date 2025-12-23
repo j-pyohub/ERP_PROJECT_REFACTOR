@@ -1,5 +1,7 @@
 package com.erp.controller;
 
+import com.erp.controller.response.SalesDetailResponse;
+import com.erp.dao.StoreDAO;
 import com.erp.dto.*;
 import com.erp.service.SalesChartService;
 import com.erp.service.SalesKPIService;
@@ -21,10 +23,24 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SalesRestController {
 
+    private final StoreDAO storeDAO;
     private final SalesChartService salesChartService;
     private final SalesKPIService salesKPIService;
     private final SalesListService salesListService;
 
+    @GetMapping("/detail/init")
+    public SalesDetailResponse getSalesDetailInit(
+            @RequestParam Long storeNo,
+            @RequestParam String salesDate
+    ) {
+        StoreDTO store = storeDAO.getStoreDetail(storeNo);
+
+        return new SalesDetailResponse(
+                storeNo,
+                store.getStoreName(),
+                salesDate
+        );
+    }
     @GetMapping("/salesDetail")
     public List<StoreMenuSalesSummaryDTO> getSalesDetail(
             @RequestParam Long storeNo,
