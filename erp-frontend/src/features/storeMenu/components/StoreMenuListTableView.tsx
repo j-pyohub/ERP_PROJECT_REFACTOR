@@ -8,7 +8,7 @@ function StoreMenuListTableView() {
     return (
         <>
             <div className="text-right pb-1">
-                <button className="custom-btn" id="statusSetAllBtn">
+                <button className="yellow-btn" id="statusSetAllBtn">
                     선택 일괄 변경
                 </button>
             </div>

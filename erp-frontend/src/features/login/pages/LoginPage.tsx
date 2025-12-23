@@ -34,7 +34,7 @@ function LoginPage() {
 
                     <button
                         type="submit"
-                        className="custom-btn"
+                        className="yellow-btn"
                     >
                         로그인
                     </button>
