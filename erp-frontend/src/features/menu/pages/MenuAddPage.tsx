@@ -2,10 +2,13 @@ import { useState } from "react";
 import { LabeledInput } from "../../../shared/components/LabeledInput";
 import { LabeledInputWithAddon } from "../../../shared/components/LabeledInputAddon";
 import LabeledSelect from "../../../shared/components/LabeledSelect";
+import { MenuIngredientModal } from "../components/MenuIngredientModal";
+import Button from "../../../shared/components/Button";
 
 export default function MenuCreate() {
   const [sizeYn, setSizeYn] = useState<"Y" | "N">("Y");
-  const [showModal, setShowModal] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const handleClose = ()=>setIsOpen(false);
 
   return (
     <div className="max-w-7xl mx-auto mt-10 px-6">
@@ -148,12 +151,9 @@ export default function MenuCreate() {
         <section className="mb-10">
           <div className="flex justify-between items-center mb-4">
             <h5 className="font-bold">레시피(재료) 정보</h5>
-            <button
-              onClick={() => setShowModal(true)}
-              className="px-4 py-2 bg-yellow-400 rounded hover:bg-yellow-500"
-            >
+            <Button className="yellow-btn" onClick={()=> setIsOpen(true)}>
               + 재료 불러오기
-            </button>
+            </Button>
           </div>
 
           <table className="w-full border text-center">
@@ -179,34 +179,17 @@ export default function MenuCreate() {
 
         {/* 버튼 */}
         <div className="flex justify-center gap-4">
-          <button className="px-6 py-2 bg-yellow-400 rounded hover:bg-yellow-500">
+          <Button className="yellow-btn">
             등록
-          </button>
-          <button className="px-6 py-2 border rounded">초기화</button>
+          </Button>
+          <Button className="white-btn">
+            초기화
+          </Button>
         </div>
       </div>
 
       {/* 모달 */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
-          <div className="bg-white w-[1000px] rounded-xl p-6">
-            <div className="flex justify-between mb-4">
-              <h5 className="font-bold">재료 불러오기</h5>
-              <button onClick={() => setShowModal(false)}>✕</button>
-            </div>
-
-            <div className="flex justify-end gap-3 mt-6">
-              <button className="px-4 py-2 bg-yellow-400 rounded">선택 재료 등록</button>
-              <button
-                onClick={() => setShowModal(false)}
-                className="px-4 py-2 border rounded"
-              >
-                취소
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {isOpen && <MenuIngredientModal onClose={handleClose} />}
     </div>
   );
 }
