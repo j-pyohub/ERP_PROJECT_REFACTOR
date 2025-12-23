@@ -26,14 +26,4 @@
     margin-bottom: 30px;
 }
 
-/* 노란 버튼 스타일 (메뉴등록 화면 참고) */
-.custom-btn {
-    background-color: #FFEEAA !important;
-    border-color: #FFEEAA !important;
-    color: #000;
-}
 
-.custom-btn:hover {
-    background-color: #f2da84 !important;
-    border-color: #f2da84 !important;
-}

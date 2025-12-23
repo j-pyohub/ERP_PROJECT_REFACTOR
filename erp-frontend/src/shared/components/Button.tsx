@@ -1,3 +1,5 @@
+import './Button.css'
+
 interface ButtonProps {
     children: string;
     className?: string;
