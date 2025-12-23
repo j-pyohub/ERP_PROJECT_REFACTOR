@@ -1,7 +1,7 @@
 import { TableRow, TableCell } from "../../../shared/components/Table";
 import type { Menu } from "../types/Menu";
 
-export function MenuGroupRow({ group }: { group: Menu[] }) {
+export function MenuTableRow({ group }: { group: Menu[] }) {
   const first = group[0];
   const hasMultiple = group.length > 1;
 
