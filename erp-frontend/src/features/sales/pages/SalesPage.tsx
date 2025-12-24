@@ -1,24 +1,43 @@
 import { useState } from "react";
-import {SalesViewToggle} from "../components/SalesViewToggle";
-import {SalesChartSection} from "../components/SalesChartSection";
-import {SalesListSection} from "../components/SalesListSection";
+import SalesViewToggle from "../components/SalesViewToggle";
+import SalesChartSection from "../components/SalesChartSection";
+import SalesListSection from "../components/SalesListSection";
+import type { SalesFilterState } from "../types/SalesFilter";
 
-function SalesPage() {
+const getDefaultFilter = (): SalesFilterState => ({
+    periodType: "day",
+    from: "",
+    to: "",
+});
+
+export default function SalesPage() {
     const [viewMode, setViewMode] = useState<"chart" | "list">("chart");
+
+    const [chartFilter, setChartFilter] =
+        useState<SalesFilterState>(getDefaultFilter());
+
+    const [listFilter, setListFilter] =
+        useState<SalesFilterState>(getDefaultFilter());
 
     return (
         <>
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="font-bold">매출 관리</h2>
-            </div>
+            <h2 className="fw-bold mb-4">매출 관리</h2>
 
             <SalesViewToggle viewMode={viewMode} onChange={setViewMode} />
 
-            {viewMode === "chart" && <SalesChartSection />}
-            {viewMode === "list" && <SalesListSection />}
+            {viewMode === "chart" && (
+                <SalesChartSection
+                    filter={chartFilter}
+                    setFilter={setChartFilter}
+                />
+            )}
+
+            {viewMode === "list" && (
+                <SalesListSection
+                    filter={listFilter}
+                    setFilter={setListFilter}
+                />
+            )}
         </>
     );
 }
-
-export default SalesPage;
-

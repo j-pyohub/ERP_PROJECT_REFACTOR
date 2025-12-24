@@ -3,7 +3,7 @@ type Props = {
     onChange: (mode: "chart" | "list") => void;
 };
 
-export function SalesViewToggle({ viewMode, onChange }: Props) {
+export default function SalesViewToggle({ viewMode, onChange }: Props) {
     return (
         <div className="flex items-center mb-4">
             <span className="me-2">보기</span>

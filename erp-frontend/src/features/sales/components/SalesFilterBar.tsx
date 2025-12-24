@@ -1,8 +1,9 @@
+import type { SalesPeriodType } from "../types/SalesFilter";
 
 type Props = {
-    showPeriodType?: boolean; // 조회 단위 표시 여부
-    periodType?: "day" | "month";
-    onChangePeriodType?: (v: "day" | "month") => void;
+    showPeriodType?: boolean;
+    periodType?: SalesPeriodType;
+    onChangePeriodType?: (v: SalesPeriodType) => void;
 
     from?: string;
     to?: string;
@@ -12,14 +13,20 @@ type Props = {
     onSearch: () => void;
 };
 
-export function SalesFilterBar({
-                                   showPeriodType = true,
-                                   periodType = "day",
-                                   onChangePeriodType,
-                                   onSearch,
-                               }: Props) {
+export default function SalesFilterBar({
+                                           showPeriodType = true,
+                                           periodType = "day",
+                                           onChangePeriodType,
+                                           from = "",
+                                           to = "",
+                                           onChangeFrom,
+                                           onChangeTo,
+                                           onSearch,
+                                       }: Props) {
+    const canSearch = Boolean(from && to);
+
     return (
-        <div className="bg-light rounded p-3 d-flex gap-3 align-items-end">
+        <div className="bg-light rounded p-3 d-flex gap-3 align-items-end flex-wrap">
             {showPeriodType && (
                 <div>
                     <label className="form-label fw-semibold">조회 단위</label>
@@ -27,7 +34,7 @@ export function SalesFilterBar({
                         className="form-select form-select-sm"
                         value={periodType}
                         onChange={(e) =>
-                            onChangePeriodType?.(e.target.value as any)
+                            onChangePeriodType?.(e.target.value as SalesPeriodType)
                         }
                     >
                         <option value="day">일별</option>
@@ -37,17 +44,33 @@ export function SalesFilterBar({
             )}
 
             <div>
-                <label className="form-label fw-semibold">기간</label>
-                <input type="date" className="form-control form-control-sm" />
+                <label className="form-label fw-semibold">기간(From)</label>
+                <input
+                    type="date"
+                    className="form-control form-control-sm"
+                    value={from}
+                    onChange={(e) => onChangeFrom?.(e.target.value)}
+                />
+            </div>
+
+            <div>
+                <label className="form-label fw-semibold">기간(To)</label>
+                <input
+                    type="date"
+                    className="form-control form-control-sm"
+                    value={to}
+                    min={from || undefined}
+                    onChange={(e) => onChangeTo?.(e.target.value)}
+                />
             </div>
 
             <button
                 className="btn btn-sm btn-warning"
                 onClick={onSearch}
+                disabled={!canSearch}
             >
                 조회
             </button>
         </div>
     );
 }
-
