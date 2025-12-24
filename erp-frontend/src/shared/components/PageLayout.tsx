@@ -11,9 +11,9 @@ interface PageLayoutProps {
 
 function PageLayout({ children, showHeader = true }: PageLayoutProps) {
     return (
-        <div className="max-w-7xl mx-auto mt-5 mb-5">
+        <div className="max-w-7xl mx-auto mt-10 mb-5">
             {showHeader && <Header />}
-            <main className="bg-white border rounded p-5">
+            <main className="bg-white border rounded-xl p-8 px-5 shadow-sm">
                 {children}
             </main>
             <Footer />
