@@ -5,15 +5,21 @@ import LabeledSelect from "../../../../shared/components/LabeledSelect";
 interface MenuFilterBarProps {
   itemCategory: string;
   searchCondition: string;
+  keyword: string;
   onChangeCategory: (value: string) => void;
   onChangeCondition: (value: string) => void;
+  onChangeKeyword: (value: string) => void;
+  onSearch: () => void;
 }
 
 export function MenuIngredientFilterBar({
   itemCategory,
   searchCondition,
+  keyword,
   onChangeCategory,
   onChangeCondition,
+  onChangeKeyword,
+  onSearch,
 }: MenuFilterBarProps) {
     return (
     <div className="flex items-center mb-4 gap-4">
@@ -48,8 +54,8 @@ export function MenuIngredientFilterBar({
         onChange={(e) => onChangeCondition(e.target.value)}
         options={[
           { value: "", label: "전체" },
-          { value: "code", label: "품목 코드" },
-          { value: "name", label: "재료 명" },
+          { value: "itemCode", label: "품목 코드" },
+          { value: "ingredientName", label: "재료 명" },
         ]}
       />
 
@@ -57,8 +63,10 @@ export function MenuIngredientFilterBar({
             label="입력"
             id="modalSearchBtn"
             type="text"
-            inputClassName="w-full border rounded px-3 py-2" />
-        <Button className="yellow-btn ">
+            inputClassName="w-full border rounded px-3 py-2"
+            value={keyword}
+            onChange={(e) => onChangeKeyword(e.target.value)} />
+        <Button className="yellow-btn" onClick={onSearch}>
             검색
         </Button>
     </div>);
