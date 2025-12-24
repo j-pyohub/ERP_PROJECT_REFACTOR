@@ -35,7 +35,7 @@ export default function MenuCreate() {
                     { label: "기타", value: "기타" }
                 ]}
                 wrapperClassName="col-span-4"
-                labelClassName="font-semibold block mb-1"
+                labelClassName="font-semibold text-left block mb-1"
                 selectClassName="w-full border rounded px-3 py-2"
             />
             <LabeledInput
@@ -43,7 +43,7 @@ export default function MenuCreate() {
             id="menuCode"
             type="text"
             wrapperClassName="col-span-4"
-            labelClassName="font-semibold block mb-1"
+            labelClassName="font-semibold text-left block mb-1"
             inputClassName="w-full border rounded px-3 py-2"
             />
             <LabeledInput
@@ -51,11 +51,11 @@ export default function MenuCreate() {
             id="menuName"
             type="text"
             wrapperClassName="col-span-4"
-            labelClassName="font-semibold block mb-1"
+            labelClassName="font-semibold text-left block mb-1"
             inputClassName="w-full border rounded px-3 py-2"
             />
             <div className="col-span-4">
-              <label className="font-semibold block mb-1">사이즈</label>
+              <label className="font-semibold text-left block mb-1">사이즈</label>
               <div className="flex gap-20">
                 <label className="flex items-center gap-2">
                   <input
@@ -86,7 +86,7 @@ export default function MenuCreate() {
                     type="number"
                     addon="원"
                     wrapperClassName="col-span-4"
-                    labelClassName="font-semibold block mb-1"
+                    labelClassName="font-semibold text-left block mb-1"
                     inputClassName="w-full border rounded-l px-3 py-2"
                     addonClassName="border rounded-r px-3 py-2 bg-gray-100"
                 />
@@ -96,7 +96,7 @@ export default function MenuCreate() {
                     type="number"
                     addon="원"
                     wrapperClassName="col-span-4"
-                    labelClassName="font-semibold block mb-1"
+                    labelClassName="font-semibold text-left block mb-1"
                     inputClassName="w-full border rounded-l px-3 py-2"
                     addonClassName="border rounded-r px-3 py-2 bg-gray-100"
                 />
@@ -108,7 +108,7 @@ export default function MenuCreate() {
                 type="number"
                 addon="원"
                 wrapperClassName="col-span-4"
-                labelClassName="font-semibold block mb-1"
+                labelClassName="font-semibold text-left block mb-1"
                 inputClassName="w-full border rounded-l px-3 py-2"
                 addonClassName="border rounded-r px-3 py-2 bg-gray-100"
                 />
@@ -131,7 +131,7 @@ export default function MenuCreate() {
                   { label: "출시 중지", value: "discontinued" }
                 ]}
                 wrapperClassName="col-span-4"
-                labelClassName="font-semibold block mb-1"
+                labelClassName="font-semibold text-left block mb-1"
                 selectClassName="w-full border rounded px-3 py-2"
             />
 
@@ -141,7 +141,7 @@ export default function MenuCreate() {
                 label="대표 이미지"
                 type="file"
                 wrapperClassName="col-span-4"
-                labelClassName="font-semibold block mb-1"
+                labelClassName="font-semibold text-left block mb-1"
                 inputClassName="w-full border rounded px-3 py-2"
             />
           </div>
