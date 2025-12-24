@@ -6,7 +6,7 @@ interface TableProps {
 }
 
 interface TableHeaderProps {
-    columns: (string | React.ReactNode)[];
+    columns: (React.ReactNode)[];
     className?: string;
     sticky?: boolean;
 }

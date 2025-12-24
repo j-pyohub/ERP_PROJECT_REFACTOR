@@ -29,8 +29,9 @@ export default function MenuCreate() {
             초기화
           </Button>
 
-      {isOpen && <MenuIngredientModal onClose={handleClose} />}
+      
         </div>
+        {isOpen && <MenuIngredientModal onClose={handleClose} />}
     </>
 
   );
