@@ -21,7 +21,9 @@ export default function SalesPage() {
 
     return (
         <>
-            <h2 className="fw-bold mb-4">매출 관리</h2>
+            <div className="flex justify-between items-center mb-4">
+                <h2 className="font-bold">매출 관리</h2>
+            </div>
 
             <SalesViewToggle viewMode={viewMode} onChange={setViewMode} />
 

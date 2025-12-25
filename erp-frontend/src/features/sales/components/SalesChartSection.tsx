@@ -45,7 +45,7 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
     const [top5, setTop5] = useState<StoreTop5[]>([]);
     const [menuRatio, setMenuRatio] = useState<MenuRatio[]>([]);
 
-    // 초기 진입 시 → 이번 달 자동 세팅
+    // ✅ 최초 진입 시 날짜만 세팅 (조회 ❌)
     useEffect(() => {
         const today = new Date();
         const start = new Date(today.getFullYear(), today.getMonth(), 1);
@@ -86,11 +86,6 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
         setMenuRatio(menuRes.data);
     };
 
-    // 기간 or 단위 변경 시 자동 재조회
-    useEffect(() => {
-        handleChartSearch();
-    }, [filter.from, filter.to, filter.periodType]);
-
     return (
         <>
             <div className="mb-4">
@@ -114,16 +109,10 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
 
             <div className="row g-3 mb-4">
                 <div className="col-md-3">
-                    <KpiCard
-                        title="전체 매출"
-                        value={kpi?.totalSales?.toLocaleString() ?? "-"}
-                    />
+                    <KpiCard title="전체 매출" value={kpi?.totalSales?.toLocaleString() ?? "-"} />
                 </div>
                 <div className="col-md-3">
-                    <KpiCard
-                        title="총 판매 수량"
-                        value={kpi?.totalMenuCount?.toLocaleString() ?? "-"}
-                    />
+                    <KpiCard title="총 판매 수량" value={kpi?.totalMenuCount?.toLocaleString() ?? "-"} />
                 </div>
                 <div className="col-md-3">
                     <KpiCard

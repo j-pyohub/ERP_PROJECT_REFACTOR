@@ -1,5 +1,7 @@
+import type {ReactNode} from "react";
+
 interface ButtonProps {
-    children: string;
+    children: ReactNode;
     className?: string;
     onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
