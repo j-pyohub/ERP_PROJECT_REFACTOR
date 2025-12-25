@@ -44,18 +44,21 @@ export default function SalesListSection({ filter, setFilter }: Props) {
         setPage(res.data.currentPage);
     };
 
-    // ✅ 최초 진입 시 날짜만 세팅
+    // 🔹 최초 진입 시 자동 조회 (복구된 부분)
     useEffect(() => {
         if (!filter.from || !filter.to) {
             setFilter((prev) => ({ ...prev, ...getDefaultDateRange() }));
+            return;
         }
-    }, []);
+        loadList(1);
+    }, [filter.from, filter.to]);
 
     return (
         <div className="section-box mt-3">
             <h6 className="fw-bold mb-3">직영점별 매출 리스트</h6>
 
-            <div className="d-flex gap-2 mb-3 align-items-end flex-wrap">
+            {/* 조회 조건 */}
+            <div className="d-flex flex-wrap gap-2 mb-3 align-items-end">
                 <div>
                     <label className="form-label fw-semibold">기간 From</label>
                     <input
@@ -104,13 +107,12 @@ export default function SalesListSection({ filter, setFilter }: Props) {
                     <th>주문수</th>
                     <th>매출액</th>
                     <th>판매날짜</th>
-                    <th></th>
                 </tr>
                 </thead>
                 <tbody>
                 {list.length === 0 && (
                     <tr>
-                        <td colSpan={8} className="text-center">
+                        <td colSpan={7} className="text-center">
                             데이터가 없습니다.
                         </td>
                     </tr>
@@ -125,11 +127,29 @@ export default function SalesListSection({ filter, setFilter }: Props) {
                         <td>{item.orderCount.toLocaleString()}</td>
                         <td>{item.salesAmount.toLocaleString()}</td>
                         <td>{item.salesDate}</td>
-                        <td>상세</td>
                     </tr>
                 ))}
                 </tbody>
             </table>
+
+            <div className="d-flex justify-content-center mt-3 gap-1">
+                {Array.from({ length: totalPages }).map((_, i) => {
+                    const pageNo = i + 1;
+                    const isActive = page === pageNo;
+
+                    return (
+                        <button
+                            key={pageNo}
+                            className={`btn btn-sm ${
+                                isActive ? "btn-warning" : "btn-outline-secondary"
+                            }`}
+                            onClick={() => loadList(pageNo)}
+                        >
+                            {pageNo}
+                        </button>
+                    );
+                })}
+            </div>
         </div>
     );
 }

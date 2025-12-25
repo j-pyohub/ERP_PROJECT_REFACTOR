@@ -20,13 +20,17 @@ export default function SalesPage() {
         useState<SalesFilterState>(getDefaultFilter());
 
     return (
-        <>
-            <div className="flex justify-between items-center mb-4">
-                <h2 className="font-bold">매출 관리</h2>
-            </div>
+        <section className="w-full max-w-[1500px] mx-auto px-4 py-3 space-y-4">
+            {/* 제목 */}
+            <h4 className="text-lg font-semibold">매출 관리</h4>
 
-            <SalesViewToggle viewMode={viewMode} onChange={setViewMode} />
+            {/* 차트 / 목록 토글 */}
+            <SalesViewToggle
+                viewMode={viewMode}
+                onChange={setViewMode}
+            />
 
+            {/* 차트 */}
             {viewMode === "chart" && (
                 <SalesChartSection
                     filter={chartFilter}
@@ -34,12 +38,13 @@ export default function SalesPage() {
                 />
             )}
 
+            {/* 리스트 */}
             {viewMode === "list" && (
                 <SalesListSection
                     filter={listFilter}
                     setFilter={setListFilter}
                 />
             )}
-        </>
+        </section>
     );
 }

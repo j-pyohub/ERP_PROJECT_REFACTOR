@@ -1,0 +1,62 @@
+/* ===== 공통 레이아웃 ===== */
+.layout-container {
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+body {
+    background-color: #fdfdfd;
+}
+
+/* ===== 사이즈 유틸 ===== */
+.w-150 { width: 150px; }
+.w-120 { width: 120px; }
+
+/* ===== KPI 카드 ===== */
+/* ===== 공통 레이아웃 ===== */
+.layout-container {
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+body {
+    background-color: #fdfdfd;
+}
+
+.w-150 { width: 150px; }
+.w-120 { width: 120px; }
+
+
+.kpi-card {
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 18px;
+    text-align: center;
+}
+
+.kpi-title {
+    font-size: 14px;
+}
+
+.kpi-value {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+
+.section-box {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+
+/* ===== 섹션 박스 ===== */
+.section-box {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+}

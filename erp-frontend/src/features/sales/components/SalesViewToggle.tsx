@@ -5,22 +5,32 @@ type Props = {
 
 export default function SalesViewToggle({ viewMode, onChange }: Props) {
     return (
-        <div className="flex items-center mb-4">
-            <span className="me-2">보기</span>
-            <div className="btn-group">
+        <div className="flex items-center gap-2">
+            <span className="text-sm font-medium text-gray-700">
+                보기
+            </span>
+
+            <div className="flex border rounded-md overflow-hidden">
                 <button
-                    className={`btn btn-sm ${
-                        viewMode === "chart" ? "btn-warning" : "btn-outline-secondary"
-                    }`}
                     onClick={() => onChange("chart")}
+                    className={`px-3 py-1 text-sm transition
+                        ${
+                        viewMode === "chart"
+                            ? "bg-yellow-400 text-black font-semibold"
+                            : "bg-white text-gray-500 hover:bg-gray-100"
+                    }`}
                 >
                     차트
                 </button>
+
                 <button
-                    className={`btn btn-sm ${
-                        viewMode === "list" ? "btn-warning" : "btn-outline-secondary"
-                    }`}
                     onClick={() => onChange("list")}
+                    className={`px-3 py-1 text-sm transition
+                        ${
+                        viewMode === "list"
+                            ? "bg-yellow-400 text-black font-semibold"
+                            : "bg-white text-gray-500 hover:bg-gray-100"
+                    }`}
                 >
                     목록
                 </button>
@@ -28,5 +38,3 @@ export default function SalesViewToggle({ viewMode, onChange }: Props) {
         </div>
     );
 }
-
-
