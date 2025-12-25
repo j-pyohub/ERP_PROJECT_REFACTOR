@@ -42,8 +42,8 @@ export function MenuIngredientModal({
       },
     });
   };
-  /* ===== 선택 토글 ===== */
-  const toggleItem = (itemNo: number) => {
+
+  const checkItem = (itemNo: number) => {
     setSelectedItemNos((prev) =>
       prev.includes(itemNo)
         ? prev.filter((no) => no !== itemNo)
@@ -51,7 +51,7 @@ export function MenuIngredientModal({
     );
   };
 
-  const toggleAll = () => {
+  const checkAll = () => {
     if (selectedItemNos.length === data.length) {
       setSelectedItemNos([]);
     } else {
@@ -98,8 +98,8 @@ export function MenuIngredientModal({
         loading={loading}
         error={error}
         selectedItemNos={selectedItemNos}
-        onToggleItem={toggleItem}
-        onToggleAll={toggleAll}
+        onCheckItem={checkItem}
+        onCheckAll={checkAll}
       />
     </ModalLayout>
   );

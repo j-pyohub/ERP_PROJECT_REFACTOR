@@ -4,17 +4,17 @@ import type { Item } from "../../../../shared/types/Item";
 interface MenuIngredientTableRowProps {
   item: Item;
   checked: boolean;
-  onToggle: (itemNo: number) => void;
+  onCheck: (itemNo: number) => void;
 }
 
-export function MenuIngredientTableRow({ item, checked, onToggle}: MenuIngredientTableRowProps) {
+export function MenuIngredientTableRow({ item, checked, onCheck}: MenuIngredientTableRowProps) {
     return (
         <TableRow>
             <TableCell>
                 <input
                     type="checkbox"
                     checked={checked}
-                    onChange={() => onToggle(item.itemNo)}
+                    onChange={() => onCheck(item.itemNo)}
                 />
             </TableCell>
             <TableCell>{item.itemCode}</TableCell>

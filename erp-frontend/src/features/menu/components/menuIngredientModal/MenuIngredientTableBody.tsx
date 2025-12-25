@@ -5,13 +5,13 @@ import { MenuIngredientTableRow } from "./MenuIngredientTableRow";
 interface MenuIngredientTableBodyProps {
   items: Item[];
   selectedItemNos: number[];
-  onToggle: (itemNo: number) => void;
+  onCheck: (itemNo: number) => void;
 }
 
 export function MenuIngredientTableBody({
   items,
   selectedItemNos,
-  onToggle,
+  onCheck,
 }: MenuIngredientTableBodyProps) {
   return (
     <>
@@ -20,7 +20,7 @@ export function MenuIngredientTableBody({
           key={item.itemNo}
           item={item}
           checked={selectedItemNos.includes(item.itemNo)}
-          onToggle={onToggle}
+          onCheck={onCheck}
         />
       ))}
     </>
