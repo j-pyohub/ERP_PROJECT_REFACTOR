@@ -21,16 +21,13 @@ export default function SalesPage() {
 
     return (
         <section className="w-full max-w-[1500px] mx-auto px-4 py-3 space-y-4">
-            {/* 제목 */}
             <h4 className="text-lg font-semibold">매출 관리</h4>
 
-            {/* 차트 / 목록 토글 */}
             <SalesViewToggle
                 viewMode={viewMode}
                 onChange={setViewMode}
             />
 
-            {/* 차트 */}
             {viewMode === "chart" && (
                 <SalesChartSection
                     filter={chartFilter}

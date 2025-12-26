@@ -25,57 +25,42 @@ type KpiState = {
     growthRate: number;
 };
 
-export default function SalesChartSection({
-                                              filter,
-                                              setFilter,
+const INPUT_TYPE_MAP = {
+    day: "date",
+    week: "week",
+    month: "month",
+    year: "number",
+} as const;
 
-                                          }: Props) {
+export default function SalesChartSection({ filter, setFilter }: Props) {
     const [kpi, setKpi] = useState<KpiState | null>(null);
+    const [trend, setTrend] = useState({ labels: [], values: [] });
+    const [top5, setTop5] = useState<{ storeName: string; totalSales: number }[]>([]);
+    const [menuRatio, setMenuRatio] = useState<{ menuName: string; salesAmount: number }[]>([]);
 
-    const [trend, setTrend] = useState({
-        labels: [] as string[],
-        values: [] as number[],
-    });
-
-    const [top5, setTop5] = useState<
-        { storeName: string; totalSales: number }[]
-    >([]);
-
-    const [menuRatio, setMenuRatio] = useState<
-        { menuName: string; salesAmount: number }[]
-    >([]);
-
-    /* ================= 초기 날짜 세팅 (Spring UI 동일) ================= */
     useEffect(() => {
-        if (filter.from && filter.to) return;
+        if (filter.from || filter.to) return;
 
         const today = new Date();
-        const start = new Date(today.getFullYear(), today.getMonth(), 1);
-        const end = new Date(today);
-        end.setDate(end.getDate() - 1);
+        const ym = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
 
-        const toDate = (d: Date) =>
-            `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
-                d.getDate()
-            ).padStart(2, "0")}`;
+        setFilter({
+            periodType: "month",
+            from: ym,
+            to: ym,
+        });
 
-        setFilter((prev) => ({
-            ...prev,
-            from: toDate(start),
-            to: toDate(end),
-            periodType: "day",
-        }));
+        handleSearch("month", ym, ym);
     }, []);
 
-    /* ================= 조회 ================= */
-    const handleSearch = async () => {
-        if (!filter.from || !filter.to) return;
+    const handleSearch = async (
+        type = filter.periodType,
+        from = filter.from,
+        to = filter.to
+    ) => {
+        if (!from || !to) return;
 
-        const params = {
-            type: filter.periodType,
-            startDate: filter.from,
-            endDate: filter.to,
-        };
+        const params = { type, startDate: from, endDate: to };
 
         const [kpiRes, trendRes, top5Res, menuRes] = await Promise.all([
             fetchSalesKpi(params),
@@ -90,78 +75,71 @@ export default function SalesChartSection({
         setMenuRatio(menuRes.data);
     };
 
-    useEffect(() => {
-        handleSearch();
-    }, [filter.from, filter.to, filter.periodType]);
-
     return (
-        <section className="w-full max-w-[1500px] mx-auto px-4 space-y-6">
-            {/* ================= 조회 / 토글 ================= */}
+        <section className="w-full max-w-[1500px] mx-auto px-4 space-y-8">
             <div className="bg-white rounded-xl shadow-sm p-4">
-                <div className="flex flex-wrap items-end justify-between gap-4">
-                    {/* 좌측 */}
-                    <div className="flex flex-wrap items-center gap-6">
-
-
-
-                        {/* 기간 타입 */}
-                        <div className="flex items-center gap-3 text-sm">
-                            {[
-                                ["day", "일별"],
-                                ["week", "주별"],
-                                ["month", "월별"],
-                                ["year", "연별"],
-                            ].map(([value, label]) => (
-                                <label key={value} className="flex items-center gap-1">
-                                    <input
-                                        type="radio"
-                                        checked={filter.periodType === value}
-                                        onChange={() =>
-                                            setFilter((prev) => ({
-                                                ...prev,
-                                                periodType: value as any,
-                                            }))
-                                        }
-                                    />
-                                    {label}
-                                </label>
-                            ))}
-                        </div>
+                <div className="flex flex-wrap items-end justify-between gap-6">
+                    <div className="flex items-center gap-4 text-sm">
+                        {[
+                            ["day", "일별"],
+                            ["week", "주별"],
+                            ["month", "월별"],
+                            ["year", "연별"],
+                        ].map(([value, label]) => (
+                            <label key={value} className="flex items-center gap-1">
+                                <input
+                                    type="radio"
+                                    checked={filter.periodType === value}
+                                    onChange={() =>
+                                        setFilter((prev) => ({
+                                            ...prev,
+                                            periodType: value as any,
+                                            from: "",
+                                            to: "",
+                                        }))
+                                    }
+                                />
+                                {label}
+                            </label>
+                        ))}
                     </div>
 
-                    {/* 날짜 */}
                     <div className="flex items-center gap-2 text-sm">
-                        <span>조회기간</span>
+                        <span className="font-medium">조회기간</span>
+
                         <input
-                            type="date"
+                            type={INPUT_TYPE_MAP[filter.periodType]}
                             value={filter.from}
                             onChange={(e) =>
                                 setFilter((prev) => ({ ...prev, from: e.target.value }))
                             }
-                            className="border rounded px-2 py-1"
+                            className="border rounded px-2 py-1 w-36"
+                            placeholder={filter.periodType === "year" ? "시작 연도" : undefined}
                         />
+
                         <span>~</span>
+
                         <input
-                            type="date"
+                            type={INPUT_TYPE_MAP[filter.periodType]}
                             value={filter.to}
                             onChange={(e) =>
                                 setFilter((prev) => ({ ...prev, to: e.target.value }))
                             }
-                            className="border rounded px-2 py-1"
+                            className="border rounded px-2 py-1 w-36"
+                            placeholder={filter.periodType === "year" ? "종료 연도" : undefined}
                         />
                     </div>
 
-                    {/* 버튼 */}
                     <div className="flex gap-2">
                         <button
-                            onClick={handleSearch}
+                            onClick={() => handleSearch()}
                             className="px-4 py-1.5 bg-blue-600 text-white rounded text-sm"
                         >
                             조회
                         </button>
                         <button
                             onClick={() =>
-                                setFilter((prev) => ({ ...prev, from: "", to: "" }))
+                                setFilter({ periodType: filter.periodType, from: "", to: "" })
                             }
                             className="px-4 py-1.5 bg-blue-500 text-white rounded text-sm"
                         >
@@ -172,16 +150,12 @@ export default function SalesChartSection({
             </div>
 
             {/* ================= KPI ================= */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <KpiCard title="전체 매출" value={kpi?.totalSales?.toLocaleString() ?? "-"} />
                 <KpiCard title="총 판매 수량" value={kpi?.totalMenuCount?.toLocaleString() ?? "-"} />
                 <KpiCard
                     title="평균 직영점 매출"
-                    value={
-                        kpi?.avgStoreSales?.toLocaleString() ??
-                        kpi?.avgOrderAmount?.toLocaleString() ??
-                        "-"
-                    }
+                    value={kpi?.avgStoreSales?.toLocaleString() ?? "-"}
                 />
                 <KpiCard
                     title="전주 대비 매출 증가"
@@ -189,26 +163,19 @@ export default function SalesChartSection({
                 />
             </div>
 
-            {/* ================= 차트 ================= */}
-            <div className="bg-white rounded-xl shadow-sm p-4">
+            <div className="bg-white rounded-xl shadow-sm p-5">
                 <SalesTrendSection labels={trend.labels} values={trend.values} />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white rounded-xl shadow-sm p-4">
-                    <h6 className="text-sm font-semibold mb-3">
-                        최근 30일 지점별 매출 TOP 5
-                    </h6>
+                <div className="bg-white rounded-xl shadow-sm p-5">
                     <StoreTop5Chart
                         labels={top5.map((x) => x.storeName)}
                         values={top5.map((x) => x.totalSales)}
                     />
                 </div>
 
-                <div className="bg-white rounded-xl shadow-sm p-4">
-                    <h6 className="text-sm font-semibold mb-3">
-                        최근 30일 메뉴별 매출 비중
-                    </h6>
+                <div className="bg-white rounded-xl shadow-sm p-5">
                     <MenuRatioChart
                         labels={menuRatio.map((x) => x.menuName)}
                         values={menuRatio.map((x) => x.salesAmount)}

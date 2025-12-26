@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Button from "../../../shared/components/Button";
+import { Table, TableHeader, TableRow, TableCell } from "../../../shared/components/Table";
 import type { SalesFilterState } from "../types/SalesFilter";
 import { fetchSalesList } from "../apis/salesApi";
 import type { SalesListItem } from "../types/SalesList";
@@ -44,7 +45,6 @@ export default function SalesListSection({ filter, setFilter }: Props) {
         setPage(res.data.currentPage);
     };
 
-    // 🔹 최초 진입 시 자동 조회 (복구된 부분)
     useEffect(() => {
         if (!filter.from || !filter.to) {
             setFilter((prev) => ({ ...prev, ...getDefaultDateRange() }));
@@ -54,85 +54,117 @@ export default function SalesListSection({ filter, setFilter }: Props) {
     }, [filter.from, filter.to]);
 
     return (
-        <div className="section-box mt-3">
-            <h6 className="fw-bold mb-3">직영점별 매출 리스트</h6>
+        <section className="bg-white rounded-xl shadow-sm p-4 space-y-4">
+            <h6 className="text-sm font-semibold">
+                직영점별 매출 리스트
+            </h6>
 
-            {/* 조회 조건 */}
-            <div className="d-flex flex-wrap gap-2 mb-3 align-items-end">
+            <div className="flex flex-wrap items-end gap-4">
                 <div>
-                    <label className="form-label fw-semibold">기간 From</label>
+                    <label className="block text-xs font-medium mb-1">
+                        기간 From
+                    </label>
                     <input
                         type="date"
-                        className="form-control form-control-sm"
                         value={filter.from}
                         onChange={(e) =>
                             setFilter((prev) => ({ ...prev, from: e.target.value }))
                         }
+                        className="border rounded px-2 py-1 text-sm"
                     />
                 </div>
 
                 <div>
-                    <label className="form-label fw-semibold">기간 To</label>
+                    <label className="block text-xs font-medium mb-1">
+                        기간 To
+                    </label>
                     <input
                         type="date"
-                        className="form-control form-control-sm"
                         value={filter.to}
                         onChange={(e) =>
                             setFilter((prev) => ({ ...prev, to: e.target.value }))
                         }
+                        className="border rounded px-2 py-1 text-sm"
                     />
                 </div>
 
                 <div>
-                    <label className="form-label fw-semibold">지점명</label>
+                    <label className="block text-xs font-medium mb-1">
+                        지점명
+                    </label>
                     <input
                         type="text"
-                        className="form-control form-control-sm"
                         value={storeName}
                         onChange={(e) => setStoreName(e.target.value)}
                         onKeyUp={(e) => e.key === "Enter" && loadList(1)}
+                        className="border rounded px-2 py-1 text-sm"
                     />
                 </div>
 
-                <Button onClick={() => loadList(1)}>조회</Button>
+                <Button onClick={() => loadList(1)}>
+                    조회
+                </Button>
             </div>
 
-            <table className="table table-hover align-middle">
-                <thead>
-                <tr className="text-center">
-                    <th>번호</th>
-                    <th>직영점명</th>
-                    <th>지역</th>
-                    <th>전일대비</th>
-                    <th>주문수</th>
-                    <th>매출액</th>
-                    <th>판매날짜</th>
-                </tr>
-                </thead>
-                <tbody>
+            <Table
+                gridColumns="80px 180px 1fr 120px 120px 140px 140px"
+            >
+                <TableHeader
+                    columns={[
+                        "번호",
+                        "직영점명",
+                        "지역",
+                        "전일대비",
+                        "주문수",
+                        "매출액",
+                        "판매날짜",
+                    ]}
+                />
+
                 {list.length === 0 && (
-                    <tr>
-                        <td colSpan={7} className="text-center">
-                            데이터가 없습니다.
-                        </td>
-                    </tr>
+                    <TableRow>
+                        <TableCell hideTopBorder hideBottomBorder />
+                        <TableCell hideTopBorder hideBottomBorder />
+                        <TableCell hideTopBorder hideBottomBorder>
+                            <span className="text-gray-500">
+                                데이터가 없습니다.
+                            </span>
+                        </TableCell>
+                        <TableCell hideTopBorder hideBottomBorder />
+                        <TableCell hideTopBorder hideBottomBorder />
+                        <TableCell hideTopBorder hideBottomBorder />
+                        <TableCell hideTopBorder hideBottomBorder />
+                    </TableRow>
                 )}
 
                 {list.map((item, idx) => (
-                    <tr key={`${item.storeNo}-${item.salesDate}`} className="text-center">
-                        <td>{(page - 1) * 10 + idx + 1}</td>
-                        <td>{item.storeName}</td>
-                        <td className="text-start">{item.address}</td>
-                        <td>{item.growthRate ?? "-"}</td>
-                        <td>{item.orderCount.toLocaleString()}</td>
-                        <td>{item.salesAmount.toLocaleString()}</td>
-                        <td>{item.salesDate}</td>
-                    </tr>
+                    <TableRow key={`${item.storeNo}-${item.salesDate}`}>
+                        <TableCell>
+                            {(page - 1) * 10 + idx + 1}
+                        </TableCell>
+                        <TableCell>
+                            {item.storeName}
+                        </TableCell>
+                        <TableCell>
+                            {item.address}
+                        </TableCell>
+                        <TableCell>
+                            {item.growthRate ?? "-"}
+                        </TableCell>
+                        <TableCell>
+                            {item.orderCount.toLocaleString()}
+                        </TableCell>
+                        <TableCell>
+                            {item.salesAmount.toLocaleString()}
+                        </TableCell>
+                        <TableCell>
+                            {item.salesDate}
+                        </TableCell>
+                    </TableRow>
                 ))}
-                </tbody>
-            </table>
+            </Table>
 
-            <div className="d-flex justify-content-center mt-3 gap-1">
+            <div className="flex justify-center gap-1 pt-2">
                 {Array.from({ length: totalPages }).map((_, i) => {
                     const pageNo = i + 1;
                     const isActive = page === pageNo;
@@ -140,16 +172,19 @@ export default function SalesListSection({ filter, setFilter }: Props) {
                     return (
                         <button
                             key={pageNo}
-                            className={`btn btn-sm ${
-                                isActive ? "btn-warning" : "btn-outline-secondary"
-                            }`}
                             onClick={() => loadList(pageNo)}
+                            className={`px-3 py-1 text-sm rounded border transition
+                                ${
+                                isActive
+                                    ? "bg-yellow-400 text-black font-semibold"
+                                    : "bg-white text-gray-600 hover:bg-gray-100"
+                            }`}
                         >
                             {pageNo}
                         </button>
                     );
                 })}
             </div>
-        </div>
+        </section>
     );
 }
