@@ -6,8 +6,9 @@ interface TableProps {
 }
 
 interface TableHeaderProps {
-    columns: (string | React.ReactNode)[];
+    columns: (React.ReactNode)[];
     className?: string;
+    sticky?: boolean;
 }
 
 interface TableCellProps {
@@ -27,7 +28,6 @@ function Table({children, className = "", gridColumns}: TableProps){
             gridTemplateColumns: gridColumns,
             border: "1px solid #dee2e6",
             borderRadius: "6px",
-            overflow: "hidden",
       }}
         >
             {children}
@@ -35,18 +35,24 @@ function Table({children, className = "", gridColumns}: TableProps){
     )
 }
 
-function TableHeader({ columns }: TableHeaderProps) {
+function TableHeader({columns,
+  sticky = false,
+  className = ''}: TableHeaderProps) {
   return (
     <>
       {columns.map((column, idx) => (
         <div
           key={idx}
+          className={className}
           style={{
             padding: "10px",
             fontWeight: "bold",
             background: "#f8f9fa",
             borderBottom: "1px solid #ddd",
             borderRight: "1px solid #ddd",
+            position: sticky ? 'sticky' : undefined,
+            top: sticky ? 0 : undefined,
+            zIndex: sticky ? 10 : undefined
           }}
         >
           {column}

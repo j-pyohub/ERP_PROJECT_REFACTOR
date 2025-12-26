@@ -1,5 +1,6 @@
 package com.erp.controller;
 
+import com.erp.controller.response.MenuDetailResponse;
 import com.erp.dto.ItemDTO;
 import com.erp.dto.MenuDTO;
 import com.erp.service.ItemService;
@@ -7,11 +8,13 @@ import com.erp.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,6 +22,26 @@ import java.util.Map;
 public class MenuRestController {
     private final MenuService menuService;
     private final ItemService itemService;
+
+
+    @GetMapping("/{menuNo}")
+     public MenuDetailResponse getMenuDetail(@PathVariable Long menuNo) {
+
+        MenuDTO menu = menuService.getMenuDetail(menuNo);
+
+        String menuNos = menu.getSizeList().stream()
+                .map(s -> String.valueOf(s.getMenuNo()))
+                .collect(Collectors.joining(","));
+
+        return new MenuDetailResponse(
+                menu,
+                menu.getSizeList(),
+                menu.getIngredients(),
+                menu.isHasSize(),
+                menu.getMenuImage(),
+                menuNos
+        );
+    }
 
     @DeleteMapping("/delMenu")
     public ResponseEntity<Map<String, String>> removeMenu(@RequestParam Long menuNo) {

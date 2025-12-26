@@ -1,3 +1,4 @@
+import Button from "../../../shared/components/Button";
 import LabeledSelect from "../../../shared/components/LabeledSelect";
 
 interface MenuFilterBarProps {
@@ -7,7 +8,7 @@ interface MenuFilterBarProps {
   onChangeStatus: (value: string) => void;
 }
 
-function MenuFilterBar({
+export default function MenuFilterBar({
   menuCategory,
   releaseStatus,
   onChangeCategory,
@@ -50,9 +51,10 @@ function MenuFilterBar({
         {/* 탭 버튼 */}
         <div className="ml-auto flex items-center gap-2">
             <span className="font-semibold">보기</span>
-            <button className="bg-gray-800 text-white px-2 py-1 text-sm rounded" data-tab="list">목록</button>
-            <button className="border border-gray-800 text-gray-800 px-2 py-1 text-sm rounded hover:bg-gray-800 hover:text-white" data-tab="image">이미지</button>
+            <div className="toggle-group">
+              <Button className="toggle-btn active">목록</Button>
+              <Button className="toggle-btn">이미지</Button>
+            </div>
         </div>
     </div>);
 }
-export default MenuFilterBar;

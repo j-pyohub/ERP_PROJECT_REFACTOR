@@ -30,12 +30,16 @@ useEffect(() => {
     if (!data) return null;
 
     return (
-        <div className="tab-content-area tab-active list scroll-area">
-      <Table gridColumns="repeat(7, 1fr)" className="text-center">
-        <TableHeader columns={columns} />
-        <MenuTableBody menus={data} />
-      </Table>
-    </div>
+       <div className="max-h-[600px] overflow-y-auto">
+  <Table gridColumns="repeat(7, 1fr)" className="text-center">
+    <TableHeader
+      columns={columns}
+      className="top-0 bg-gray-100 z-10"
+      sticky
+    />
+    <MenuTableBody menus={data} />
+  </Table>
+</div>
     )
 };
 export default MenuTableView;
