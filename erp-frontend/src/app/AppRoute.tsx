@@ -6,6 +6,7 @@ import SalesPage from "../features/sales/pages/SalesPage";
 import LoginPage from "../features/login/pages/LoginPage";
 import MenuAddPage from "../features/menu/pages/MenuAddPage";
 import TestPage from "../features/test/TestPage";
+import ItemPage from "../features/item/ItemPage";
 import SalesDetailPage from "../features/sales/pages/SalesDetailPage.tsx";
 
 function AppRoute() {
@@ -18,6 +19,7 @@ function AppRoute() {
                 <Route path="/menu" element={<PageLayout><MenuListPage /></PageLayout>} />
                 <Route path="/store-menu" element={<PageLayout><StoreMenuListPage /></PageLayout>} />
                 <Route path="/menu/add" element={<PageLayout><MenuAddPage /></PageLayout>} />
+                <Route path="/item" element={<PageLayout><ItemPage /></PageLayout>} />
                 <Route path="/test" element={<PageLayout><TestPage /></PageLayout>} />
             </Routes>
         </BrowserRouter>
