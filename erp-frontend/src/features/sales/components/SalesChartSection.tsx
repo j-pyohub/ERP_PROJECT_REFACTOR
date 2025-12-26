@@ -3,6 +3,7 @@ import KpiCard from "./KpiCard";
 import SalesTrendSection from "./SalesTrendSection";
 import StoreTop5Chart from "./StoreTop5Section";
 import MenuRatioChart from "./MenuRatioSection";
+import Button from "../../../shared/components/Button";
 
 import type { SalesFilterState } from "../types/SalesFilter";
 import {
@@ -42,15 +43,25 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
         if (filter.from || filter.to) return;
 
         const today = new Date();
-        const ym = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}`;
+        const start = new Date(today.getFullYear(), today.getMonth(), 1);
+        const end = new Date(today);
+        end.setDate(end.getDate() - 1);
+
+        const toDate = (d: Date) =>
+            `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(
+                d.getDate()
+            ).padStart(2, "0")}`;
+
+        const from = toDate(start);
+        const to = toDate(end);
 
         setFilter({
-            periodType: "month",
-            from: ym,
-            to: ym,
+            periodType: "day",
+            from,
+            to,
         });
 
-        handleSearch("month", ym, ym);
+        handleSearch("day", from, to);
     }, []);
 
     const handleSearch = async (
@@ -131,25 +142,26 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
                     </div>
 
                     <div className="flex gap-2">
-                        <button
+                        <Button
+                            className="yellow-btn text-sm"
                             onClick={() => handleSearch()}
-                            className="px-4 py-1.5 bg-blue-600 text-white rounded text-sm"
                         >
                             조회
-                        </button>
-                        <button
+                        </Button>
+
+                        <Button
+                            className="white-btn text-sm"
                             onClick={() =>
                                 setFilter({ periodType: filter.periodType, from: "", to: "" })
                             }
-                            className="px-4 py-1.5 bg-blue-500 text-white rounded text-sm"
                         >
                             초기화
-                        </button>
+                        </Button>
                     </div>
+
                 </div>
             </div>
 
-            {/* ================= KPI ================= */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <KpiCard title="전체 매출" value={kpi?.totalSales?.toLocaleString() ?? "-"} />
                 <KpiCard title="총 판매 수량" value={kpi?.totalMenuCount?.toLocaleString() ?? "-"} />
@@ -166,7 +178,6 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
             <div className="bg-white rounded-xl shadow-sm p-5">
                 <SalesTrendSection labels={trend.labels} values={trend.values} />
             </div>
-
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="bg-white rounded-xl shadow-sm p-5">
                     <StoreTop5Chart
@@ -174,7 +185,6 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
                         values={top5.map((x) => x.totalSales)}
                     />
                 </div>
-
                 <div className="bg-white rounded-xl shadow-sm p-5">
                     <MenuRatioChart
                         labels={menuRatio.map((x) => x.menuName)}

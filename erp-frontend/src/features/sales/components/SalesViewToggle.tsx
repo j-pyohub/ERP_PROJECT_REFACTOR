@@ -1,3 +1,5 @@
+import Button from "../../../shared/components/Button";
+
 type Props = {
     viewMode: "chart" | "list";
     onChange: (mode: "chart" | "list") => void;
@@ -10,30 +12,20 @@ export default function SalesViewToggle({ viewMode, onChange }: Props) {
                 보기
             </span>
 
-            <div className="flex border rounded-md overflow-hidden">
-                <button
+            <div className="toggle-group">
+                <Button
+                    className={`toggle-btn ${viewMode === "chart" ? "active" : ""}`}
                     onClick={() => onChange("chart")}
-                    className={`px-3 py-1 text-sm transition
-                        ${
-                        viewMode === "chart"
-                            ? "bg-yellow-400 text-black font-semibold"
-                            : "bg-white text-gray-500 hover:bg-gray-100"
-                    }`}
                 >
                     차트
-                </button>
+                </Button>
 
-                <button
+                <Button
+                    className={`toggle-btn ${viewMode === "list" ? "active" : ""}`}
                     onClick={() => onChange("list")}
-                    className={`px-3 py-1 text-sm transition
-                        ${
-                        viewMode === "list"
-                            ? "bg-yellow-400 text-black font-semibold"
-                            : "bg-white text-gray-500 hover:bg-gray-100"
-                    }`}
                 >
                     목록
-                </button>
+                </Button>
             </div>
         </div>
     );

@@ -55,55 +55,50 @@ export default function SalesListSection({ filter, setFilter }: Props) {
 
     return (
         <section className="bg-white rounded-xl shadow-sm p-4 space-y-4">
-            <h6 className="text-sm font-semibold">
-                직영점별 매출 리스트
-            </h6>
 
-            <div className="flex flex-wrap items-end gap-4">
-                <div>
-                    <label className="block text-xs font-medium mb-1">
-                        기간 From
-                    </label>
+            <div className="flex flex-wrap items-center gap-6 text-sm">
+
+                <div className="flex items-center gap-2">
+                    <span className="font-medium">조회기간</span>
+
                     <input
                         type="date"
                         value={filter.from}
                         onChange={(e) =>
                             setFilter((prev) => ({ ...prev, from: e.target.value }))
                         }
-                        className="border rounded px-2 py-1 text-sm"
+                        className="border rounded px-2 py-1 h-9"
                     />
-                </div>
-
-                <div>
-                    <label className="block text-xs font-medium mb-1">
-                        기간 To
-                    </label>
+                    <span>~</span>
                     <input
                         type="date"
                         value={filter.to}
                         onChange={(e) =>
                             setFilter((prev) => ({ ...prev, to: e.target.value }))
                         }
-                        className="border rounded px-2 py-1 text-sm"
+                        className="border rounded px-2 py-1 h-9"
                     />
                 </div>
 
-                <div>
-                    <label className="block text-xs font-medium mb-1">
-                        지점명
-                    </label>
+                <div className="flex items-center gap-2">
+                    <span className="font-medium">직영점명</span>
+
                     <input
                         type="text"
                         value={storeName}
                         onChange={(e) => setStoreName(e.target.value)}
                         onKeyUp={(e) => e.key === "Enter" && loadList(1)}
-                        className="border rounded px-2 py-1 text-sm"
+                        placeholder="지점명 검색"
+                        className="border rounded px-2 py-1 h-9 w-40"
                     />
-                </div>
 
-                <Button onClick={() => loadList(1)}>
-                    조회
-                </Button>
+                    <Button
+                        className="yellow-btn h-9 px-4"
+                        onClick={() => loadList(1)}
+                    >
+                        검색
+                    </Button>
+                </div>
             </div>
 
             <Table
