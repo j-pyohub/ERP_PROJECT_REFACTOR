@@ -6,6 +6,7 @@ import type {
     MenuRatioParams,
 } from "../types/SalesApi";
 import type {SalesListParams, SalesListResponse} from "../types/SalesList.tsx";
+import type {Store} from "../../../shared/types/Store.tsx";
 
 export function fetchSalesKpi(params: SalesKpiParams) {
     return apiClient.get("/sales/KPI", { params });
@@ -37,4 +38,8 @@ export function fetchSalesDetail(
             params: { storeNo, salesDate },
         }
     );
+}
+
+export function fetchStoreList() {
+    return apiClient.get<Store[]>("/storeSearch/modal");
 }

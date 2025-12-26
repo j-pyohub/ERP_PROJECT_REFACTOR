@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/storeSearch/modal")
+@RequestMapping("/api/storeSearch/modal")
 public class StoreSearchModalRestController {
 
     private final StoreSearchModalService storeSearchModalService;

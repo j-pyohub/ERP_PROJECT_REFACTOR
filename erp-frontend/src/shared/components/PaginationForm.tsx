@@ -22,7 +22,7 @@ export default function PaginationContainer({
     
     return (
         <div className="flex justify-center">
-            {/* 이전 */}
+
             <button
                 className="px-3 py-1 border border-gray-300 rounded-sm rounded-l-lg disabled:opacity-40 cursor-pointer hover:bg-gray-100"
                 disabled={currentPage === 1}
@@ -31,8 +31,7 @@ export default function PaginationContainer({
                 이전
             </button>
 
-            {/* 페이지 번호 */}
-            {Array.from({ length: pageCount }, (_, i) => currentArea + i).map(page => (
+              {Array.from({ length: pageCount }, (_, i) => currentArea + i).map(page => (
                 <button
                 key={page}
                 className={`px-3 py-1 cursor-pointer rounded-sm border-t border-b border-gray-300
@@ -44,7 +43,6 @@ export default function PaginationContainer({
                 </button>
             ))}
 
-            {/* 다음 */}
             <button
                 className="px-3 py-1 rounded-sm rounded-r-lg border-gray-300 disabled:opacity-40 cursor-pointer hover:bg-gray-100"
                 disabled={currentPage === totalPages}

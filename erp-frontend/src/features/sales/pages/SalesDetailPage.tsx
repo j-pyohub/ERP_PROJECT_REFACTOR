@@ -1,9 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import Button from "../../../shared/components/Button";
-import { Table, TableHeader, TableRow, TableCell } from "../../../shared/components/Table";
+import PaginationContainer from "../../../shared/components/PaginationForm";
+import {
+    Table,
+    TableHeader,
+    TableRow,
+    TableCell,
+} from "../../../shared/components/Table";
 import { fetchSalesDetail } from "../apis/salesApi";
 import type { SalesDetailItem } from "../types/SalesDetail";
+
+const PAGE_SIZE = 10;
 
 export default function SalesDetailPage() {
     const navigate = useNavigate();
@@ -13,48 +21,46 @@ export default function SalesDetailPage() {
     const salesDate = params.get("salesDate") ?? "";
 
     const [list, setList] = useState<SalesDetailItem[]>([]);
-
-    const [inputKeyword, setInputKeyword] = useState("");
+    const [keyword, setKeyword] = useState("");
     const [searchKeyword, setSearchKeyword] = useState("");
-
     const [page, setPage] = useState(1);
-    const rowsPerPage = 10;
+    const [totalCount, setTotalCount] = useState(0);
 
     useEffect(() => {
         if (!storeNo || !salesDate) return;
 
         fetchSalesDetail(storeNo, salesDate).then((res) => {
             setList(res.data);
+            setTotalCount(res.data.length); // ✅ 전체 개수
             setPage(1);
-            setSearchKeyword("");   // 초기 검색어 리셋
-            setInputKeyword("");
         });
     }, [storeNo, salesDate]);
 
-    const filtered = useMemo(() => {
+    /** 검색 적용된 리스트 */
+    const filteredList = useMemo(() => {
         return searchKeyword
             ? list.filter((x) => x.menuName.includes(searchKeyword))
             : list;
     }, [list, searchKeyword]);
 
-    const totalPages = Math.ceil(filtered.length / rowsPerPage);
-    const pagedList = filtered.slice(
-        (page - 1) * rowsPerPage,
-        page * rowsPerPage
-    );
+    /** 현재 페이지 데이터 */
+    const pagedList = useMemo(() => {
+        const start = (page - 1) * PAGE_SIZE;
+        return filteredList.slice(start, start + PAGE_SIZE);
+    }, [filteredList, page]);
 
-    const handleSearch = () => {
-        setSearchKeyword(inputKeyword);
+    useEffect(() => {
+        setTotalCount(filteredList.length);
         setPage(1);
-    };
+    }, [filteredList]);
 
     return (
         <section className="w-full max-w-[1500px] mx-auto px-4 py-4 space-y-4">
-
             <h4 className="text-center text-lg font-semibold">
                 판매 상품 목록
             </h4>
 
+            {/* 상단 영역 */}
             <div className="flex justify-between items-center">
                 <Button
                     className="yellow-btn h-9 px-4"
@@ -66,23 +72,21 @@ export default function SalesDetailPage() {
                 <div className="flex items-center gap-2">
                     <input
                         type="text"
-                        value={inputKeyword}
-                        onChange={(e) => setInputKeyword(e.target.value)}
-                        onKeyUp={(e) => {
-                            if (e.key === "Enter") handleSearch();
-                        }}
+                        value={keyword}
+                        onChange={(e) => setKeyword(e.target.value)}
                         placeholder="판매상품 검색"
                         className="border rounded px-2 py-1 h-9 w-60"
                     />
                     <Button
                         className="yellow-btn h-9 px-4"
-                        onClick={handleSearch}
+                        onClick={() => setSearchKeyword(keyword)}
                     >
                         검색
                     </Button>
                 </div>
             </div>
 
+            {/* 테이블 */}
             <div className="bg-white rounded-xl shadow-sm p-4">
                 <Table gridColumns="80px 120px 1fr 100px 120px 140px">
                     <TableHeader
@@ -96,9 +100,21 @@ export default function SalesDetailPage() {
                         ]}
                     />
 
+                    {pagedList.length === 0 && (
+                        <TableRow>
+                            <TableCell>
+                                <span className="text-gray-500">
+                                    데이터가 없습니다.
+                                </span>
+                            </TableCell>
+                        </TableRow>
+                    )}
+
                     {pagedList.map((item, idx) => (
                         <TableRow key={`${item.menuName}-${idx}`}>
-                            <TableCell>{(page - 1) * rowsPerPage + idx + 1}</TableCell>
+                            <TableCell>
+                                {(page - 1) * PAGE_SIZE + idx + 1}
+                            </TableCell>
                             <TableCell>{item.menuCategory}</TableCell>
                             <TableCell>{item.menuName}</TableCell>
                             <TableCell>{item.size}</TableCell>
@@ -108,31 +124,12 @@ export default function SalesDetailPage() {
                     ))}
                 </Table>
 
-                {pagedList.length === 0 && (
-                    <div className="text-center text-gray-500 py-4">
-                        데이터가 없습니다.
-                    </div>
-                )}
-
-                <div className="flex justify-center gap-1 pt-3">
-                    {Array.from({ length: totalPages }).map((_, i) => {
-                        const pageNo = i + 1;
-                        return (
-                            <button
-                                key={pageNo}
-                                onClick={() => setPage(pageNo)}
-                                className={`px-3 py-1 text-sm rounded border
-                                  ${
-                                    page === pageNo
-                                        ? "bg-yellow-400 font-semibold"
-                                        : "bg-white text-gray-600 hover:bg-gray-100"
-                                }`}
-                            >
-                                {pageNo}
-                            </button>
-                        );
-                    })}
-                </div>
+                <PaginationContainer
+                    totalCount={totalCount}
+                    pageSize={PAGE_SIZE}
+                    currentPage={page}
+                    onPageChange={setPage}
+                />
             </div>
         </section>
     );

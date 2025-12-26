@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../../shared/components/Button";
-import { Table, TableHeader, TableRow, TableCell } from "../../../shared/components/Table";
+import PaginationContainer from "../../../shared/components/PaginationForm";
+import {
+    Table,
+    TableHeader,
+    TableRow,
+    TableCell,
+} from "../../../shared/components/Table";
 import type { SalesFilterState } from "../types/SalesFilter";
 import { fetchSalesList } from "../apis/salesApi";
 import type { SalesListItem } from "../types/SalesList";
@@ -10,6 +16,8 @@ type Props = {
     filter: SalesFilterState;
     setFilter: React.Dispatch<React.SetStateAction<SalesFilterState>>;
 };
+
+const PAGE_SIZE = 10;
 
 const getDefaultDateRange = () => {
     const today = new Date();
@@ -30,7 +38,7 @@ export default function SalesListSection({ filter, setFilter }: Props) {
 
     const [storeName, setStoreName] = useState("");
     const [page, setPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
+    const [totalCount, setTotalCount] = useState(0);
     const [list, setList] = useState<SalesListItem[]>([]);
 
     const loadList = async (targetPage = 1) => {
@@ -44,8 +52,10 @@ export default function SalesListSection({ filter, setFilter }: Props) {
         });
 
         setList(res.data.list);
-        setTotalPages(res.data.totalPages);
         setPage(res.data.currentPage);
+
+        // ✅ 핵심 수정 포인트
+        setTotalCount(res.data.totalPages * PAGE_SIZE);
     };
 
     useEffect(() => {
@@ -58,8 +68,7 @@ export default function SalesListSection({ filter, setFilter }: Props) {
 
     return (
         <section className="bg-white rounded-xl shadow-sm p-4 space-y-4">
-
-            {/* ===== 검색 영역 ===== */}
+            {/* 검색 영역 */}
             <div className="flex flex-wrap items-center gap-6 text-sm">
                 <div className="flex items-center gap-2">
                     <span className="font-medium">조회기간</span>
@@ -92,16 +101,13 @@ export default function SalesListSection({ filter, setFilter }: Props) {
                         placeholder="지점명 검색"
                         className="border rounded px-2 py-1 h-9 w-40"
                     />
-                    <Button
-                        className="yellow-btn h-9 px-4"
-                        onClick={() => loadList(1)}
-                    >
+                    <Button className="yellow-btn h-9 px-4" onClick={() => loadList(1)}>
                         검색
                     </Button>
                 </div>
             </div>
 
-            {/* ===== 테이블 ===== */}
+            {/* 테이블 */}
             <Table gridColumns="80px 180px 1fr 120px 120px 140px 140px 60px">
                 <TableHeader
                     columns={[
@@ -118,7 +124,7 @@ export default function SalesListSection({ filter, setFilter }: Props) {
 
                 {list.length === 0 && (
                     <TableRow>
-                        <TableCell >
+                        <TableCell>
                             <span className="text-gray-500">데이터가 없습니다.</span>
                         </TableCell>
                     </TableRow>
@@ -126,14 +132,13 @@ export default function SalesListSection({ filter, setFilter }: Props) {
 
                 {list.map((item, idx) => (
                     <TableRow key={`${item.storeNo}-${item.salesDate}`}>
-                        <TableCell>{(page - 1) * 10 + idx + 1}</TableCell>
+                        <TableCell>{(page - 1) * PAGE_SIZE + idx + 1}</TableCell>
                         <TableCell>{item.storeName}</TableCell>
                         <TableCell>{item.address}</TableCell>
                         <TableCell>{item.growthRate ?? "-"}</TableCell>
                         <TableCell>{item.orderCount.toLocaleString()}</TableCell>
                         <TableCell>{item.salesAmount.toLocaleString()}</TableCell>
                         <TableCell>{item.salesDate}</TableCell>
-
                         <TableCell>
                             <img
                                 src="/image/detail.png"
@@ -150,28 +155,13 @@ export default function SalesListSection({ filter, setFilter }: Props) {
                 ))}
             </Table>
 
-            {/* ===== 페이지네이션 ===== */}
-            <div className="flex justify-center gap-1 pt-2">
-                {Array.from({ length: totalPages }).map((_, i) => {
-                    const pageNo = i + 1;
-                    const isActive = page === pageNo;
-
-                    return (
-                        <button
-                            key={pageNo}
-                            onClick={() => loadList(pageNo)}
-                            className={`px-3 py-1 text-sm rounded border transition
-                                ${
-                                isActive
-                                    ? "bg-yellow-400 text-black font-semibold"
-                                    : "bg-white text-gray-600 hover:bg-gray-100"
-                            }`}
-                        >
-                            {pageNo}
-                        </button>
-                    );
-                })}
-            </div>
+            {/* 페이지네이션 */}
+            <PaginationContainer
+                totalCount={totalCount}
+                pageSize={PAGE_SIZE}
+                currentPage={page}
+                onPageChange={setPage}
+            />
         </section>
     );
 }

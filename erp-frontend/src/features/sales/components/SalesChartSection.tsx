@@ -13,6 +13,8 @@ import {
     fetchMenuRatio,
 } from "../apis/salesApi";
 
+import StoreSearchModal from "./StoreSearchModal";
+
 type Props = {
     filter: SalesFilterState;
     setFilter: React.Dispatch<React.SetStateAction<SalesFilterState>>;
@@ -34,11 +36,29 @@ const INPUT_TYPE_MAP = {
 } as const;
 
 export default function SalesChartSection({ filter, setFilter }: Props) {
-    const [kpi, setKpi] = useState<KpiState | null>(null);
-    const [trend, setTrend] = useState({ labels: [], values: [] });
-    const [top5, setTop5] = useState<{ storeName: string; totalSales: number }[]>([]);
-    const [menuRatio, setMenuRatio] = useState<{ menuName: string; salesAmount: number }[]>([]);
+    /* ===============================
+       직영점 선택 (모달)
+    =============================== */
+    const [storeNo, setStoreNo] = useState<number | null>(null);
+    const [storeName, setStoreName] = useState("");
+    const [openStoreModal, setOpenStoreModal] = useState(false);
 
+    /* ===============================
+       데이터 상태
+    =============================== */
+    const [kpi, setKpi] = useState<KpiState | null>(null);
+    const [trend, setTrend] = useState<{ labels: string[]; values: number[] }>({
+        labels: [],
+        values: [],
+    });
+    const [top5, setTop5] = useState<{ storeName: string; totalSales: number }[]>([]);
+    const [menuRatio, setMenuRatio] = useState<
+        { menuName: string; salesAmount: number }[]
+    >([]);
+
+    /* ===============================
+       최초 진입 → 전체 직영점 자동 조회
+    =============================== */
     useEffect(() => {
         if (filter.from || filter.to) return;
 
@@ -61,17 +81,31 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
             to,
         });
 
-        handleSearch("day", from, to);
+        // ✅ storeNo 없이 = 전체 조회
+        handleSearch("day", from, to, null);
     }, []);
 
+    /* ===============================
+       조회 로직 (핵심)
+    =============================== */
     const handleSearch = async (
         type = filter.periodType,
         from = filter.from,
-        to = filter.to
+        to = filter.to,
+        store = storeNo
     ) => {
         if (!from || !to) return;
 
-        const params = { type, startDate: from, endDate: to };
+        const params: any = {
+            type,
+            startDate: from,
+            endDate: to,
+        };
+
+        // ✅ 직영점 선택된 경우만 파라미터 추가
+        if (store) {
+            params.storeNo = store;
+        }
 
         const [kpiRes, trendRes, top5Res, menuRes] = await Promise.all([
             fetchSalesKpi(params),
@@ -88,10 +122,13 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
 
     return (
         <section className="w-full max-w-[1500px] mx-auto px-4 space-y-8">
+            {/* ===============================
+               검색 영역
+            =============================== */}
             <div className="bg-white rounded-xl shadow-sm p-4">
                 <div className="flex flex-wrap items-center gap-6">
 
-                    {/* 기간 타입 (라디오) */}
+                    {/* 기간 타입 */}
                     <div className="flex items-center gap-4 text-sm">
                         {[
                             ["day", "일별"],
@@ -99,10 +136,7 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
                             ["month", "월별"],
                             ["year", "연별"],
                         ].map(([value, label]) => (
-                            <label
-                                key={value}
-                                className="flex items-center gap-1 h-9"
-                            >
+                            <label key={value} className="flex items-center gap-1 h-9">
                                 <input
                                     type="radio"
                                     checked={filter.periodType === value}
@@ -120,6 +154,7 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
                         ))}
                     </div>
 
+                    {/* 조회기간 */}
                     <div className="flex items-center gap-2 text-sm">
                         <span className="font-medium">조회기간</span>
 
@@ -127,10 +162,12 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
                             type={INPUT_TYPE_MAP[filter.periodType]}
                             value={filter.from}
                             onChange={(e) =>
-                                setFilter((prev) => ({ ...prev, from: e.target.value }))
+                                setFilter((prev) => ({
+                                    ...prev,
+                                    from: e.target.value,
+                                }))
                             }
                             className="border rounded px-2 py-1 h-9 w-36"
-                            placeholder={filter.periodType === "year" ? "시작 연도" : undefined}
                         />
 
                         <span>~</span>
@@ -139,13 +176,27 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
                             type={INPUT_TYPE_MAP[filter.periodType]}
                             value={filter.to}
                             onChange={(e) =>
-                                setFilter((prev) => ({ ...prev, to: e.target.value }))
+                                setFilter((prev) => ({
+                                    ...prev,
+                                    to: e.target.value,
+                                }))
                             }
                             className="border rounded px-2 py-1 h-9 w-36"
-                            placeholder={filter.periodType === "year" ? "종료 연도" : undefined}
                         />
                     </div>
 
+                    {/* 직영점 (모달 전용) */}
+                    <div className="flex items-center gap-2 text-sm">
+                        <span className="font-medium">직영점</span>
+                        <input
+                            readOnly
+                            value={storeName || "전체 직영점"}
+                            onClick={() => setOpenStoreModal(true)}
+                            className="border rounded px-2 py-1 h-9 w-44 bg-gray-50 cursor-pointer"
+                        />
+                    </div>
+
+                    {/* 버튼 */}
                     <div className="flex items-center gap-2">
                         <Button
                             className="yellow-btn h-9 px-4 text-sm"
@@ -156,20 +207,31 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
 
                         <Button
                             className="white-btn h-9 px-4 text-sm"
-                            onClick={() =>
-                                setFilter({ periodType: filter.periodType, from: "", to: "" })
-                            }
+                            onClick={() => {
+                                setStoreNo(null);
+                                setStoreName("");
+                                setFilter({
+                                    periodType: filter.periodType,
+                                    from: "",
+                                    to: "",
+                                });
+                            }}
                         >
                             초기화
                         </Button>
                     </div>
-
                 </div>
             </div>
 
+            {/* ===============================
+               KPI
+            =============================== */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <KpiCard title="전체 매출" value={kpi?.totalSales?.toLocaleString() ?? "-"} />
-                <KpiCard title="총 판매 수량" value={kpi?.totalMenuCount?.toLocaleString() ?? "-"} />
+                <KpiCard
+                    title="총 판매 수량"
+                    value={kpi?.totalMenuCount?.toLocaleString() ?? "-"}
+                />
                 <KpiCard
                     title="평균 직영점 매출"
                     value={kpi?.avgStoreSales?.toLocaleString() ?? "-"}
@@ -180,9 +242,13 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
                 />
             </div>
 
+            {/* ===============================
+               차트
+            =============================== */}
             <div className="bg-white rounded-xl shadow-sm p-5">
                 <SalesTrendSection labels={trend.labels} values={trend.values} />
             </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="bg-white rounded-xl shadow-sm p-5">
                     <StoreTop5Chart
@@ -190,6 +256,7 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
                         values={top5.map((x) => x.totalSales)}
                     />
                 </div>
+
                 <div className="bg-white rounded-xl shadow-sm p-5">
                     <MenuRatioChart
                         labels={menuRatio.map((x) => x.menuName)}
@@ -197,6 +264,15 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
                     />
                 </div>
             </div>
+
+            <StoreSearchModal
+                open={openStoreModal}
+                onClose={() => setOpenStoreModal(false)}
+                onSelect={(no, name) => {
+                    setStoreNo(no);
+                    setStoreName(name);
+                }}
+            />
         </section>
     );
 }
