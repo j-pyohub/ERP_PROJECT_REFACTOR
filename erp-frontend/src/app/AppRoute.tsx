@@ -6,6 +6,7 @@ import SalesPage from "../features/sales/pages/SalesPage";
 import LoginPage from "../features/login/pages/LoginPage";
 import MenuAddPage from "../features/menu/pages/MenuAddPage";
 import TestPage from "../features/test/TestPage";
+import SalesDetailPage from "../features/sales/pages/SalesDetailPage.tsx";
 
 function AppRoute() {
     return (
@@ -13,6 +14,7 @@ function AppRoute() {
             <Routes>
                 <Route path="/auth/login" element={<PageLayout showHeader={false}><LoginPage /></PageLayout>} />
                 <Route path="/sales" element={<PageLayout><SalesPage /></PageLayout>} />
+                <Route path="/sales/detail" element={<SalesDetailPage />} />
                 <Route path="/menu" element={<PageLayout><MenuListPage /></PageLayout>} />
                 <Route path="/store-menu" element={<PageLayout><StoreMenuListPage /></PageLayout>} />
                 <Route path="/menu/add" element={<PageLayout><MenuAddPage /></PageLayout>} />

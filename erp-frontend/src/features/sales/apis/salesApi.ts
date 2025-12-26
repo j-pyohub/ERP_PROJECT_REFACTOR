@@ -1,4 +1,5 @@
 import apiClient from "../../../shared/apis/apiClient";
+import type { SalesDetailItem } from "../types/SalesDetail";
 import type {
     SalesKpiParams,
     SalesChartParams,
@@ -24,4 +25,16 @@ export function fetchMenuRatio(params: MenuRatioParams) {
 
 export function fetchSalesList(params: SalesListParams) {
     return apiClient.get<SalesListResponse>("/sales/salesList", { params });
+}
+
+export function fetchSalesDetail(
+    storeNo: number,
+    salesDate: string
+) {
+    return apiClient.get<SalesDetailItem[]>(
+        "/sales/salesDetail",
+        {
+            params: { storeNo, salesDate },
+        }
+    );
 }

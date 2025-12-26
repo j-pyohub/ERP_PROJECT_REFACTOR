@@ -120,7 +120,6 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
                         ))}
                     </div>
 
-                    {/* 조회기간 */}
                     <div className="flex items-center gap-2 text-sm">
                         <span className="font-medium">조회기간</span>
 
@@ -147,7 +146,6 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
                         />
                     </div>
 
-                    {/* 버튼 */}
                     <div className="flex items-center gap-2">
                         <Button
                             className="yellow-btn h-9 px-4 text-sm"

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "../../../shared/components/Button";
 import { Table, TableHeader, TableRow, TableCell } from "../../../shared/components/Table";
 import type { SalesFilterState } from "../types/SalesFilter";
@@ -25,6 +26,8 @@ const getDefaultDateRange = () => {
 };
 
 export default function SalesListSection({ filter, setFilter }: Props) {
+    const navigate = useNavigate();
+
     const [storeName, setStoreName] = useState("");
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
@@ -56,11 +59,10 @@ export default function SalesListSection({ filter, setFilter }: Props) {
     return (
         <section className="bg-white rounded-xl shadow-sm p-4 space-y-4">
 
+            {/* ===== 검색 영역 ===== */}
             <div className="flex flex-wrap items-center gap-6 text-sm">
-
                 <div className="flex items-center gap-2">
                     <span className="font-medium">조회기간</span>
-
                     <input
                         type="date"
                         value={filter.from}
@@ -82,7 +84,6 @@ export default function SalesListSection({ filter, setFilter }: Props) {
 
                 <div className="flex items-center gap-2">
                     <span className="font-medium">직영점명</span>
-
                     <input
                         type="text"
                         value={storeName}
@@ -91,7 +92,6 @@ export default function SalesListSection({ filter, setFilter }: Props) {
                         placeholder="지점명 검색"
                         className="border rounded px-2 py-1 h-9 w-40"
                     />
-
                     <Button
                         className="yellow-btn h-9 px-4"
                         onClick={() => loadList(1)}
@@ -101,9 +101,8 @@ export default function SalesListSection({ filter, setFilter }: Props) {
                 </div>
             </div>
 
-            <Table
-                gridColumns="80px 180px 1fr 120px 120px 140px 140px"
-            >
+            {/* ===== 테이블 ===== */}
+            <Table gridColumns="80px 180px 1fr 120px 120px 140px 140px 60px">
                 <TableHeader
                     columns={[
                         "번호",
@@ -113,52 +112,45 @@ export default function SalesListSection({ filter, setFilter }: Props) {
                         "주문수",
                         "매출액",
                         "판매날짜",
+                        "",
                     ]}
                 />
 
                 {list.length === 0 && (
                     <TableRow>
-                        <TableCell hideTopBorder hideBottomBorder />
-                        <TableCell hideTopBorder hideBottomBorder />
-                        <TableCell hideTopBorder hideBottomBorder>
-                            <span className="text-gray-500">
-                                데이터가 없습니다.
-                            </span>
+                        <TableCell >
+                            <span className="text-gray-500">데이터가 없습니다.</span>
                         </TableCell>
-                        <TableCell hideTopBorder hideBottomBorder />
-                        <TableCell hideTopBorder hideBottomBorder />
-                        <TableCell hideTopBorder hideBottomBorder />
-                        <TableCell hideTopBorder hideBottomBorder />
                     </TableRow>
                 )}
 
                 {list.map((item, idx) => (
                     <TableRow key={`${item.storeNo}-${item.salesDate}`}>
+                        <TableCell>{(page - 1) * 10 + idx + 1}</TableCell>
+                        <TableCell>{item.storeName}</TableCell>
+                        <TableCell>{item.address}</TableCell>
+                        <TableCell>{item.growthRate ?? "-"}</TableCell>
+                        <TableCell>{item.orderCount.toLocaleString()}</TableCell>
+                        <TableCell>{item.salesAmount.toLocaleString()}</TableCell>
+                        <TableCell>{item.salesDate}</TableCell>
+
                         <TableCell>
-                            {(page - 1) * 10 + idx + 1}
-                        </TableCell>
-                        <TableCell>
-                            {item.storeName}
-                        </TableCell>
-                        <TableCell>
-                            {item.address}
-                        </TableCell>
-                        <TableCell>
-                            {item.growthRate ?? "-"}
-                        </TableCell>
-                        <TableCell>
-                            {item.orderCount.toLocaleString()}
-                        </TableCell>
-                        <TableCell>
-                            {item.salesAmount.toLocaleString()}
-                        </TableCell>
-                        <TableCell>
-                            {item.salesDate}
+                            <img
+                                src="/image/detail.png"
+                                alt="상세보기"
+                                className="detail-icon cursor-pointer mx-auto"
+                                onClick={() =>
+                                    navigate(
+                                        `/sales/detail?storeNo=${item.storeNo}&salesDate=${item.salesDate}`
+                                    )
+                                }
+                            />
                         </TableCell>
                     </TableRow>
                 ))}
             </Table>
 
+            {/* ===== 페이지네이션 ===== */}
             <div className="flex justify-center gap-1 pt-2">
                 {Array.from({ length: totalPages }).map((_, i) => {
                     const pageNo = i + 1;
