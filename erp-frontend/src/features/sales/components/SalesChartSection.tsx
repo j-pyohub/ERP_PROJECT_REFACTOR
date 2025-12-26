@@ -89,7 +89,9 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
     return (
         <section className="w-full max-w-[1500px] mx-auto px-4 space-y-8">
             <div className="bg-white rounded-xl shadow-sm p-4">
-                <div className="flex flex-wrap items-end justify-between gap-6">
+                <div className="flex flex-wrap items-center gap-6">
+
+                    {/* 기간 타입 (라디오) */}
                     <div className="flex items-center gap-4 text-sm">
                         {[
                             ["day", "일별"],
@@ -97,7 +99,10 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
                             ["month", "월별"],
                             ["year", "연별"],
                         ].map(([value, label]) => (
-                            <label key={value} className="flex items-center gap-1">
+                            <label
+                                key={value}
+                                className="flex items-center gap-1 h-9"
+                            >
                                 <input
                                     type="radio"
                                     checked={filter.periodType === value}
@@ -115,6 +120,7 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
                         ))}
                     </div>
 
+                    {/* 조회기간 */}
                     <div className="flex items-center gap-2 text-sm">
                         <span className="font-medium">조회기간</span>
 
@@ -124,7 +130,7 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
                             onChange={(e) =>
                                 setFilter((prev) => ({ ...prev, from: e.target.value }))
                             }
-                            className="border rounded px-2 py-1 w-36"
+                            className="border rounded px-2 py-1 h-9 w-36"
                             placeholder={filter.periodType === "year" ? "시작 연도" : undefined}
                         />
 
@@ -136,21 +142,22 @@ export default function SalesChartSection({ filter, setFilter }: Props) {
                             onChange={(e) =>
                                 setFilter((prev) => ({ ...prev, to: e.target.value }))
                             }
-                            className="border rounded px-2 py-1 w-36"
+                            className="border rounded px-2 py-1 h-9 w-36"
                             placeholder={filter.periodType === "year" ? "종료 연도" : undefined}
                         />
                     </div>
 
-                    <div className="flex gap-2">
+                    {/* 버튼 */}
+                    <div className="flex items-center gap-2">
                         <Button
-                            className="yellow-btn text-sm"
+                            className="yellow-btn h-9 px-4 text-sm"
                             onClick={() => handleSearch()}
                         >
                             조회
                         </Button>
 
                         <Button
-                            className="white-btn text-sm"
+                            className="white-btn h-9 px-4 text-sm"
                             onClick={() =>
                                 setFilter({ periodType: filter.periodType, from: "", to: "" })
                             }
