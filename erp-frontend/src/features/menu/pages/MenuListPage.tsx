@@ -8,15 +8,15 @@ import MenuTableView from "../components/MenuTableView";
 function MenuListPage() {
     const goToStoreMenu = useNavigateTo()("/store-menu");
     const goToMenuAdd = useNavigateTo()("/menu/add");
-const [menuCategory, setMenuCategory] = useState("");
-const [releaseStatus, setReleaseStatus] = useState("");
+    const [menuCategory, setMenuCategory] = useState("");
+    const [releaseStatus, setReleaseStatus] = useState("");
 
     return (
         <>
             <div className="flex justify-between items-center mb-4">
-            <div className="flex items-center">
-                <h2 className="font-bold mr-4">메뉴 조회</h2>
-            </div>
+                <div className="flex items-center">
+                    <h2 className="font-bold mr-4">메뉴 조회</h2>
+                </div>
                 <div>
                     <Button className="me-2 yellow-btn" onClick = {goToMenuAdd}>메뉴 등록</Button>
                     <Button className="me-2 yellow-btn" onClick={goToStoreMenu}>판매 메뉴 보기</Button>
