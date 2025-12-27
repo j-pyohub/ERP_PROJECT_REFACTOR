@@ -3,18 +3,18 @@ import type { Item } from "../../../../shared/types/Item";
 
 interface MenuIngredientTableRowProps {
   item: Item;
-  sizeYn: "Y" | "N";
-  onRemove: () => void;
+  checked: boolean;
+  onCheck: (itemNo: number) => void;
 }
 
-export function MenuIngredientTableRow({ item,  sizeYn, onRemove,}: MenuIngredientTableRowProps) {
+export function MenuIngredientTableRow({ item, checked, onCheck}: MenuIngredientTableRowProps) {
     return (
         <TableRow>
             <TableCell>
                 <input
                     type="checkbox"
                     checked={checked}
-                    onChange={() => onCheck}
+                    onChange={() => onCheck(item.itemNo)}
                 />
             </TableCell>
             <TableCell>{item.itemCode}</TableCell>

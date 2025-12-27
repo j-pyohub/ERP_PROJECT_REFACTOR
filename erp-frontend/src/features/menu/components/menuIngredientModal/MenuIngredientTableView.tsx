@@ -7,12 +7,18 @@ interface MenuIngredientTableViewProps {
   items: Item[];
   loading: boolean;
   error: Error | null;
+  selectedItemNos: number[];
+  onCheckItem: (itemNo: number) => void;
+  onCheckAll: () => void;
 }
 
 export function MenuIngredientTableView({
   items,
   loading,
   error,
+  selectedItemNos,
+  onCheckItem,
+  onCheckAll,
 }: MenuIngredientTableViewProps) {
   const { selectedItems, checkItem, checkAll } = useMenuIngredientStore();
  const selectedItemNos = selectedItems.map(i => i.itemNo);
@@ -24,7 +30,7 @@ export function MenuIngredientTableView({
     <input
       type="checkbox"
       checked={isAllSelected}
-      onChange={() => checkAll(items)}
+      onChange={onCheckAll}
     />,
     "품목 코드",
     "재료 명",
@@ -45,7 +51,7 @@ export function MenuIngredientTableView({
             key={item.itemNo}
             item={item}
             checked={selectedItemNos.includes(item.itemNo)}
-            onCheck={() => checkItem(item)}
+            onCheck={onCheckItem}
           />
         ))}
       </Table>

@@ -7,6 +7,9 @@ import { MenuIngredientFilterBar } from "./MenuIngredientFilterBar";
 
 interface MenuIngredientModalProps {
   onClose: () => void;
+  onConfirm?: (items: Item[]) => void;
+  selectedItemNos: number[];
+  onCheck: (itemNo: number, checked: boolean) => void;
 }
 
 export function MenuIngredientModal({
@@ -38,7 +41,30 @@ export function MenuIngredientModal({
       },
     });
   };
+  const checkItem = (itemNo: number) => {
+    setSelectedItemNos((prev) =>
+      prev.includes(itemNo)
+        ? prev.filter((no) => no !== itemNo)
+        : [...prev, itemNo]
+    );
+  };
 
+  const checkAll = () => {
+    if (selectedItemNos.length === data.length) {
+      setSelectedItemNos([]);
+    } else {
+      setSelectedItemNos(data.map((item) => item.itemNo));
+    }
+  };
+
+  const handleConfirm = () => {
+    const selectedItems = data.filter((item) =>
+      selectedItemNos.includes(item.itemNo)
+    );
+
+    onConfirm?.(selectedItems);
+    onClose();
+  };
 
   return (
     <ModalLayout
@@ -69,6 +95,9 @@ export function MenuIngredientModal({
         items={data}
         loading={loading}
         error={error}
+        selectedItemNos={selectedItemNos}
+        onCheckItem={checkItem}
+        onCheckAll={checkAll}
       />
     </ModalLayout>
   );
