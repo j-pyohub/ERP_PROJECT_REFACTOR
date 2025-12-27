@@ -1,4 +1,5 @@
 import Button from "../../../shared/components/Button";
+import { Table, TableHeader, TableRow } from "../../../shared/components/Table";
 
 interface MenuRecipeSectionProps {
   sizeYn: "Y" | "N";
@@ -15,25 +16,10 @@ export function MenuRecipeSection({sizeYn, onOpenIngredientModal}: MenuRecipeSec
             </Button>
           </div>
 
-          <table className="w-full border text-center">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="border p-2">품목코드</th>
-                <th className="border p-2">재료명</th>
-                <th className="border p-2">단위</th>
-                {sizeYn === "Y" ? (
-                  <>
-                    <th className="border p-2">라지 정량</th>
-                    <th className="border p-2">미디움 정량</th>
-                  </>
-                ) : (
-                  <th className="border p-2">정량</th>
-                )}
-                <th className="border p-2">삭제</th>
-              </tr>
-            </thead>
-            <tbody />
-          </table>
+          <Table gridColumns={sizeYn === "Y" ? "repeat(6, 1fr)" : "repeat(5, 1fr)"} className="w-full border text-center">
+            <TableHeader columns={["품목코드", "재료명", "단위", ...(sizeYn === "Y" ? ["라지 정량", "미디움 정량"] : ["정량"]), "삭제"]} />
+          </Table>
+
         </section>
     )
 }
