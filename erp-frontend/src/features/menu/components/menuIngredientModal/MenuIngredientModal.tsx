@@ -4,12 +4,11 @@ import ModalLayout from "../../../../shared/components/modal/ModalLayout";
 import { useAxios } from "../../../../shared/hooks/useAxios";
 import type { Item } from "../../../../shared/types/Item";
 import { MenuIngredientFilterBar } from "./MenuIngredientFilterBar";
+import { MenuIngredientTableView } from "./MenuIngredientTableView";
+import { useMenuIngredientStore } from "../../stores/menuIngredientStore";
 
 interface MenuIngredientModalProps {
   onClose: () => void;
-  onConfirm?: (items: Item[]) => void;
-  selectedItemNos: number[];
-  onCheck: (itemNo: number, checked: boolean) => void;
 }
 
 export function MenuIngredientModal({
@@ -18,6 +17,7 @@ export function MenuIngredientModal({
   const [itemCategory, setItemCategory] = useState("");
   const [searchCondition, setSearchCondition] = useState("");
   const [keyword, setKeyword] = useState("");
+  const {checkTempToRecipe, resetTemp} = useMenuIngredientStore();
 
   const { data = [], loading, error, request } = useAxios<Item[]>();
 
@@ -41,30 +41,8 @@ export function MenuIngredientModal({
       },
     });
   };
-  const checkItem = (itemNo: number) => {
-    setSelectedItemNos((prev) =>
-      prev.includes(itemNo)
-        ? prev.filter((no) => no !== itemNo)
-        : [...prev, itemNo]
-    );
-  };
 
-  const checkAll = () => {
-    if (selectedItemNos.length === data.length) {
-      setSelectedItemNos([]);
-    } else {
-      setSelectedItemNos(data.map((item) => item.itemNo));
-    }
-  };
 
-  const handleConfirm = () => {
-    const selectedItems = data.filter((item) =>
-      selectedItemNos.includes(item.itemNo)
-    );
-
-    onConfirm?.(selectedItems);
-    onClose();
-  };
 
   return (
     <ModalLayout
@@ -72,10 +50,16 @@ export function MenuIngredientModal({
       onClose={onClose}
       footer={
         <>
-          <Button className="yellow-btn" onClick={onClose}>
+          <Button className="yellow-btn" onClick={() => {
+            checkTempToRecipe();
+            onClose();
+          }}>
             선택 재료 등록
           </Button>
-          <Button className="white-btn" onClick={onClose}>
+          <Button className="white-btn" onClick={() => {
+            resetTemp();
+            onClose();
+          }}>
             취소
           </Button>
         </>
@@ -95,9 +79,6 @@ export function MenuIngredientModal({
         items={data}
         loading={loading}
         error={error}
-        selectedItemNos={selectedItemNos}
-        onCheckItem={checkItem}
-        onCheckAll={checkAll}
       />
     </ModalLayout>
   );

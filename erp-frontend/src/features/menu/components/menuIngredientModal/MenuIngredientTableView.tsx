@@ -7,30 +7,23 @@ interface MenuIngredientTableViewProps {
   items: Item[];
   loading: boolean;
   error: Error | null;
-  selectedItemNos: number[];
-  onCheckItem: (itemNo: number) => void;
-  onCheckAll: () => void;
 }
 
 export function MenuIngredientTableView({
   items,
   loading,
   error,
-  selectedItemNos,
-  onCheckItem,
-  onCheckAll,
 }: MenuIngredientTableViewProps) {
-  const { selectedItems, checkItem, checkAll } = useMenuIngredientStore();
- const selectedItemNos = selectedItems.map(i => i.itemNo);
+  const { tempItems, checkTempItem, checkTempAll } = useMenuIngredientStore();
+ const tempItemNos = tempItems.map(i => i.itemNo);
 
-  const isAllSelected =
-    items.length > 0 && selectedItemNos.length === items.length;
-
+  const isAllChecked =
+    items.length > 0 && tempItemNos.length === items.length;
   const columns = [
     <input
       type="checkbox"
-      checked={isAllSelected}
-      onChange={onCheckAll}
+      checked={isAllChecked}
+      onChange={() => checkTempAll(items)}
     />,
     "품목 코드",
     "재료 명",
@@ -50,8 +43,8 @@ export function MenuIngredientTableView({
           <MenuIngredientTableRow
             key={item.itemNo}
             item={item}
-            checked={selectedItemNos.includes(item.itemNo)}
-            onCheck={onCheckItem}
+            checked={tempItemNos.includes(item.itemNo)}
+            onCheck={() => checkTempItem(item)}
           />
         ))}
       </Table>

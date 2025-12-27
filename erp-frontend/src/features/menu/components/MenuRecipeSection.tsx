@@ -1,21 +1,14 @@
 import Button from "../../../shared/components/Button";
-import type { MenuIngredient } from "../../../shared/types/MenuIngredient";
+import { useMenuIngredientStore } from "../stores/menuIngredientStore";
 import { MenuRecipeTable } from "./MenuRecipeTable";
 
 interface MenuRecipeSectionProps {
   sizeYn: "Y" | "N";
-  recipeItems: MenuIngredient[];
   onOpenIngredientModal: () => void;
-  onChangeQuantity: (
-    itemNo: number,
-    field: "quantity" | "quantityLarge" | "quantityMedium",
-    value: number
-  ) => void;
-  onRemoveItem: (itemNo: number) => void;
 }
 
-export function MenuRecipeSection({sizeYn, recipeItems, onOpenIngredientModal, onChangeQuantity, onRemoveItem}: MenuRecipeSectionProps) {
-  
+export function MenuRecipeSection({sizeYn, onOpenIngredientModal}: MenuRecipeSectionProps) {
+  const {checkedItems, updateRecipeQuantity, removeRecipeItem,} = useMenuIngredientStore();
   return (
         <section className="mb-10 border rounded px-3 py-2">
           <div className="flex justify-between items-center mb-4">
@@ -26,9 +19,9 @@ export function MenuRecipeSection({sizeYn, recipeItems, onOpenIngredientModal, o
           </div>
           <MenuRecipeTable
             sizeYn={sizeYn}
-            recipeItems={recipeItems}
-            onChangeQuantity={onChangeQuantity}
-            onRemoveItem={onRemoveItem}
+            recipeItems={checkedItems}
+            onChangeQuantity={updateRecipeQuantity}
+            onRemoveItem={removeRecipeItem}
           />
         </section>
     )

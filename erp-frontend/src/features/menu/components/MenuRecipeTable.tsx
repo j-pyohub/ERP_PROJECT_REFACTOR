@@ -9,7 +9,7 @@ interface MenuRecipeTableProps {
   onChangeQuantity: (
     itemNo: number,
     field: "quantity" | "quantityLarge" | "quantityMedium",
-    value: number
+    value: number | undefined
   ) => void;
   onRemoveItem: (itemNo: number) => void;
 }
@@ -18,7 +18,7 @@ export function MenuRecipeTable({
   sizeYn,
   recipeItems = [],
   onChangeQuantity,
-  onRemoveItem,
+  onRemoveItem
 }: MenuRecipeTableProps) {
   const columns = [
     "품목 코드",
@@ -30,6 +30,7 @@ export function MenuRecipeTable({
     "삭제",
   ];
 
+
   return (
     <Table
       gridColumns={`repeat(${columns.length}, 1fr)`}
@@ -37,7 +38,6 @@ export function MenuRecipeTable({
     >
       <TableHeader columns={columns} />
 
-      {/* ✅ empty state */}
       {recipeItems.length === 0 ? (
         <TableRow>
           <TableCell hideBottomBorder>
@@ -56,48 +56,60 @@ export function MenuRecipeTable({
               <>
                 <TableCell>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
                     className="w-full border text-right"
                     value={item.quantityLarge ?? ""}
-                    onChange={(e) =>
-                      onChangeQuantity(
-                        item.itemNo,
-                        "quantityLarge",
-                        Number(e.target.value)
-                      )
-                    }
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      if (/^\d*$/.test(raw)) {
+                        onChangeQuantity(
+                          item.itemNo,
+                          "quantityLarge",
+                          raw === "" ? undefined : Number(raw)
+                        );
+                      }
+                    }}
                   />
                 </TableCell>
 
                 <TableCell>
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
                     className="w-full border text-right"
                     value={item.quantityMedium ?? ""}
-                    onChange={(e) =>
-                      onChangeQuantity(
-                        item.itemNo,
-                        "quantityMedium",
-                        Number(e.target.value)
-                      )
-                    }
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      if (/^\d*$/.test(raw)) {
+                        onChangeQuantity(
+                          item.itemNo,
+                          "quantityMedium",
+                          raw === "" ? undefined : Number(raw)
+                        );
+                      }
+                    }}
                   />
                 </TableCell>
               </>
             ) : (
               <TableCell>
-                <input
-                  type="number"
-                  className="w-full border text-right"
-                  value={item.quantity ?? ""}
-                  onChange={(e) =>
-                    onChangeQuantity(
-                      item.itemNo,
-                      "quantity",
-                      Number(e.target.value)
-                    )
-                  }
-                />
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    className="w-full border text-right"
+                    value={item.quantity ?? ""}
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      if (/^\d*$/.test(raw)) {
+                        onChangeQuantity(
+                          item.itemNo,
+                          "quantity",
+                          raw === "" ? undefined : Number(raw)
+                        );
+                      }
+                    }}
+                  />
               </TableCell>
             )}
 

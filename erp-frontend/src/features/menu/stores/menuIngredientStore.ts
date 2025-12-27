@@ -1,35 +1,86 @@
-import { create } from "zustand/react";
-import type { Item } from "../../item/types/Item";
-
+// features/menu/stores/menuIngredientStore.ts
+import { create } from "zustand";
+import type { MenuIngredient } from "../../../shared/types/MenuIngredient";
+import type { Item } from "../../../shared/types/Item";
+``
 interface MenuIngredientState {
-  selectedItems: Item[];
+  tempItems: Item[];
+  checkedItems: MenuIngredient[];
 
-  checkItem: (item: Item) => void;
-  removeItem: (itemNo: number) => void;
-  clearItems: () => void;
+  checkTempItem: (item: Item) => void;
+  checkTempAll: (items: Item[]) => void;
+  checkTempToRecipe: () => void;
+  resetTemp: () => void;
+  removeRecipeItem: (itemNo: number) => void;
+  updateRecipeQuantity: (
+  itemNo: number,
+  field: "quantity" | "quantityLarge" | "quantityMedium",
+  value: number
+) => void;
+
 }
 
 export const useMenuIngredientStore = create<MenuIngredientState>((set, get) => ({
-  selectedItems: [],
+  tempItems: [],
+  checkedItems: [],
 
-  checkItem: (item) => {
-    const exists = get().selectedItems.some(
-      (i) => i.itemNo === item.itemNo
-    );
-
+  checkTempItem: (item) => {
+    const exists = get().tempItems.some(i => i.itemNo === item.itemNo);
     set({
-      selectedItems: exists
-        ? get().selectedItems.filter(i => i.itemNo !== item.itemNo)
-        : [...get().selectedItems, item],
+      tempItems: exists
+        ? get().tempItems.filter(i => i.itemNo !== item.itemNo)
+        : [...get().tempItems, item],
     });
   },
 
-  removeItem: (itemNo) =>
-    set({
-      selectedItems: get().selectedItems.filter(
-        (i) => i.itemNo !== itemNo
-      ),
-    }),
+  checkTempAll: (items) => {
+    const allChecked =
+      items.length > 0 &&
+      items.every(item =>
+        get().tempItems.some(i => i.itemNo === item.itemNo)
+      );
 
-  clearItems: () => set({ selectedItems: [] }),
+    set({
+      tempItems: allChecked ? [] : items,
+    });
+  },
+
+  checkTempToRecipe: () => {
+    const recipeItems: MenuIngredient[] = get().tempItems.map(item => ({
+      itemNo: item.itemNo,
+      itemCode: item.itemCode,
+      ingredientName: item.ingredientName,
+      stockUnit: item.stockUnit,
+      quantity: undefined,
+      quantityLarge: undefined,
+      quantityMedium: undefined,
+    }));
+
+    set({ checkedItems: recipeItems });
+  },
+
+  resetTemp: () => {
+    set({ tempItems: [] });
+  },
+
+  removeRecipeItem: (itemNo: number) => {
+    set({
+      checkedItems: get().checkedItems.filter(
+        i => i.itemNo !== itemNo
+      ),
+      tempItems: get().tempItems.filter(
+        i => i.itemNo !== itemNo
+      ),
+    });
+  },
+
+  updateRecipeQuantity: (itemNo, field, value) => {
+  set({
+    checkedItems: get().checkedItems.map(item =>
+      item.itemNo === itemNo
+        ? { ...item, [field]: value }
+        : item
+    ),
+  });
+},
 }));

@@ -4,7 +4,7 @@ import type { Item } from "../../../../shared/types/Item";
 interface MenuIngredientTableRowProps {
   item: Item;
   checked: boolean;
-  onCheck: (itemNo: number) => void;
+  onCheck: () => void;
 }
 
 export function MenuIngredientTableRow({ item, checked, onCheck}: MenuIngredientTableRowProps) {
@@ -14,7 +14,7 @@ export function MenuIngredientTableRow({ item, checked, onCheck}: MenuIngredient
                 <input
                     type="checkbox"
                     checked={checked}
-                    onChange={() => onCheck(item.itemNo)}
+                    onChange={onCheck}
                 />
             </TableCell>
             <TableCell>{item.itemCode}</TableCell>
