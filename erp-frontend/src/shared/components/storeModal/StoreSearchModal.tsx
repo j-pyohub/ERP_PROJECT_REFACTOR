@@ -1,5 +1,5 @@
-import ModalLayout from "../../../../shared/components/modal/ModalLayout";
-import Button from "../../../../shared/components/Button";
+import ModalLayout from "../modal/ModalLayout";
+import Button from "../Button";
 import StoreSearchContent from "./StoreSearchContent";
 
 type Props = {

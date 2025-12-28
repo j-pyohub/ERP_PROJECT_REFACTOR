@@ -11,8 +11,7 @@ import {
     fetchStoreTop5,
     fetchMenuRatio,
 } from "../../apis/salesApi";
-
-import StoreSearchModal from "../common/StoreSearchModal";
+import StoreSearchModal from "../../../../shared/components/storeModal/StoreSearchModal";
 import SalesChartBar from "./SalesChartBar";
 
 type Props = {

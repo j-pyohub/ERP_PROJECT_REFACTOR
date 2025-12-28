@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
-import Button from "../../../../shared/components/Button";
-import PaginationContainer from "../../../../shared/components/PaginationForm";
+import Button from "../Button.tsx";
+import PaginationContainer from "../PaginationForm";
 import {
     Table,
     TableHeader,
     TableRow,
     TableCell,
-} from "../../../../shared/components/Table";
-import { fetchStoreList } from "../../apis/salesApi";
-import type { Store } from "../../types/Store";
+} from "../Table.tsx";
+import { fetchStoreList } from "../../../features/sales/apis/salesApi";
+import type { Store } from "../../../features/sales/types/Store";
 
 type Props = {
     onSelect: (storeNo: number, storeName: string) => void;
