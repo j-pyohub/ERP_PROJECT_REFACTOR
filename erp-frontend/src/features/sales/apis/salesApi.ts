@@ -1,0 +1,55 @@
+import apiClient from "../../../shared/apis/apiClient";
+import type { SalesDetailItem } from "../types/SalesDetail";
+import type {
+    SalesKpiParams,
+    SalesChartParams,
+    MenuRatioParams,
+} from "../types/SalesApi";
+import type {SalesListParams, SalesListResponse} from "../types/SalesList.tsx";
+import type {Store} from "../../../shared/types/Store.tsx";
+import type {SalesOrderListParams, SalesOrderListResponse} from "../types/SalesOrder.tsx";
+
+
+
+export function fetchSalesKpi(params: SalesKpiParams) {
+    return apiClient.get("/sales/KPI", { params });
+}
+
+export function fetchSalesTrend(params: SalesChartParams) {
+    return apiClient.get("/sales/salesChart", { params });
+}
+
+export function fetchStoreTop5() {
+    return apiClient.get("/sales/totalStoreSales");
+}
+
+export function fetchMenuRatio(params: MenuRatioParams) {
+    return apiClient.get("/sales/menuRatio", { params });
+}
+
+export function fetchSalesList(params: SalesListParams) {
+    return apiClient.get<SalesListResponse>("/sales/salesList", { params });
+}
+
+export function fetchSalesDetail(
+    storeNo: number,
+    salesDate: string
+) {
+    return apiClient.get<SalesDetailItem[]>(
+        "/sales/salesDetail",
+        {
+            params: { storeNo, salesDate },
+        }
+    );
+}
+
+export function fetchStoreList() {
+    return apiClient.get<Store[]>("/storeSearch/modal");
+}
+
+export function fetchSalesOrderList(params: SalesOrderListParams) {
+    return apiClient.get<SalesOrderListResponse>(
+        "/sales/order/list",
+        { params }
+    );
+}
