@@ -14,15 +14,17 @@ export default function OrderMenuTable({
                                        }: Props) {
     return (
         <div className="section-box">
+            <div className="font-semibold mb-3">주문 메뉴 목록</div>
 
             <div className="overflow-auto">
-                <table className="min-w-[900px] w-full border-collapse border text-center">
+                <table className="min-w-[1000px] w-full border-collapse border text-center">
                     <thead>
                     <tr className="bg-gray-50">
                         <th className="border px-3 py-2 w-[20%]">메뉴명</th>
-                        <th className="border px-3 py-2 w-[15%]">사이즈</th>
-                        <th className="border px-3 py-2 w-[15%]">판매 금액(원)</th>
-                        <th className="border px-3 py-2 w-[15%]">판매 수량</th>
+                        <th className="border px-3 py-2 w-[10%]">사이즈</th>
+                        <th className="border px-3 py-2 w-[15%]">단가(원)</th>
+                        <th className="border px-3 py-2 w-[15%]">수량</th>
+                        <th className="border px-3 py-2 w-[15%]">금액(원)</th>
                         <th className="border px-3 py-2 w-[10%]">삭제</th>
                     </tr>
                     </thead>
@@ -31,7 +33,7 @@ export default function OrderMenuTable({
                     {rows.length === 0 && (
                         <tr>
                             <td
-                                colSpan={5}
+                                colSpan={6}
                                 className="border px-3 py-6 text-gray-500"
                             >
                                 메뉴를 선택하세요.
@@ -54,7 +56,7 @@ export default function OrderMenuTable({
                                 <input
                                     type="number"
                                     min={1}
-                                    className="border rounded px-2 py-1 h-9 w-28 text-right"
+                                    className="border rounded px-2 py-1 h-9 w-24 text-right"
                                     value={row.quantity}
                                     onChange={(e) =>
                                         onChangeQty(
@@ -63,6 +65,9 @@ export default function OrderMenuTable({
                                         )
                                     }
                                 />
+                            </td>
+                            <td className="border px-3 py-2 text-right font-semibold">
+                                {row.totalPrice.toLocaleString()}
                             </td>
                             <td className="border px-3 py-2">
                                 <Button

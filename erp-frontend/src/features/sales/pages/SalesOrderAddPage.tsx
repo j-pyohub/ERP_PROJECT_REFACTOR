@@ -18,9 +18,11 @@ import {
 export default function SalesOrderAddPage() {
     const navigate = useNavigate();
 
+    /* ================= modal state ================= */
     const [storeModalOpen, setStoreModalOpen] = useState(false);
     const [menuModalOpen, setMenuModalOpen] = useState(false);
 
+    /* ================= store (zustand) ================= */
     const {
         storeNo,
         storeName,
@@ -32,14 +34,16 @@ export default function SalesOrderAddPage() {
         reset,
     } = useSalesOrderStore();
 
+    /* ================= menu modal local state ================= */
     const [menuList, setMenuList] = useState<StoreMenuItem[]>([]);
     const [checked, setChecked] = useState<Set<number>>(new Set());
 
+    /* 이미 주문에 들어간 메뉴 비활성화 */
     const disabledSet = new Set(
         orderRows.map((r) => r.storeMenuNo)
     );
 
-
+    /* ================= menu fetch ================= */
     useEffect(() => {
         if (!menuModalOpen || !storeNo) return;
 
@@ -49,6 +53,7 @@ export default function SalesOrderAddPage() {
         });
     }, [menuModalOpen, storeNo]);
 
+    /* ================= menu select logic ================= */
     function toggleAllMenu(next: boolean) {
         if (!next) {
             setChecked(new Set());
@@ -69,7 +74,6 @@ export default function SalesOrderAddPage() {
             return copy;
         });
     }
-
 
     function confirmMenu() {
         const exist = new Set(orderRows.map((r) => r.storeMenuNo));
@@ -92,7 +96,13 @@ export default function SalesOrderAddPage() {
         setMenuModalOpen(false);
     }
 
+    /* ================= total amount (derived) ================= */
+    const totalAmount = orderRows.reduce(
+        (sum, row) => sum + row.totalPrice,
+        0
+    );
 
+    /* ================= submit ================= */
     async function submitOrder() {
         if (!storeNo) {
             alert("직영점을 선택하세요.");
@@ -114,7 +124,7 @@ export default function SalesOrderAddPage() {
         <section className="w-full max-w-[1500px] mx-auto px-4 py-4 space-y-4">
             <h2 className="text-xl font-semibold">주문 등록</h2>
 
-            {/* store */}
+            {/* ================= store ================= */}
             <div className="flex justify-end gap-2">
                 <span className="font-semibold">직영점</span>
                 <input
@@ -135,8 +145,10 @@ export default function SalesOrderAddPage() {
                     초기화
                 </Button>
             </div>
-            
+
+            {/* ================= menu add ================= */}
             <div className="section-box flex justify-between items-center">
+                <div className="font-semibold">메뉴 추가</div>
                 <Button
                     className="yellow-btn h-9"
                     onClick={() => {
@@ -147,17 +159,28 @@ export default function SalesOrderAddPage() {
                         setMenuModalOpen(true);
                     }}
                 >
-                    메뉴추가
+                    메뉴 추가
                 </Button>
             </div>
 
+            {/* ================= order table ================= */}
             <OrderMenuTable
                 rows={orderRows}
                 onChangeQty={updateQuantity}
                 onRemove={removeOrderRow}
             />
 
-            {/* action */}
+            {/* ================= total ================= */}
+            <div className="section-box flex justify-end items-center gap-6">
+                <span className="text-lg font-semibold">
+                    총 주문 금액
+                </span>
+                <span className="text-2xl font-bold ">
+                    {totalAmount.toLocaleString()} 원
+                </span>
+            </div>
+
+            {/* ================= action ================= */}
             <div className="flex justify-end gap-2">
                 <Button
                     className="yellow-btn h-10"
@@ -176,7 +199,7 @@ export default function SalesOrderAddPage() {
                 </Button>
             </div>
 
-            {/* modals */}
+            {/* ================= modals ================= */}
             <StoreSearchModal
                 open={storeModalOpen}
                 onClose={() => setStoreModalOpen(false)}
