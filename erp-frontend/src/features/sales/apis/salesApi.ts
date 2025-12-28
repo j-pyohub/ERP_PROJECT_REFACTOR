@@ -1,13 +1,13 @@
 import apiClient from "../../../shared/apis/apiClient";
-import type { SalesDetailItem } from "../types/SalesDetail";
+import type { SalesDetailItem } from "../types/SalesDetail.ts";
 import type {
     SalesKpiParams,
     SalesChartParams,
     MenuRatioParams,
-} from "../types/SalesApi";
-import type {SalesListParams, SalesListResponse} from "../types/SalesList.tsx";
+} from "../types/SalesApi.ts";
+import type {SalesListParams, SalesListResponse} from "../types/SalesList.ts";
 import type {Store} from "../../../shared/types/Store.tsx";
-import type {SalesOrderListParams, SalesOrderListResponse} from "../types/SalesOrder.tsx";
+import type {SalesOrderListParams, SalesOrderListResponse} from "../types/SalesOrder.ts";
 
 
 

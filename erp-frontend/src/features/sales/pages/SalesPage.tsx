@@ -2,7 +2,7 @@ import { useState } from "react";
 import SalesViewToggle from "../components/common/SalesViewToggle";
 import SalesChartSection from "../components/chart/SalesChartSection";
 import SalesListSection from "../components/list/SalesListSection";
-import type { SalesFilterState } from "../types/SalesFilter";
+import type { SalesFilterState } from "../types/SalesFilter.ts";
 
 const getDefaultFilter = (): SalesFilterState => ({
     periodType: "day",

@@ -8,7 +8,7 @@ import {
     TableCell,
 } from "../Table.tsx";
 import { fetchStoreList } from "../../../features/sales/apis/salesApi";
-import type { Store } from "../../../features/sales/types/Store";
+import type { Store } from "../../../features/sales/types/Store.ts";
 
 type Props = {
     onSelect: (storeNo: number, storeName: string) => void;

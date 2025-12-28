@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import type { SalesFilterState } from "../types/SalesFilter";
+import type { SalesFilterState } from "../types/SalesFilter.ts";
 
 type Params = {
     filter: SalesFilterState;

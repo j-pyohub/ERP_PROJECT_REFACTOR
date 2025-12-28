@@ -9,7 +9,7 @@ import {
     TableCell,
 } from "../../../../shared/components/Table";
 import { fetchSalesDetail } from "../../apis/salesApi";
-import type { SalesDetailItem } from "../../types/SalesDetail";
+import type { SalesDetailItem } from "../../types/SalesDetail.ts";
 
 const PAGE_SIZE = 10;
 

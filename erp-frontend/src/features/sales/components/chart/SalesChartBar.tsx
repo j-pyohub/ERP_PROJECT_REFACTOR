@@ -1,5 +1,5 @@
 import { LabeledInput } from "../../../../shared/components/LabeledInput";
-import type { SalesFilterState } from "../../types/SalesFilter";
+import type { SalesFilterState } from "../../types/SalesFilter.ts";
 
 const INPUT_TYPE_MAP = {
     day: "date",
