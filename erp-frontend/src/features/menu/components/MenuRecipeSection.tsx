@@ -3,12 +3,12 @@ import { useMenuIngredientStore } from "../stores/menuIngredientStore";
 import { MenuRecipeTable } from "./MenuRecipeTable";
 
 interface MenuRecipeSectionProps {
-  sizeYn: "Y" | "N";
   onOpenIngredientModal: () => void;
 }
 
-export function MenuRecipeSection({sizeYn, onOpenIngredientModal}: MenuRecipeSectionProps) {
-  const {checkedItems, updateRecipeQuantity, removeRecipeItem,} = useMenuIngredientStore();
+export function MenuRecipeSection({onOpenIngredientModal}: MenuRecipeSectionProps) {
+  const { checkedItems, updateRecipeQuantity, removeRecipeItem } = useMenuIngredientStore();
+
   return (
         <section className="mb-10 border rounded px-3 py-2">
           <div className="flex justify-between items-center mb-4">
@@ -18,7 +18,6 @@ export function MenuRecipeSection({sizeYn, onOpenIngredientModal}: MenuRecipeSec
             </Button>
           </div>
           <MenuRecipeTable
-            sizeYn={sizeYn}
             recipeItems={checkedItems}
             onChangeQuantity={updateRecipeQuantity}
             onRemoveItem={removeRecipeItem}

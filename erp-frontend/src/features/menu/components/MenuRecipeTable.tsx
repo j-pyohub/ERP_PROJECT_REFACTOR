@@ -2,9 +2,9 @@ import { Table, TableCell, TableHeader, TableRow }
   from "../../../shared/components/Table";
 import type { MenuIngredient } 
   from "../../../shared/types/MenuIngredient";
+import { useMenuAddStore } from "../stores/menuAddStore";
 
 interface MenuRecipeTableProps {
-  sizeYn: "Y" | "N";
   recipeItems: MenuIngredient[];
   onChangeQuantity: (
     itemNo: number,
@@ -15,16 +15,16 @@ interface MenuRecipeTableProps {
 }
 
 export function MenuRecipeTable({
-  sizeYn,
   recipeItems = [],
   onChangeQuantity,
   onRemoveItem
 }: MenuRecipeTableProps) {
+  const { size } = useMenuAddStore();
   const columns = [
     "품목 코드",
     "재료 명",
     "단위",
-    ...(sizeYn === "Y"
+    ...(size === "Y"
       ? ["라지 정량", "미디움 정량"]
       : ["정량"]),
     "삭제",
@@ -52,7 +52,7 @@ export function MenuRecipeTable({
             <TableCell>{item.ingredientName}</TableCell>
             <TableCell>{item.stockUnit}</TableCell>
 
-            {sizeYn === "Y" ? (
+            {size === "Y" ? (
               <>
                 <TableCell>
                   <input

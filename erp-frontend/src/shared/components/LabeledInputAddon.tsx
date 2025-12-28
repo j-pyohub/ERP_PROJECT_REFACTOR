@@ -1,10 +1,10 @@
 
 interface LabeledInputWithAddonProps {
     label: string;
-    id: string;
+    id?: string;
     type?: string;
-    value: string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    value: string | number;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
     error?: string;
     addon: React.ReactNode;
     wrapperClassName?: string;

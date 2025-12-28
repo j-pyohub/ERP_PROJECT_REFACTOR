@@ -10,6 +10,8 @@ export interface Menu {
     size: string;
     menuImage: string;
     menuPrice: number;
+    menuPriceLarge: number;
+    menuPriceMedium: number;
     releaseStatus: ReleaseStatus;
     inDate: Date;
     editDate: Date;

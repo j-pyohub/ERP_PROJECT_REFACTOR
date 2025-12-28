@@ -3,55 +3,58 @@ import { MenuIngredientModal } from "../components/menuIngredientModal/MenuIngre
 import Button from "../../../shared/components/Button";
 import { MenuBasicInfoSection } from "../components/MenuBasicInfoSection";
 import { MenuRecipeSection } from "../components/MenuRecipeSection";
-import type { Item } from "../../../shared/types/Item";
-import type { MenuIngredient } from "../../../shared/types/MenuIngredient";
+import type { MenuAddRequest } from "../types/MenuAddRequest";
+import { useAxios } from "../../../shared/hooks/useAxios";
+import { useMenuAddStore } from "../stores/menuAddStore";
+import { useMenuIngredientStore } from "../stores/menuIngredientStore";
 
-export default function MenuCreate() {
-  const [sizeYn, setSizeYn] = useState<"Y" | "N">("Y");
+export default function MenuAddPage() {
   const [isOpen, setIsOpen] = useState(false);
+  const { request, loading } = useAxios<any>();
+  const { checkedItems } = useMenuIngredientStore();
+  const { menuCategory, menuCode, menuName, menuExplain, size, releaseStatus, menuPrice, menuPriceLarge, menuPriceMedium, menuImageFile } = useMenuAddStore();
+  
+  const handleSubmit = async () => {
+    try{
+      console.log("1. submit 진입");
+      console.log("2. loading 상태:", loading);
 
-  const [menuIngredients, setMenuIngredients] = useState<MenuIngredient[]>([]);
+      const menuDTO: MenuAddRequest = {
+      menuCategory, menuCode, menuName, menuExplain, size, hasSize: size === "Y",
+      releaseStatus, menuPrice, menuPriceLarge, menuPriceMedium,
+      ingredients: checkedItems.map(item => ({
+        itemNo: item.itemNo,
+        quantity: item.quantity,
+        quantityLarge: item.quantityLarge,
+        quantityMedium: item.quantityMedium,
+      })),
 
-  const handleConfirmItems = (items: Item[]) => {
-    setMenuIngredients((prev) => {
-      const existItemNos = prev.map((i) => i.itemNo);
+      };
+      console.log(menuDTO);
+      
+      const formData = new FormData();
 
-      const newIngredients: MenuIngredient[] = items
-        .filter((item) => !existItemNos.includes(item.itemNo))
-        .map((item) => ({
-          itemNo: item.itemNo,
-          ingredientName: item.ingredientName,
-          stockUnit: item.stockUnit,
-          itemCode: item.itemCode,  
-          quantity: undefined,
-          quantityLarge: undefined,
-          quantityMedium: undefined,
-        }));
+      formData.append(
+        "menuDTO",
+        new Blob([JSON.stringify(menuDTO)], {
+          type: "application/json",
+        })
+      );
 
-      return [...prev, ...newIngredients];
-    });
+      if (menuImageFile) {
+      formData.append("menuImage", menuImageFile);
+      }
+      await request({
+        url: "/menu/addMenu",
+        method: "POST",
+        data: formData
+      });
+      console.log("3. 요청 완료");
+    }catch(error){
+        console.error("메뉴 등록 중 오류 발생:", error);
+    };
   };
-
-  const handleChangeQuantity = (
-    itemNo: number,
-    field: "quantity" | "quantityLarge" | "quantityMedium",
-    value: number
-  ) => {
-    setMenuIngredients((prev) =>
-      prev.map((item) =>
-        item.itemNo === itemNo
-          ? { ...item, [field]: value }
-          : item
-      )
-    );
-  };
-
-  const handleRemoveItem = (itemNo: number) => {
-    setMenuIngredients((prev) =>
-      prev.filter((item) => item.itemNo !== itemNo)
-    );
-  };
-
+ 
   return (
     <>
       <div className="flex justify-between items-center mb-8">
@@ -61,30 +64,17 @@ export default function MenuCreate() {
         </button>
       </div>
 
-      <MenuBasicInfoSection
-        sizeYn={sizeYn}
-        onChangeSizeYn={setSizeYn}
-      />
+      <MenuBasicInfoSection />
 
-      <MenuRecipeSection
-        sizeYn={sizeYn}
-        recipeItems={menuIngredients}
-        onOpenIngredientModal={() => setIsOpen(true)}
-        onChangeQuantity={handleChangeQuantity}
-        onRemoveItem={handleRemoveItem}
-      />
+      <MenuRecipeSection onOpenIngredientModal={() => setIsOpen(true)} />
 
       <div className="flex justify-center gap-4">
-        <Button className="yellow-btn">등록</Button>
+        <Button className="yellow-btn" onClick={handleSubmit}>등록</Button>
         <Button className="white-btn">초기화</Button>
       </div>
 
       {isOpen && (
-        <MenuIngredientModal
-          onClose={() => setIsOpen(false)}
-          onConfirm={handleConfirmItems}
-          selectedItemNos={menuIngredients.map((i) => i.itemNo)}
-        />
+        <MenuIngredientModal onClose={() => setIsOpen(false)} />
       )}
     </>
   );
