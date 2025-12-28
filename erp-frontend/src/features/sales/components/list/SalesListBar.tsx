@@ -1,4 +1,4 @@
-import DateRangeInput from "../../../../shared/components/DateInput";
+import DateInput from "../../../../shared/components/DateInput";
 import { LabeledInput } from "../../../../shared/components/LabeledInput";
 import Button from "../../../../shared/components/Button";
 
@@ -25,7 +25,7 @@ export default function SalesListBar({
                                      }: Props) {
     return (
         <div className="flex flex-wrap items-center gap-6 text-sm">
-            <DateRangeInput
+            <DateInput
                 from={from}
                 to={to}
                 onChangeFrom={onChangeFrom}

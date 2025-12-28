@@ -11,7 +11,7 @@ type Props = {
     inputClassName?: string;
 };
 
-export default function DateRangeInput({
+export default function DateInput({
                                            fromId = "date-from",
                                            toId = "date-to",
                                            from,
