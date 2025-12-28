@@ -8,32 +8,36 @@ interface ItemTableViewProps {
   itemCategory: string;
   searchType: string;
   currentPage: number;
-  itemName: string;
+  keyword: string;
   onTotalContentChange: (totalContent: number) => void;
 }
 
-function ItemTableView({ itemCategory, searchType, currentPage, itemName, onTotalContentChange }: ItemTableViewProps) {
+function ItemTableView({ itemCategory, searchType, currentPage, keyword, onTotalContentChange }: ItemTableViewProps) {
     const columns = [
         "카테고리", "품목 코드", "품목 명", "재료명", "공급사", "공급 가격", "상세"
     ];
     const {data, loading, error, request } = useAxios<Item[]>();
                                
-    console.log("ItemTableView 렌더링", {itemCategory, searchType, currentPage, itemName});
     useEffect(() => {
         request({
             url: `/items/list/${currentPage}`,
             method: "GET",
             params: {
                 itemCategory,
-                searchType:itemName
+                [searchType]: keyword
             }
         });
-    }, [itemCategory, searchType, request, currentPage, itemName]);
+    }, [itemCategory, searchType, request, currentPage, keyword]);
+
+    useEffect(() => {
+        if (data) {
+            onTotalContentChange(data.page.totalElements);
+        }  
+    }, [data, onTotalContentChange]);
 
     if(loading) return <div>Loading...</div>;
     if(error) return <div>Error: {error.message}</div>;
     if (!data) return null;
-    onTotalContentChange(data.page.totalElements);
 
 
     return (

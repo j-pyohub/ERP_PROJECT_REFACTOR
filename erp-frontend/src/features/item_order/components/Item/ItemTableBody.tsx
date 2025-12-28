@@ -1,4 +1,4 @@
-import type { Item } from "../types/Item";
+import type { Item } from "../../types/Item";
 import { ItemTableRow } from "./ItemTableRow";
 
 export function ItemTableBody({ items }: { items: Item[] }) {
