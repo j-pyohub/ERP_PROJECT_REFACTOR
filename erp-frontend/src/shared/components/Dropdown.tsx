@@ -11,7 +11,7 @@ export default function Dropdown({title, items}: DropDownMenuProps) {
     return (
         <div
           className="menu-item dropdown"
-          onMouseEnter={() => {console.log("enter:", title); setOpen(true)}}
+          onMouseEnter={() => { setOpen(true); }}
           onMouseLeave={() => setOpen(false)}
         >
             <span>{title} ▾</span>
