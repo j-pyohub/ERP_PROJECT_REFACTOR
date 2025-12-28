@@ -1,32 +1,29 @@
 import { Table, TableHeader } from "../../../../shared/components/Table";
 import type { Item } from "../../../../shared/types/Item";
 import { MenuIngredientTableRow } from "./MenuIngredientTableRow";
+import { useMenuIngredientStore } from "../../stores/menuIngredientStore";
 
 interface MenuIngredientTableViewProps {
   items: Item[];
   loading: boolean;
   error: Error | null;
-  selectedItemNos: number[];
-  onToggleItem: (itemNo: number) => void;
-  onToggleAll: () => void;
 }
 
 export function MenuIngredientTableView({
   items,
   loading,
   error,
-  selectedItemNos,
-  onToggleItem,
-  onToggleAll,
 }: MenuIngredientTableViewProps) {
-  const isAllSelected =
-    items.length > 0 && selectedItemNos.length === items.length;
+  const { tempItems, checkTempItem, checkTempAll } = useMenuIngredientStore();
+ const tempItemNos = tempItems.map(i => i.itemNo);
 
+  const isAllChecked =
+    items.length > 0 && tempItemNos.length === items.length;
   const columns = [
     <input
       type="checkbox"
-      checked={isAllSelected}
-      onChange={onToggleAll}
+      checked={isAllChecked}
+      onChange={() => checkTempAll(items)}
     />,
     "품목 코드",
     "재료 명",
@@ -46,8 +43,8 @@ export function MenuIngredientTableView({
           <MenuIngredientTableRow
             key={item.itemNo}
             item={item}
-            checked={selectedItemNos.includes(item.itemNo)}
-            onToggle={onToggleItem}
+            checked={tempItemNos.includes(item.itemNo)}
+            onCheck={() => checkTempItem(item)}
           />
         ))}
       </Table>
