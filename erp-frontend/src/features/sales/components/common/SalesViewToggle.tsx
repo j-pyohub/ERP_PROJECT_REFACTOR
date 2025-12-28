@@ -1,4 +1,4 @@
-import Button from "../../../../shared/components/Button.tsx";
+import Button from "../../../../shared/components/Button";
 
 type Props = {
     viewMode: "chart" | "list";

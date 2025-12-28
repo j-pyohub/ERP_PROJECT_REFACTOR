@@ -1,5 +1,6 @@
-import { LabeledInput } from "../../../../shared/components/LabeledInput.tsx";
-import Button from "../../../../shared/components/Button.tsx";
+import DateRangeInput from "../../../../shared/components/DateInput";
+import { LabeledInput } from "../../../../shared/components/LabeledInput";
+import Button from "../../../../shared/components/Button";
 
 type Props = {
     from: string;
@@ -24,30 +25,12 @@ export default function SalesListBar({
                                      }: Props) {
     return (
         <div className="flex flex-wrap items-center gap-6 text-sm">
-            {/* 조회기간 */}
-            <div className="flex items-center gap-2">
-                <span className="font-medium">조회기간</span>
-
-                <LabeledInput
-                    id="sales-list-from"
-                    type="date"
-                    label=""
-                    value={from}
-                    onChange={(e) => onChangeFrom(e.target.value)}
-                    inputClassName="h-9 w-36"
-                />
-
-                <span>~</span>
-
-                <LabeledInput
-                    id="sales-list-to"
-                    type="date"
-                    label=""
-                    value={to}
-                    onChange={(e) => onChangeTo(e.target.value)}
-                    inputClassName="h-9 w-36"
-                />
-            </div>
+            <DateRangeInput
+                from={from}
+                to={to}
+                onChangeFrom={onChangeFrom}
+                onChangeTo={onChangeTo}
+            />
 
             <div className="flex items-center gap-2">
                 <span className="font-medium">직영점명</span>
@@ -69,8 +52,6 @@ export default function SalesListBar({
                 <Button className="white-btn h-9 px-4" onClick={onReset}>
                     초기화
                 </Button>
-
-
             </div>
         </div>
     );

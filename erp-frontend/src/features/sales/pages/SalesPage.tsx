@@ -1,7 +1,7 @@
 import { useState } from "react";
-import SalesViewToggle from "../components/common/SalesViewToggle.tsx";
-import SalesChartSection from "../components/chart/SalesChartSection.tsx";
-import SalesListSection from "../components/list/SalesListSection.tsx";
+import SalesViewToggle from "../components/common/SalesViewToggle";
+import SalesChartSection from "../components/chart/SalesChartSection";
+import SalesListSection from "../components/list/SalesListSection";
 import type { SalesFilterState } from "../types/SalesFilter";
 
 const getDefaultFilter = (): SalesFilterState => ({

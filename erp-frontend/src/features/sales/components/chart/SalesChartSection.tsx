@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
-import KpiCard from "./KpiCard.tsx";
-import SalesTrendSection from "./SalesTrendSection.tsx";
-import StoreTop5Chart from "./StoreTop5Section.tsx";
-import MenuRatioChart from "./MenuRatioSection.tsx";
+import KpiCard from "./KpiCard";
+import SalesTrendSection from "./SalesTrendSection";
+import StoreTop5Chart from "./StoreTop5Section";
+import MenuRatioChart from "./MenuRatioSection";
 
-import type { SalesFilterState } from "../../types/SalesFilter.tsx";
+import type { SalesFilterState } from "../../types/SalesFilter";
 import {
     fetchSalesKpi,
     fetchSalesTrend,
     fetchStoreTop5,
     fetchMenuRatio,
-} from "../../apis/salesApi.ts";
+} from "../../apis/salesApi";
 
-import StoreSearchModal from "../common/StoreSearchModal.tsx";
-import SalesChartBar from "./SalesChartBar.tsx";
+import StoreSearchModal from "../common/StoreSearchModal";
+import SalesChartBar from "./SalesChartBar";
 
 type Props = {
     filter: SalesFilterState;

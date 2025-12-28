@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import useNavigateTo from "../../../../shared/hooks/useNavigateTo.tsx";
-import PaginationContainer from "../../../../shared/components/PaginationForm.tsx";
+import useNavigateTo from "../../../../shared/hooks/useNavigateTo";
+import PaginationContainer from "../../../../shared/components/PaginationForm";
 import {
     Table,
     TableHeader,
     TableRow,
     TableCell,
 } from "../../../../shared/components/Table.tsx";
-import type { SalesFilterState } from "../../types/SalesFilter.tsx";
-import { fetchSalesList } from "../../apis/salesApi.ts";
-import type { SalesListItem } from "../../types/SalesList.tsx";
-import SalesListBar from "./SalesListBar.tsx";
+import type { SalesFilterState } from "../../types/SalesFilter";
+import { fetchSalesList } from "../../apis/salesApi";
+import type { SalesListItem } from "../../types/SalesList";
+import SalesListBar from "./SalesListBar";
 
 type Props = {
     filter: SalesFilterState;

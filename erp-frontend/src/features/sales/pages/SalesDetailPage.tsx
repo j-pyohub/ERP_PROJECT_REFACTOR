@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router-dom";
-import SalesDetailSection from "../components/deatil/SalesDetailSection.tsx";
+import SalesDetailSection from "../components/deatil/SalesDetailSection";
 
 export default function SalesDetailPage() {
     const [params] = useSearchParams();

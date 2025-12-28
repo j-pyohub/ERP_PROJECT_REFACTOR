@@ -7,9 +7,9 @@ import {
     TableHeader,
     TableRow,
     TableCell,
-} from "../../../../shared/components/Table.tsx";
-import { fetchSalesDetail } from "../../apis/salesApi.ts";
-import type { SalesDetailItem } from "../../types/SalesDetail.tsx";
+} from "../../../../shared/components/Table";
+import { fetchSalesDetail } from "../../apis/salesApi";
+import type { SalesDetailItem } from "../../types/SalesDetail";
 
 const PAGE_SIZE = 10;
 
