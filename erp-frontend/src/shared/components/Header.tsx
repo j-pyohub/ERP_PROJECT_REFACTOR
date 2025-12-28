@@ -19,8 +19,8 @@ function Header() {
           {"label": "재고 현황 조회", "path": "/store/item"},
           {"label": "재고 변동 조회", "path": "/store/stock"},
           {"label": "발주", "path": "/item/order"},
-          {"label": "발주 내역 조회", "path": "/"},
-          {"label": "발주 제안", "path": "/purchase-proposals"}
+          {"label": "발주 내역 조회", "path": "/item/order/list"},
+          {"label": "발주 제안", "path": "/item/order/propose"}
         ]} />
         <Dropdown title="메뉴" items={[
           {"label": "메뉴 조회", "path": "/menu"},
@@ -31,8 +31,8 @@ function Header() {
           <span>직영점 목록</span>
         </div>
         <Dropdown title="계정 관리" items={[
-          {"label": "계정 등록", "path": "/account-register"},
-          {"label": "계정 목록 조회", "path": "/account-list"}
+          {"label": "계정 목록 조회", "path": "/admin/member"},
+          {"label": "계정 등록", "path": "/admin/member/add"},
         ]} />
       <div className="flex items-center gap-3 text-sm">
         <span>사용자명</span>
