@@ -8,6 +8,8 @@ import MenuAddPage from "../features/menu/pages/MenuAddPage";
 import TestPage from "../features/test/TestPage";
 import ItemPage from "../features/item/ItemPage";
 import StoreStockPage from "../features/stock/pages/StoreStockPage";
+import SalesDetailPage from "../features/sales/pages/SalesDetailPage.tsx";
+import SalesOrderAddPage from "../features/sales/pages/SalesOrderAddPage.tsx";
 
 function AppRoute() {
     return (
@@ -15,12 +17,14 @@ function AppRoute() {
             <Routes>
                 <Route path="/auth/login" element={<PageLayout showHeader={false}><LoginPage /></PageLayout>} />
                 <Route path="/sales" element={<PageLayout><SalesPage /></PageLayout>} />
+                <Route path="/sales/detail" element={<SalesDetailPage />} />
                 <Route path="/menu" element={<PageLayout><MenuListPage /></PageLayout>} />
                 <Route path="/store-menu" element={<PageLayout><StoreMenuListPage /></PageLayout>} />
                 <Route path="/menu/add" element={<PageLayout><MenuAddPage /></PageLayout>} />
                 <Route path="/item" element={<PageLayout><ItemPage /></PageLayout>} />
                 <Route path="/stock" element={<PageLayout><StoreStockPage /></PageLayout>} />
                 <Route path="/test" element={<PageLayout><TestPage /></PageLayout>} />
+                <Route path="/sales/order" element={<PageLayout><SalesOrderAddPage /></PageLayout>} />
             </Routes>
         </BrowserRouter>
 

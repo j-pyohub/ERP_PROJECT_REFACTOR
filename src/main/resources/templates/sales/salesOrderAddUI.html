@@ -196,7 +196,6 @@
             const size = $(this).data("size");
             const price = $(this).data("price");
 
-            // 중복 방지
             if ($(`#orderMenuList tr[data-storemenuno="${storeMenuNo}"]`).length > 0) return;
 
             const newRow = `
