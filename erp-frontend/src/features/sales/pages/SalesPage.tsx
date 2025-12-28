@@ -1,7 +1,7 @@
 import { useState } from "react";
-import SalesViewToggle from "../components/SalesViewToggle";
-import SalesChartSection from "../components/SalesChartSection";
-import SalesListSection from "../components/SalesListSection";
+import SalesViewToggle from "../components/common/SalesViewToggle.tsx";
+import SalesChartSection from "../components/chart/SalesChartSection.tsx";
+import SalesListSection from "../components/list/SalesListSection.tsx";
 import type { SalesFilterState } from "../types/SalesFilter";
 
 const getDefaultFilter = (): SalesFilterState => ({
@@ -35,7 +35,6 @@ export default function SalesPage() {
                 />
             )}
 
-            {/* 리스트 */}
             {viewMode === "list" && (
                 <SalesListSection
                     filter={listFilter}

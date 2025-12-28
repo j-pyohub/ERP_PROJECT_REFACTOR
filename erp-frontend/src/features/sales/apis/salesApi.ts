@@ -7,6 +7,9 @@ import type {
 } from "../types/SalesApi";
 import type {SalesListParams, SalesListResponse} from "../types/SalesList.tsx";
 import type {Store} from "../../../shared/types/Store.tsx";
+import type {SalesOrderListParams, SalesOrderListResponse} from "../types/SalesOrder.tsx";
+
+
 
 export function fetchSalesKpi(params: SalesKpiParams) {
     return apiClient.get("/sales/KPI", { params });
@@ -42,4 +45,11 @@ export function fetchSalesDetail(
 
 export function fetchStoreList() {
     return apiClient.get<Store[]>("/storeSearch/modal");
+}
+
+export function fetchSalesOrderList(params: SalesOrderListParams) {
+    return apiClient.get<SalesOrderListResponse>(
+        "/sales/order/list",
+        { params }
+    );
 }

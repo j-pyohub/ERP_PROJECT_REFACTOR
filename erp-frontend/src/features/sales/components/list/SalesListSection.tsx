@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Button from "../../../shared/components/Button";
-import PaginationContainer from "../../../shared/components/PaginationForm";
+import useNavigateTo from "../../../../shared/hooks/useNavigateTo.tsx";
+import PaginationContainer from "../../../../shared/components/PaginationForm.tsx";
 import {
     Table,
     TableHeader,
     TableRow,
     TableCell,
-} from "../../../shared/components/Table";
-import type { SalesFilterState } from "../types/SalesFilter";
-import { fetchSalesList } from "../apis/salesApi";
-import type { SalesListItem } from "../types/SalesList";
+} from "../../../../shared/components/Table.tsx";
+import type { SalesFilterState } from "../../types/SalesFilter.tsx";
+import { fetchSalesList } from "../../apis/salesApi.ts";
+import type { SalesListItem } from "../../types/SalesList.tsx";
+import SalesListBar from "./SalesListBar.tsx";
 
 type Props = {
     filter: SalesFilterState;
@@ -34,7 +34,7 @@ const getDefaultDateRange = () => {
 };
 
 export default function SalesListSection({ filter, setFilter }: Props) {
-    const navigate = useNavigate();
+    const navigateTo = useNavigateTo();
 
     const [storeName, setStoreName] = useState("");
     const [page, setPage] = useState(1);
@@ -53,8 +53,6 @@ export default function SalesListSection({ filter, setFilter }: Props) {
 
         setList(res.data.list);
         setPage(res.data.currentPage);
-
-        // ✅ 핵심 수정 포인트
         setTotalCount(res.data.totalPages * PAGE_SIZE);
     };
 
@@ -68,46 +66,22 @@ export default function SalesListSection({ filter, setFilter }: Props) {
 
     return (
         <section className="bg-white rounded-xl shadow-sm p-4 space-y-4">
-            {/* 검색 영역 */}
-            <div className="flex flex-wrap items-center gap-6 text-sm">
-                <div className="flex items-center gap-2">
-                    <span className="font-medium">조회기간</span>
-                    <input
-                        type="date"
-                        value={filter.from}
-                        onChange={(e) =>
-                            setFilter((prev) => ({ ...prev, from: e.target.value }))
-                        }
-                        className="border rounded px-2 py-1 h-9"
-                    />
-                    <span>~</span>
-                    <input
-                        type="date"
-                        value={filter.to}
-                        onChange={(e) =>
-                            setFilter((prev) => ({ ...prev, to: e.target.value }))
-                        }
-                        className="border rounded px-2 py-1 h-9"
-                    />
-                </div>
+            <SalesListBar
+                from={filter.from}
+                to={filter.to}
+                storeName={storeName}
+                onChangeFrom={(v) => setFilter((prev) => ({ ...prev, from: v }))}
+                onChangeTo={(v) => setFilter((prev) => ({ ...prev, to: v }))}
+                onChangeStoreName={setStoreName}
+                onSearch={() => loadList(1)}
+                onReset={() => {
+                    const { from, to } = getDefaultDateRange();
+                    setStoreName("");
+                    setFilter((prev) => ({ ...prev, from, to }));
+                    loadList(1);
+                }}
+            />
 
-                <div className="flex items-center gap-2">
-                    <span className="font-medium">직영점명</span>
-                    <input
-                        type="text"
-                        value={storeName}
-                        onChange={(e) => setStoreName(e.target.value)}
-                        onKeyUp={(e) => e.key === "Enter" && loadList(1)}
-                        placeholder="지점명 검색"
-                        className="border rounded px-2 py-1 h-9 w-40"
-                    />
-                    <Button className="yellow-btn h-9 px-4" onClick={() => loadList(1)}>
-                        검색
-                    </Button>
-                </div>
-            </div>
-
-            {/* 테이블 */}
             <Table gridColumns="80px 180px 1fr 120px 120px 140px 140px 60px">
                 <TableHeader
                     columns={[
@@ -144,18 +118,15 @@ export default function SalesListSection({ filter, setFilter }: Props) {
                                 src="/image/detail.png"
                                 alt="상세보기"
                                 className="detail-icon cursor-pointer mx-auto"
-                                onClick={() =>
-                                    navigate(
-                                        `/sales/detail?storeNo=${item.storeNo}&salesDate=${item.salesDate}`
-                                    )
-                                }
+                                onClick={navigateTo(
+                                    `/sales/detail?storeNo=${item.storeNo}&salesDate=${item.salesDate}`
+                                )}
                             />
                         </TableCell>
                     </TableRow>
                 ))}
             </Table>
 
-            {/* 페이지네이션 */}
             <PaginationContainer
                 totalCount={totalCount}
                 pageSize={PAGE_SIZE}

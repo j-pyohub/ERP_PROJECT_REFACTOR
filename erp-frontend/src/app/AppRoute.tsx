@@ -8,6 +8,7 @@ import MenuAddPage from "../features/menu/pages/MenuAddPage";
 import TestPage from "../features/test/TestPage";
 import ItemPage from "../features/item/ItemPage";
 import SalesDetailPage from "../features/sales/pages/SalesDetailPage.tsx";
+import SalesOrderAddPage from "../features/sales/pages/SalesOrderAddPage.tsx";
 
 function AppRoute() {
     return (
@@ -21,6 +22,7 @@ function AppRoute() {
                 <Route path="/menu/add" element={<PageLayout><MenuAddPage /></PageLayout>} />
                 <Route path="/item" element={<PageLayout><ItemPage /></PageLayout>} />
                 <Route path="/test" element={<PageLayout><TestPage /></PageLayout>} />
+                <Route path="/sales/order" element={<PageLayout><SalesOrderAddPage /></PageLayout>} />
             </Routes>
         </BrowserRouter>
 

@@ -4,7 +4,7 @@ import type { SalesFilterState } from "../types/SalesFilter";
 type Params = {
     filter: SalesFilterState;
     setFilter: React.Dispatch<React.SetStateAction<SalesFilterState>>;
-    onReady: () => void; // 날짜 준비되면 실행할 콜백
+    onReady: () => void;
 };
 
 const getDefaultDateRange = () => {
