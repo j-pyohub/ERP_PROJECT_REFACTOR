@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api")
 public class ItemOrderRestController {
     @Autowired
     ItemOrderService itemOrderService;
@@ -102,7 +103,7 @@ public class ItemOrderRestController {
 
     @GetMapping("/itemOrder/itemProposalHistory")
     public List<ItemProposalDTO> proposalItemOrderHistory(@AuthenticationPrincipal PrincipalDetails dp) {
-        return itemOrderService.getItemProposalHistoryByStoreNo(dp.getStore().getStoreNo());
+        return itemOrderService.getItemProposalHistoryByStoreNo(storeDAO.getStoreNoByManager(dp.getManager().getManagerId()));
     }
 
     @GetMapping("/itemOrder/itemProposalHistory/{storeNo}")
@@ -112,7 +113,7 @@ public class ItemOrderRestController {
 
     @GetMapping("/itemOrder/itemProposal")
     public List<ItemProposalDTO> proposalItemOrder(@AuthenticationPrincipal PrincipalDetails dp) {
-        return itemOrderService.getItemProposalByStoreNo(dp.getStore().getStoreNo());
+        return itemOrderService.getItemProposalByStoreNo(storeDAO.getStoreNoByManager(dp.getManager().getManagerId()));
     }
     @GetMapping("/itemOrder/itemProposal/{storeNo}")
     public List<ItemProposalDTO> proposalItemOrder(@PathVariable Long storeNo) {
@@ -142,8 +143,9 @@ public class ItemOrderRestController {
 
     @PostMapping("/itemOrder/itemOrder")
     public ResponseEntity<Map<String, String>> requestItemOrder(@RequestBody ItemOrderRequestDTO request, @AuthenticationPrincipal PrincipalDetails dp) {
+
         try {
-            itemOrderService.requestItemOrder(request, dp.getStore().getStoreNo());
+            itemOrderService.requestItemOrder(request, storeDAO.getStoreNoByManager(dp.getManager().getManagerId()));
         }
         catch (Exception e) {
             System.err.println(e.getMessage());

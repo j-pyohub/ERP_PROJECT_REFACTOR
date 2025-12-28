@@ -1,3 +1,4 @@
+import Button from "../../../shared/components/Button";
 import { TableRow, TableCell } from "../../../shared/components/Table";
 import type { Item } from "../types/Item";
 
@@ -12,7 +13,7 @@ export function ItemTableRow({ row }: { row: Item }) {
         <TableCell>{row.ingredientName}</TableCell>
         <TableCell>{row.supplier}</TableCell>
         <TableCell>{row.itemPrice}</TableCell>
-        <TableCell>{row.note || "-"}</TableCell>
+        <TableCell><Button className="yellow-btn">상세</Button></TableCell>
       </TableRow>
     </>
   );
