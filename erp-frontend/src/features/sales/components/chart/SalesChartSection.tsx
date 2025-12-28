@@ -4,7 +4,7 @@ import SalesTrendSection from "./SalesTrendSection";
 import StoreTop5Chart from "./StoreTop5Section";
 import MenuRatioChart from "./MenuRatioSection";
 
-import type { SalesFilterState } from "../../types/SalesFilter";
+import type { SalesFilterState } from "../../types/SalesFilter.ts";
 import {
     fetchSalesKpi,
     fetchSalesTrend,

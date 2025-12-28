@@ -7,9 +7,9 @@ import {
     TableRow,
     TableCell,
 } from "../../../../shared/components/Table.tsx";
-import type { SalesFilterState } from "../../types/SalesFilter";
+import type { SalesFilterState } from "../../types/SalesFilter.ts";
 import { fetchSalesList } from "../../apis/salesApi";
-import type { SalesListItem } from "../../types/SalesList";
+import type { SalesListItem } from "../../types/SalesList.ts";
 import SalesListBar from "./SalesListBar";
 
 type Props = {
