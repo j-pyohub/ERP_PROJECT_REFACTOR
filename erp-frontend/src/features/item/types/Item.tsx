@@ -1,6 +1,6 @@
 export type ReleaseStatus = '출시 예정' | '출시 중' | '출시 중단';
 export interface Item {
-    itemNo: string;
+    itemNo: number;
     itemCode: string;
     itemCategory: string;
     itemName: string;

@@ -18,8 +18,8 @@ export const useLoginForm = () => {
             }
             localStorage.setItem("jwtToken", token);
             console.log(token);
-            window.location.href = 'http://localhost:5432/';
-            // goToMainPage(); // 로그인 성공 시 매출 페이지로 이동
+            // window.location.href = 'http://localhost:5432/';
+            goToMainPage(); // 로그인 성공 시 매출 페이지로 이동
         } catch (error) {
             setError("로그인에 실패했습니다. 아이디와 비밀번호를 확인해주세요.");
         }
