@@ -8,7 +8,7 @@ import StoreSearchModal from "../../../shared/components/storeModal/StoreSearchM
 import MenuSearchModal from "../components/order/menuSearchModal/MenuSearchModal";
 import OrderMenuTable from "../components/order/OrderMenuTable";
 
-import type { OrderRow } from "../types/OrderRow";
+import { useSalesOrderStore } from "../stores/salesOrderStore";
 import type { StoreMenuItem } from "../components/order/menuSearchModal/MenuSearchTable";
 
 export default function SalesOrderAddPage() {
@@ -18,13 +18,22 @@ export default function SalesOrderAddPage() {
     const [storeModalOpen, setStoreModalOpen] = useState(false);
     const [menuModalOpen, setMenuModalOpen] = useState(false);
 
-    const [storeNo, setStoreNo] = useState<number | null>(null);
-    const [storeName, setStoreName] = useState("");
+
+    const {
+        storeNo,
+        storeName,
+        orderRows,
+        setStore,
+        addOrderRow,
+        updateQuantity,
+        removeOrderRow,
+        reset,
+    } = useSalesOrderStore();
+
 
     const [menuList, setMenuList] = useState<StoreMenuItem[]>([]);
     const [checked, setChecked] = useState<Set<number>>(new Set());
 
-    const [orderRows, setOrderRows] = useState<OrderRow[]>([]);
 
     useEffect(() => {
         if (!menuModalOpen || !storeNo) return;
@@ -36,6 +45,7 @@ export default function SalesOrderAddPage() {
                 setChecked(new Set());
             });
     }, [menuModalOpen, storeNo]);
+
 
     function toggleAllMenu(next: boolean) {
         if (!next) {
@@ -54,39 +64,23 @@ export default function SalesOrderAddPage() {
     }
 
 
-    function changeQty(storeMenuNo: number, qty: number) {
-        setOrderRows((prev) =>
-            prev.map((row) =>
-                row.storeMenuNo === storeMenuNo
-                    ? { ...row, qty: Math.max(1, qty) }
-                    : row
-            )
-        );
-    }
-
-    function removeOrderRow(storeMenuNo: number) {
-        setOrderRows((prev) =>
-            prev.filter((row) => row.storeMenuNo !== storeMenuNo)
-        );
-    }
-
     function confirmMenu() {
-        setOrderRows((prev) => {
-            const exist = new Set(prev.map((r) => r.storeMenuNo));
+        const exist = new Set(orderRows.map((r) => r.storeMenuNo));
 
-            const added = menuList
-                .filter((m) => checked.has(m.storeMenuNo))
-                .filter((m) => !exist.has(m.storeMenuNo))
-                .map((m) => ({
+        menuList
+            .filter((m) => checked.has(m.storeMenuNo))
+            .filter((m) => !exist.has(m.storeMenuNo))
+            .forEach((m) =>
+                addOrderRow({
+                    rowId: Date.now() + m.storeMenuNo,
                     storeMenuNo: m.storeMenuNo,
                     menuName: m.menuName,
                     size: m.size,
-                    menuPrice: m.menuPrice,
-                    qty: 1,
-                }));
-
-            return [...prev, ...added];
-        });
+                    unitPrice: m.menuPrice,
+                    quantity: 1,
+                    totalPrice: m.menuPrice,
+                })
+            );
 
         setMenuModalOpen(false);
     }
@@ -105,13 +99,16 @@ export default function SalesOrderAddPage() {
 
         await apiClient.post("/sales/getSalesOrder/addSalesOrder", {
             storeNo,
-            menuList: orderRows.map((r) => ({ storeMenuNo: r.storeMenuNo })),
+            menuList: orderRows.map((r) => ({
+                storeMenuNo: r.storeMenuNo,
+            })),
             detailList: orderRows.map((r) => ({
-                count: r.qty,
-                price: r.menuPrice,
+                count: r.quantity,
+                price: r.unitPrice,
             })),
         });
 
+        reset();
         navigate(-1);
     }
 
@@ -133,17 +130,11 @@ export default function SalesOrderAddPage() {
                 >
                     검색
                 </Button>
-                <Button
-                    className="white-btn h-9"
-                    onClick={() => {
-                        setStoreNo(null);
-                        setStoreName("");
-                        setOrderRows([]);
-                    }}
-                >
+                <Button className="white-btn h-9" onClick={reset}>
                     초기화
                 </Button>
             </div>
+
 
             <div className="section-box flex justify-between items-center">
                 <div className="font-semibold">메뉴 추가</div>
@@ -163,7 +154,7 @@ export default function SalesOrderAddPage() {
 
             <OrderMenuTable
                 rows={orderRows}
-                onChangeQty={changeQty}
+                onChangeQty={updateQuantity}
                 onRemove={removeOrderRow}
             />
 
@@ -171,18 +162,24 @@ export default function SalesOrderAddPage() {
                 <Button className="yellow-btn h-10" onClick={submitOrder}>
                     주문 등록
                 </Button>
-                <Button className="white-btn h-10" onClick={() => navigate(-1)}>
+                <Button
+                    className="white-btn h-10"
+                    onClick={() => {
+                        reset();
+                        navigate(-1);
+                    }}
+                >
                     취소
                 </Button>
             </div>
+
 
             <StoreSearchModal
                 open={storeModalOpen}
                 onClose={() => setStoreModalOpen(false)}
                 onSelect={(no, name) => {
-                    setStoreNo(no);
-                    setStoreName(name);
-                    setOrderRows([]);
+                    setStore(no, name);
+                    setStoreModalOpen(false);
                 }}
             />
 

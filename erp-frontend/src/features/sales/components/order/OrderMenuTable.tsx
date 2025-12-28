@@ -1,11 +1,10 @@
-// sales/components/order/OrderMenuTable.tsx
 import Button from "../../../../shared/components/Button";
 import type { OrderRow } from "../../types/OrderRow";
 
 type Props = {
     rows: OrderRow[];
-    onChangeQty: (storeMenuNo: number, qty: number) => void;
-    onRemove: (storeMenuNo: number) => void;
+    onChangeQty: (rowId: number, qty: number) => void;
+    onRemove: (rowId: number) => void;
 };
 
 export default function OrderMenuTable({
@@ -32,30 +31,35 @@ export default function OrderMenuTable({
                     <tbody>
                     {rows.length === 0 && (
                         <tr>
-                            <td colSpan={5} className="border px-3 py-6 text-gray-500">
+                            <td
+                                colSpan={5}
+                                className="border px-3 py-6 text-gray-500"
+                            >
                                 메뉴를 선택하세요.
                             </td>
                         </tr>
                     )}
 
                     {rows.map((row) => (
-                        <tr key={row.storeMenuNo}>
+                        <tr key={row.rowId}>
                             <td className="border px-3 py-2 text-left">
                                 {row.menuName}
                             </td>
-                            <td className="border px-3 py-2">{row.size}</td>
                             <td className="border px-3 py-2">
-                                {row.menuPrice.toLocaleString()}
+                                {row.size}
+                            </td>
+                            <td className="border px-3 py-2 text-right">
+                                {row.unitPrice.toLocaleString()}
                             </td>
                             <td className="border px-3 py-2">
                                 <input
                                     type="number"
                                     min={1}
                                     className="border rounded px-2 py-1 h-9 w-28 text-right"
-                                    value={row.qty}
+                                    value={row.quantity}
                                     onChange={(e) =>
                                         onChangeQty(
-                                            row.storeMenuNo,
+                                            row.rowId,
                                             Number(e.target.value)
                                         )
                                     }
@@ -64,7 +68,9 @@ export default function OrderMenuTable({
                             <td className="border px-3 py-2">
                                 <Button
                                     className="red-btn h-9 px-3"
-                                    onClick={() => onRemove(row.storeMenuNo)}
+                                    onClick={() =>
+                                        onRemove(row.rowId)
+                                    }
                                 >
                                     삭제
                                 </Button>

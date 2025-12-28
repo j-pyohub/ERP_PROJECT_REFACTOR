@@ -1,7 +1,9 @@
-export type OrderRow = {
+export interface OrderRow {
+    rowId: number;
     storeMenuNo: number;
     menuName: string;
     size: string;
-    menuPrice: number;
-    qty: number;
-};
+    unitPrice: number;
+    quantity: number;
+    totalPrice: number;
+}
