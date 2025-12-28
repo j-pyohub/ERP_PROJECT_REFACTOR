@@ -5,12 +5,14 @@ import PageLayout from "../shared/components/PageLayout";
 import SalesPage from "../features/sales/pages/SalesPage";
 import LoginPage from "../features/login/pages/LoginPage";
 import MenuAddPage from "../features/menu/pages/MenuAddPage";
+
 import TestPage from "../features/test/TestPage";
 import ItemPage from "../features/item/ItemPage";
 import ItemOrderPage from "../features/item_order/ItemOrderPage";
 import StoreStockPage from "../features/stock/pages/StoreStockPage";
 import SalesDetailPage from "../features/sales/pages/SalesDetailPage.tsx";
 import SalesOrderAddPage from "../features/sales/pages/SalesOrderAddPage.tsx";
+
 
 function AppRoute() {
     return (
@@ -29,7 +31,6 @@ function AppRoute() {
                 <Route path="/sales/order/add" element={<PageLayout><SalesOrderAddPage /></PageLayout>} />
             </Routes>
         </BrowserRouter>
-
     );
 }
 export default AppRoute;

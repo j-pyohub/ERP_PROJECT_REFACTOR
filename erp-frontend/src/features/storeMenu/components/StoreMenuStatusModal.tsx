@@ -37,7 +37,7 @@ function StoreMenuStatusModal() {
                         </div>
 
                         <div className="modal-footer flex justify-end gap-2">
-                            <button className="custom-btn" id="saveStatusBtn">
+                            <button className="yellow-btn" id="saveStatusBtn">
                                 저장
                             </button>
                             <button
