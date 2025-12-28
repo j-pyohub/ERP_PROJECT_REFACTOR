@@ -9,13 +9,31 @@ function Header() {
           <button className="px-3 py-1.5 text-sm rounded border border-gray-300 bg-white hover:bg-gray-50">로고</button>
           <button className="px-3 py-1.5 text-sm rounded border border-gray-300 bg-white hover:bg-gray-50">회사명</button>
         </div>
-        <Dropdown title="매출" items={["매출 조회", "주문 조회"]} />
-        <Dropdown title="품목/재고" items={["품목 조회", "재고 현황 조회", "재고 변동 조회", "발주", "발주 내역 조회", "발주 제안"]} />
-        <Dropdown title="메뉴" items={["메뉴 등록", "메뉴 조회", "판매 메뉴 관리"]} />
+        <Dropdown title="매출" items={[
+          {"label": "매출 조회", "path": "/sales"},
+          {"label": "주문 조회", "path": "/sales/order"},
+          {"label": "주문 등록", "path": "/sales/order/add"}
+        ]} />
+        <Dropdown title="품목/재고" items={[
+          {"label": "품목 조회", "path": "/item"},
+          {"label": "재고 현황 조회", "path": "/store/item"},
+          {"label": "재고 변동 조회", "path": "/store/stock"},
+          {"label": "발주", "path": "/item/order"},
+          {"label": "발주 내역 조회", "path": "/item/order/list"},
+          {"label": "발주 제안", "path": "/item/order/propose"}
+        ]} />
+        <Dropdown title="메뉴" items={[
+          {"label": "메뉴 조회", "path": "/menu"},
+          {"label": "메뉴 등록", "path": "/menu/add"},
+          {"label": "판매 메뉴 관리", "path": "/store/menu"}
+        ]} />
         <div className="menu-item">
           <span>직영점 목록</span>
         </div>
-        <Dropdown title="계정 관리" items={["계정 등록", "계정 목록 조회"]} />
+        <Dropdown title="계정 관리" items={[
+          {"label": "계정 목록 조회", "path": "/admin/member"},
+          {"label": "계정 등록", "path": "/admin/member/add"},
+        ]} />
       <div className="flex items-center gap-3 text-sm">
         <span>사용자명</span>
         <button className="px-3 py-1.5 text-sm rounded border border-gray-300 bg-white hover:bg-gray-50">로그아웃</button>

@@ -49,7 +49,7 @@ function StoreMenuFilterBar() {
                         placeholder="여기를 눌러 선택하세요"
                         readOnly
                     />
-                    <button className="btn custom-btn btn-sm" id="searchBtn">
+                    <button className="btn yellow-btn btn-sm" id="searchBtn">
                         조회
                     </button>
                 </div>
