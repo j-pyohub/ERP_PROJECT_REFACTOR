@@ -20,13 +20,13 @@ function AppRoute() {
                 <Route path="/sales" element={<PageLayout><SalesPage /></PageLayout>} />
                 <Route path="/sales/detail" element={<SalesDetailPage />} />
                 <Route path="/menu" element={<PageLayout><MenuListPage /></PageLayout>} />
-                <Route path="/store-menu" element={<PageLayout><StoreMenuListPage /></PageLayout>} />
+                <Route path="/store/menu" element={<PageLayout><StoreMenuListPage /></PageLayout>} />
                 <Route path="/menu/add" element={<PageLayout><MenuAddPage /></PageLayout>} />
                 <Route path="/item" element={<PageLayout><ItemPage /></PageLayout>} />
-                <Route path="/item-order" element={<PageLayout><ItemOrderPage /></PageLayout>} />
-                <Route path="/stock" element={<PageLayout><StoreStockPage /></PageLayout>} />
+                <Route path="/item/order" element={<PageLayout><ItemOrderPage /></PageLayout>} />
+                <Route path="/store/stock" element={<PageLayout><StoreStockPage /></PageLayout>} />
                 <Route path="/test" element={<PageLayout><TestPage /></PageLayout>} />
-                <Route path="/sales/order" element={<PageLayout><SalesOrderAddPage /></PageLayout>} />
+                <Route path="/sales/order/add" element={<PageLayout><SalesOrderAddPage /></PageLayout>} />
             </Routes>
         </BrowserRouter>
 
