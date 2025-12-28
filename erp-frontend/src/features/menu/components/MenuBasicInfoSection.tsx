@@ -122,9 +122,9 @@ export function MenuBasicInfoSection(){
                     value={releaseStatus}
                     label="출시 상태"
                     options={[
-                    { label: "출시 예정", value: "planned" },
-                    { label: "출시 중", value: "released" },
-                    { label: "출시 중지", value: "discontinued" }
+                    { label: "출시 예정", value: "출시 예정" },
+                    { label: "출시 중", value: "출시 중" },
+                    { label: "출시 중지", value: "출시 중지" }
                     ]}
                     onChange={e => setField("releaseStatus", e.target.value)}
                     wrapperClassName="col-span-4"
