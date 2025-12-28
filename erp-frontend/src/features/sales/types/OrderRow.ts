@@ -1,5 +1,5 @@
 export interface OrderRow {
-    rowId: number;
+    rowId: string;
     storeMenuNo: number;
     menuName: string;
     size: string;

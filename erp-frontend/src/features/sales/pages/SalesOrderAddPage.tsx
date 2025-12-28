@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import apiClient from "../../../shared/apis/apiClient";
 import Button from "../../../shared/components/Button";
 
 import StoreSearchModal from "../../../shared/components/storeModal/StoreSearchModal";
@@ -9,15 +8,18 @@ import MenuSearchModal from "../components/order/menuSearchModal/MenuSearchModal
 import OrderMenuTable from "../components/order/OrderMenuTable";
 
 import { useSalesOrderStore } from "../stores/salesOrderStore";
-import type { StoreMenuItem } from "../components/order/menuSearchModal/MenuSearchTable";
+import type { StoreMenuItem } from "../types/StoreMenuItem";
+
+import {
+    fetchStoreMenu,
+    createSalesOrder,
+} from "../apis/salesApi";
 
 export default function SalesOrderAddPage() {
     const navigate = useNavigate();
 
-
     const [storeModalOpen, setStoreModalOpen] = useState(false);
     const [menuModalOpen, setMenuModalOpen] = useState(false);
-
 
     const {
         storeNo,
@@ -30,29 +32,34 @@ export default function SalesOrderAddPage() {
         reset,
     } = useSalesOrderStore();
 
-
     const [menuList, setMenuList] = useState<StoreMenuItem[]>([]);
     const [checked, setChecked] = useState<Set<number>>(new Set());
+
+    const disabledSet = new Set(
+        orderRows.map((r) => r.storeMenuNo)
+    );
 
 
     useEffect(() => {
         if (!menuModalOpen || !storeNo) return;
 
-        apiClient
-            .get<StoreMenuItem[]>(`/storeMenu/getStoreMenu/${storeNo}`)
-            .then((res) => {
-                setMenuList(res.data);
-                setChecked(new Set());
-            });
+        fetchStoreMenu(storeNo).then((res) => {
+            setMenuList(res.data);
+            setChecked(new Set());
+        });
     }, [menuModalOpen, storeNo]);
-
 
     function toggleAllMenu(next: boolean) {
         if (!next) {
             setChecked(new Set());
             return;
         }
-        setChecked(new Set(menuList.map((m) => m.storeMenuNo)));
+
+        const selectable = menuList
+            .filter((m) => !disabledSet.has(m.storeMenuNo))
+            .map((m) => m.storeMenuNo);
+
+        setChecked(new Set(selectable));
     }
 
     function toggleOneMenu(storeMenuNo: number, next: boolean) {
@@ -72,7 +79,7 @@ export default function SalesOrderAddPage() {
             .filter((m) => !exist.has(m.storeMenuNo))
             .forEach((m) =>
                 addOrderRow({
-                    rowId: Date.now() + m.storeMenuNo,
+                    rowId: crypto.randomUUID(),
                     storeMenuNo: m.storeMenuNo,
                     menuName: m.menuName,
                     size: m.size,
@@ -97,16 +104,7 @@ export default function SalesOrderAddPage() {
             return;
         }
 
-        await apiClient.post("/sales/getSalesOrder/addSalesOrder", {
-            storeNo,
-            menuList: orderRows.map((r) => ({
-                storeMenuNo: r.storeMenuNo,
-            })),
-            detailList: orderRows.map((r) => ({
-                count: r.quantity,
-                price: r.unitPrice,
-            })),
-        });
+        await createSalesOrder(storeNo, orderRows);
 
         reset();
         navigate(-1);
@@ -116,7 +114,7 @@ export default function SalesOrderAddPage() {
         <section className="w-full max-w-[1500px] mx-auto px-4 py-4 space-y-4">
             <h2 className="text-xl font-semibold">주문 등록</h2>
 
-
+            {/* store */}
             <div className="flex justify-end gap-2">
                 <span className="font-semibold">직영점</span>
                 <input
@@ -130,14 +128,15 @@ export default function SalesOrderAddPage() {
                 >
                     검색
                 </Button>
-                <Button className="white-btn h-9" onClick={reset}>
+                <Button
+                    className="white-btn h-9"
+                    onClick={reset}
+                >
                     초기화
                 </Button>
             </div>
-
-
+            
             <div className="section-box flex justify-between items-center">
-                <div className="font-semibold">메뉴 추가</div>
                 <Button
                     className="yellow-btn h-9"
                     onClick={() => {
@@ -148,7 +147,7 @@ export default function SalesOrderAddPage() {
                         setMenuModalOpen(true);
                     }}
                 >
-                    검색
+                    메뉴추가
                 </Button>
             </div>
 
@@ -158,8 +157,12 @@ export default function SalesOrderAddPage() {
                 onRemove={removeOrderRow}
             />
 
+            {/* action */}
             <div className="flex justify-end gap-2">
-                <Button className="yellow-btn h-10" onClick={submitOrder}>
+                <Button
+                    className="yellow-btn h-10"
+                    onClick={submitOrder}
+                >
                     주문 등록
                 </Button>
                 <Button
@@ -173,7 +176,7 @@ export default function SalesOrderAddPage() {
                 </Button>
             </div>
 
-
+            {/* modals */}
             <StoreSearchModal
                 open={storeModalOpen}
                 onClose={() => setStoreModalOpen(false)}
@@ -187,6 +190,7 @@ export default function SalesOrderAddPage() {
                 open={menuModalOpen}
                 items={menuList}
                 checked={checked}
+                disabledSet={disabledSet}
                 onClose={() => setMenuModalOpen(false)}
                 onToggleAll={toggleAllMenu}
                 onToggleOne={toggleOneMenu}

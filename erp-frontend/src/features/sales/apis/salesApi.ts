@@ -7,8 +7,8 @@ import type {
 } from "../types/SalesApi.ts";
 import type {SalesListParams, SalesListResponse} from "../types/SalesList.ts";
 import type {Store} from "../../../shared/types/Store.tsx";
-import type {SalesOrderListParams, SalesOrderListResponse} from "../types/SalesOrder.ts";
-
+import type { StoreMenuItem } from "../types/StoreMenuItem";
+import type { OrderRow } from "../types/OrderRow";
 
 
 export function fetchSalesKpi(params: SalesKpiParams) {
@@ -47,9 +47,25 @@ export function fetchStoreList() {
     return apiClient.get<Store[]>("/storeSearch/modal");
 }
 
-export function fetchSalesOrderList(params: SalesOrderListParams) {
-    return apiClient.get<SalesOrderListResponse>(
-        "/sales/order/list",
-        { params }
+export function fetchStoreMenu(storeNo: number) {
+    return apiClient.get<StoreMenuItem[]>(
+        `/storeMenu/getStoreMenu/${storeNo}`
     );
+}
+
+
+export function createSalesOrder(
+    storeNo: number,
+    orderRows: OrderRow[]
+) {
+    return apiClient.post("/sales/getSalesOrder/addSalesOrder", {
+        storeNo,
+        menuList: orderRows.map((r) => ({
+            storeMenuNo: r.storeMenuNo,
+        })),
+        detailList: orderRows.map((r) => ({
+            count: r.quantity,
+            price: r.unitPrice,
+        })),
+    });
 }

@@ -2,10 +2,12 @@ import ModalLayout from "../../../../../shared/components/modal/ModalLayout";
 import Button from "../../../../../shared/components/Button";
 import MenuSearchTable, { type StoreMenuItem } from "./MenuSearchTable";
 
+
 type Props = {
     open: boolean;
     items: StoreMenuItem[];
     checked: Set<number>;
+    disabledSet: Set<number>;
     onClose: () => void;
     onToggleAll: (checked: boolean) => void;
     onToggleOne: (storeMenuNo: number, checked: boolean) => void;
@@ -16,6 +18,7 @@ export default function MenuSearchModal({
                                             open,
                                             items,
                                             checked,
+                                            disabledSet,
                                             onClose,
                                             onToggleAll,
                                             onToggleOne,
@@ -36,6 +39,7 @@ export default function MenuSearchModal({
             <MenuSearchTable
                 items={items}
                 checked={checked}
+                disabledSet={disabledSet}
                 onToggleAll={onToggleAll}
                 onToggleOne={onToggleOne}
             />

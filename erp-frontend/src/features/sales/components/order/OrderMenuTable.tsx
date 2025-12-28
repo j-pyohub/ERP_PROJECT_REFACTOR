@@ -3,8 +3,8 @@ import type { OrderRow } from "../../types/OrderRow";
 
 type Props = {
     rows: OrderRow[];
-    onChangeQty: (rowId: number, qty: number) => void;
-    onRemove: (rowId: number) => void;
+    onChangeQty: (rowId: string, qty: number) => void;
+    onRemove: (rowId: string) => void;
 };
 
 export default function OrderMenuTable({
@@ -14,7 +14,6 @@ export default function OrderMenuTable({
                                        }: Props) {
     return (
         <div className="section-box">
-            <div className="font-semibold mb-3">주문 메뉴 목록</div>
 
             <div className="overflow-auto">
                 <table className="min-w-[900px] w-full border-collapse border text-center">

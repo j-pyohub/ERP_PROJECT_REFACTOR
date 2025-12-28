@@ -8,8 +8,8 @@ interface SalesOrderState {
 
     setStore: (storeNo: number, storeName: string) => void;
     addOrderRow: (row: OrderRow) => void;
-    updateQuantity: (rowId: number, quantity: number) => void;
-    removeOrderRow: (rowId: number) => void;
+    updateQuantity: (rowId: string, quantity: number) => void;
+    removeOrderRow: (rowId: string) => void;
     reset: () => void;
 }
 
