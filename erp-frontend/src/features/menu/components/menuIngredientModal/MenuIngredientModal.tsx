@@ -5,20 +5,19 @@ import { useAxios } from "../../../../shared/hooks/useAxios";
 import type { Item } from "../../../../shared/types/Item";
 import { MenuIngredientFilterBar } from "./MenuIngredientFilterBar";
 import { MenuIngredientTableView } from "./MenuIngredientTableView";
+import { useMenuIngredientStore } from "../../stores/menuIngredientStore";
 
 interface MenuIngredientModalProps {
   onClose: () => void;
-  onConfirm?: (items: Item[]) => void;
 }
 
 export function MenuIngredientModal({
   onClose,
-  onConfirm,
 }: MenuIngredientModalProps) {
   const [itemCategory, setItemCategory] = useState("");
   const [searchCondition, setSearchCondition] = useState("");
   const [keyword, setKeyword] = useState("");
-  const [selectedItemNos, setSelectedItemNos] = useState<number[]>([]);
+  const {checkTempToRecipe, resetTemp} = useMenuIngredientStore();
 
   const { data = [], loading, error, request } = useAxios<Item[]>();
 
@@ -42,31 +41,8 @@ export function MenuIngredientModal({
       },
     });
   };
-  /* ===== 선택 토글 ===== */
-  const toggleItem = (itemNo: number) => {
-    setSelectedItemNos((prev) =>
-      prev.includes(itemNo)
-        ? prev.filter((no) => no !== itemNo)
-        : [...prev, itemNo]
-    );
-  };
 
-  const toggleAll = () => {
-    if (selectedItemNos.length === data.length) {
-      setSelectedItemNos([]);
-    } else {
-      setSelectedItemNos(data.map((item) => item.itemNo));
-    }
-  };
 
-  const handleConfirm = () => {
-    const selectedItems = data.filter((item) =>
-      selectedItemNos.includes(item.itemNo)
-    );
-
-    onConfirm?.(selectedItems);
-    onClose();
-  };
 
   return (
     <ModalLayout
@@ -74,10 +50,16 @@ export function MenuIngredientModal({
       onClose={onClose}
       footer={
         <>
-          <Button className="yellow-btn" onClick={handleConfirm}>
+          <Button className="yellow-btn" onClick={() => {
+            checkTempToRecipe();
+            onClose();
+          }}>
             선택 재료 등록
           </Button>
-          <Button className="white-btn" onClick={onClose}>
+          <Button className="white-btn" onClick={() => {
+            resetTemp();
+            onClose();
+          }}>
             취소
           </Button>
         </>
@@ -97,9 +79,6 @@ export function MenuIngredientModal({
         items={data}
         loading={loading}
         error={error}
-        selectedItemNos={selectedItemNos}
-        onToggleItem={toggleItem}
-        onToggleAll={toggleAll}
       />
     </ModalLayout>
   );

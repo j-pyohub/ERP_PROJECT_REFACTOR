@@ -4,7 +4,7 @@ type Option = {
 };
 
 interface LabeledSelectProps {
-  id: string;
+  id?: string;
   label: string;
   options: Option[];
 

@@ -1,6 +1,6 @@
 type LabeledInputProps = {
   label: string;
-  id: string;
+  id?: string;
   type?: React.HTMLInputTypeAttribute;
   placeholder?: string;
   value?: string;
