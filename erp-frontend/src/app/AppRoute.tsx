@@ -5,11 +5,14 @@ import PageLayout from "../shared/components/PageLayout";
 import SalesPage from "../features/sales/pages/SalesPage";
 import LoginPage from "../features/login/pages/LoginPage";
 import MenuAddPage from "../features/menu/pages/MenuAddPage";
+
 import TestPage from "../features/test/TestPage";
 import ItemPage from "../features/item/ItemPage";
+import ItemOrderPage from "../features/item_order/ItemOrderPage";
 import StoreStockPage from "../features/stock/pages/StoreStockPage";
 import SalesDetailPage from "../features/sales/pages/SalesDetailPage.tsx";
 import SalesOrderAddPage from "../features/sales/pages/SalesOrderAddPage.tsx";
+
 
 function AppRoute() {
     return (
@@ -19,15 +22,15 @@ function AppRoute() {
                 <Route path="/sales" element={<PageLayout><SalesPage /></PageLayout>} />
                 <Route path="/sales/detail" element={<SalesDetailPage />} />
                 <Route path="/menu" element={<PageLayout><MenuListPage /></PageLayout>} />
-                <Route path="/store-menu" element={<PageLayout><StoreMenuListPage /></PageLayout>} />
+                <Route path="/store/menu" element={<PageLayout><StoreMenuListPage /></PageLayout>} />
                 <Route path="/menu/add" element={<PageLayout><MenuAddPage /></PageLayout>} />
                 <Route path="/item" element={<PageLayout><ItemPage /></PageLayout>} />
-                <Route path="/stock" element={<PageLayout><StoreStockPage /></PageLayout>} />
+                <Route path="/item/order" element={<PageLayout><ItemOrderPage /></PageLayout>} />
+                <Route path="/store/stock" element={<PageLayout><StoreStockPage /></PageLayout>} />
                 <Route path="/test" element={<PageLayout><TestPage /></PageLayout>} />
-                <Route path="/sales/order" element={<PageLayout><SalesOrderAddPage /></PageLayout>} />
+                <Route path="/sales/order/add" element={<PageLayout><SalesOrderAddPage /></PageLayout>} />
             </Routes>
         </BrowserRouter>
-
     );
 }
 export default AppRoute;

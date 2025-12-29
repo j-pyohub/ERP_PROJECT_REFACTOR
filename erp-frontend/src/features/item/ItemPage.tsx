@@ -24,7 +24,7 @@ export default function ItemPage(){
             </div> 
 
             <ItemFilterBar itemCategory= {itemCategory} onChangeCategory={setItemCategory} searchType={searchType} onChangeStatus={setSearchType} onSubmitKeyword={setKeyword}/>
-            <ItemTableView itemCategory={itemCategory} searchType={searchType} currentPage={currentPage} onTotalContentChange={setTotalPage} itemName={keyword}/>
+            <ItemTableView itemCategory={itemCategory} searchType={searchType} currentPage={currentPage} onTotalContentChange={setTotalPage} keyword={keyword}/>
             
             <PaginatinoContainer currentPage={currentPage} onPageChange={setCurrentPage} pageSize={10} totalCount={totalContent} />
             {/* <MenuImageGridView /> */}

@@ -53,9 +53,9 @@ export default function ItemFilterBar({
             onChange={(e) => onChangeStatus(e.target.value)}
             options={[
                 { value: "", label: "전체" },
-                { value: "품목코드", label: "품목코드" },
-                { value: "재료명", label: "재료명" },
-                { value: "공급사", label: "공급사" },
+                { value: "itemCode", label: "품목코드" },
+                { value: "itemName", label: "재료명" },
+                { value: "supplier", label: "공급사" },
             ]}
         />
         <div className="flex flex-row gap-1">
