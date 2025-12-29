@@ -1,4 +1,4 @@
-/* ===== 공통 레이아웃 ===== */
+
 .layout-container {
     max-width: 1500px;
     margin: 0 auto;
@@ -8,12 +8,10 @@ body {
     background-color: #fdfdfd;
 }
 
-/* ===== 사이즈 유틸 ===== */
 .w-150 { width: 150px; }
 .w-120 { width: 120px; }
 
-/* ===== KPI 카드 ===== */
-/* ===== 공통 레이아웃 ===== */
+
 .layout-container {
     max-width: 1500px;
     margin: 0 auto;
@@ -53,7 +51,6 @@ body {
 }
 
 
-/* ===== 섹션 박스 ===== */
 .section-box {
     background: #fff;
     border: 1px solid #ddd;
