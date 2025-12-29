@@ -4,7 +4,7 @@ type Option = {
 };
 
 interface LabeledSelectProps {
-  id: string;
+  id?: string;
   label: string;
   options: Option[];
 
@@ -30,7 +30,7 @@ function LabeledSelect({
     "block font-semibold mb-1";
 
   const baseSelect =
-    "block rounded-md border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500";
+    "block rounded-md border border-gray-300 px-3 py- focus:outline-none focus:ring-2 focus:ring-blue-500";
 
   return (
     <div className={`${wrapperClassName}`}>

@@ -18,6 +18,7 @@ function LoginPage() {
                         label="아이디"
                         id="managerId"
                         type="text"
+                        inputClassName="w-full"
                         placeholder="아이디를 입력하세요"
                         value={managerId}
                         onChange={(e) => setManagerId(e.target.value)}
@@ -27,6 +28,7 @@ function LoginPage() {
                         label="비밀번호"
                         id="password"
                         type="password"
+                        inputClassName="w-full"
                         placeholder="비밀번호를 입력하세요"
                         value={pw}
                         onChange={(e) => setPw(e.target.value)}
@@ -34,7 +36,7 @@ function LoginPage() {
 
                     <button
                         type="submit"
-                        className="custom-btn"
+                        className="yellow-btn w-full py-2 px-4"
                     >
                         로그인
                     </button>

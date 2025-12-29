@@ -1,31 +1,39 @@
-import { useState } from "react";
+import { use, useState } from "react";
+import useNavigateTo from "../hooks/useNavigateTo";
+
+interface DropDownItem {
+    label: string;
+    path: string;
+}
 
 interface DropDownMenuProps {
     title: string;
-    items: string[];
+    items: DropDownItem[];
 }
 
 export default function Dropdown({title, items}: DropDownMenuProps) {
     const [open, setOpen] = useState(false);
+    const navigeteTo = useNavigateTo();
 
     return (
         <div
           className="menu-item dropdown"
-          onMouseEnter={() => {console.log("enter:", title); setOpen(true)}}
+          onMouseEnter={() => { setOpen(true); }}
           onMouseLeave={() => setOpen(false)}
         >
             <span>{title} ▾</span>
             {open && (
-                <div className="dropdown-menu"  style={{ display: open ? "block" : "none", zIndex: 9999 }}>
+                <div className="dropdown-menu"  style={{ zIndex: 9999 }}>
                     {items.map((item, index) => (
                         <div
-                            key={index}
+                            key={item.path}
                             className="dropdown-item"
                             onClick={() => {
-                                console.log(items, "nevigate예정")
+                                navigeteTo(item.path)();
+                                setOpen(false);
                             }}
                         >
-                            {item}
+                            {item.label}
                         </div>
                     ))}
                 </div>

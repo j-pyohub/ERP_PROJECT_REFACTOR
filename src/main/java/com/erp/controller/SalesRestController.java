@@ -1,5 +1,7 @@
 package com.erp.controller;
 
+import com.erp.controller.response.SalesDetailResponse;
+import com.erp.dao.StoreDAO;
 import com.erp.dto.*;
 import com.erp.service.SalesChartService;
 import com.erp.service.SalesKPIService;
@@ -9,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,12 +22,27 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/sales")
 public class SalesRestController {
 
+    private final StoreDAO storeDAO;
     private final SalesChartService salesChartService;
     private final SalesKPIService salesKPIService;
     private final SalesListService salesListService;
 
+    @GetMapping("/")
+    public SalesDetailResponse getSalesDetailInit(
+            @RequestParam Long storeNo,
+            @RequestParam String salesDate
+    ) {
+        StoreDTO store = storeDAO.getStoreDetail(storeNo);
+
+        return new SalesDetailResponse(
+                storeNo,
+                store.getStoreName(),
+                salesDate
+        );
+    }
     @GetMapping("/salesDetail")
     public List<StoreMenuSalesSummaryDTO> getSalesDetail(
             @RequestParam Long storeNo,

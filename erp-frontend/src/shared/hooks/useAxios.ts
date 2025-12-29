@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 import apiClient from "../apis/apiClient";
 
 export function useAxios<T>(){
-    const [data, setData] = useState<T|null>(null);
+    const [data, setData] = useState<T|undefined>(undefined);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<any>(null);
 

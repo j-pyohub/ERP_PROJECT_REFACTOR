@@ -2,7 +2,9 @@ package com.erp.controller;
 
 import com.erp.auth.PrincipalDetails;
 import com.erp.controller.request.SearchRequestDTO;
+import com.erp.dao.StoreDAO;
 import com.erp.dto.PageResponseDTO;
+import com.erp.dto.StoreDTO;
 import com.erp.dto.StoreStockDTO;
 import com.erp.service.StoreStockService;
 import lombok.RequiredArgsConstructor;
@@ -10,11 +12,23 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 public class StoreStockRestController {
 
     private final StoreStockService storeStockService;
+    private final StoreDAO storeDAO;
+
+    // 직영점 화면에 보여 줄 데이터
+    @GetMapping("/store/stock/storeStock/data")
+    public Map<String, Object> storeStock(@AuthenticationPrincipal PrincipalDetails p){
+        return Map.of(
+                "storeNo", storeDAO.getStoreNoByManager(p.getManager().getManagerId()),
+                "role", "STORE"
+        );
+    }
 
     /** 본사 변동 목록 → /manager/stock/storeStock/list/{page} */
     @GetMapping("/manager/stock/storeStock/list/{page}")

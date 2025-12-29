@@ -1,13 +1,19 @@
 package com.erp.controller;
 
 import com.erp.auth.PrincipalDetails;
+import com.erp.controller.response.StoreMenuResponse;
+import com.erp.dao.StoreDAO;
 import com.erp.dto.MenuStatusDTO;
+import com.erp.dto.StoreDTO;
 import com.erp.dto.StoreMenuDTO;
 import com.erp.dto.StoreMenuGroupedDTO;
 import com.erp.service.StoreMenuService;
+import com.erp.service.StoreService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,9 +21,22 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/storeMenu")
+@RequestMapping("/api/storeMenu")
 public class StoreMenuRestController {
     private final StoreMenuService storeMenuService;
+    private final StoreService storeService;
+
+    @GetMapping("/")
+    private StoreMenuResponse storeMenu(
+            @AuthenticationPrincipal PrincipalDetails principal){
+        StoreDTO store = storeService.getStore(principal.getManager().getManagerId());
+                
+
+        return new StoreMenuResponse(
+                store.getStoreNo(),
+                store.getStoreName()
+        );
+    }
 
     @GetMapping("/searchMenu")
     public List<StoreMenuGroupedDTO> searchMenu(

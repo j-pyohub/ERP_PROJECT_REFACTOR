@@ -1,6 +1,6 @@
 type LabeledInputProps = {
   label: string;
-  id: string;
+  id?: string;
   type?: React.HTMLInputTypeAttribute;
   placeholder?: string;
   value?: string;
@@ -28,7 +28,7 @@ export function LabeledInput({
     "block font-semibold mb-1";
 
   const baseInput =
-    "block w-full rounded-md border px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2";
+    "block rounded-md border px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2";
 
   return (
     <div className={`w-full ${wrapperClassName}`}>

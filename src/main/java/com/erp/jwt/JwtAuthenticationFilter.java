@@ -14,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.io.IOException;
@@ -33,6 +34,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(inputData.getManagerId(), inputData.getPw());
             Authentication authentication = authenticationManager.authenticate(authRequest);
             PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
             return authentication;
         } catch (IOException e) {
             e.printStackTrace();

@@ -21,10 +21,5 @@ public class StoreStockController {
     /** 직영점 화면 → /store/stock/storeStock */
     @PreAuthorize("hasRole('STORE') and principal.store != null")
     @GetMapping("/store/stock/storeStock")
-    public String store(Model model,
-                        @AuthenticationPrincipal PrincipalDetails p) {
-        model.addAttribute("role", "STORE");
-        model.addAttribute("storeNo", p.getStore().getStoreNo()); // null 체크 제거
-        return "stock/storeStockStoreUI";
-    }
+    public String store() { return "stock/storeStockStoreUI"; }
 }
