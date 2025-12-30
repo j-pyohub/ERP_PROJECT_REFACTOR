@@ -33,16 +33,18 @@ export default function SalesListBar({
             />
 
             <div className="flex items-center gap-2">
-                <span className="font-medium">직영점명</span>
+
 
                 <LabeledInput
                     id="sales-list-store"
                     type="text"
-                    label=""
+                    label="직영점명"
                     value={storeName}
                     onChange={(e) => onChangeStoreName(e.target.value)}
                     placeholder="지점명 검색"
                     inputClassName="h-9 w-40"
+                    labelClassName="font-semibold block"
+                    wrapperClassName="flex items-center gap-1"
                 />
 
                 <Button className="yellow-btn h-9 px-4" onClick={onSearch}>

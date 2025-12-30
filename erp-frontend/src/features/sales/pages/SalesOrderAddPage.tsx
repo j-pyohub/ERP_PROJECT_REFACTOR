@@ -15,6 +15,13 @@ import {
     createSalesOrder,
 } from "../apis/salesApi";
 
+let rowSeq = 0;
+
+function createRowId() {
+    rowSeq += 1;
+    return Date.now() + rowSeq;
+}
+
 export default function SalesOrderAddPage() {
     const navigate = useNavigate();
 
@@ -83,26 +90,26 @@ export default function SalesOrderAddPage() {
             .filter((m) => !exist.has(m.storeMenuNo))
             .forEach((m) =>
                 addOrderRow({
-                    rowId: crypto.randomUUID(),
+                    rowId: createRowId(),
                     storeMenuNo: m.storeMenuNo,
                     menuName: m.menuName,
                     size: m.size,
                     unitPrice: m.menuPrice,
                     quantity: 1,
                     totalPrice: m.menuPrice,
-                })
+                })g
             );
+
 
         setMenuModalOpen(false);
     }
 
-    /* ================= total amount (derived) ================= */
+
     const totalAmount = orderRows.reduce(
         (sum, row) => sum + row.totalPrice,
         0
     );
 
-    /* ================= submit ================= */
     async function submitOrder() {
         if (!storeNo) {
             alert("직영점을 선택하세요.");
@@ -143,10 +150,10 @@ export default function SalesOrderAddPage() {
                     onClick={reset}
                 >
                     초기화
-                </Button>
+                 </Button>
             </div>
 
-            {/* ================= menu add ================= */}
+
             <div className="section-box flex justify-between items-center">
                 <div className="font-semibold">메뉴 추가</div>
                 <Button
@@ -163,14 +170,14 @@ export default function SalesOrderAddPage() {
                 </Button>
             </div>
 
-            {/* ================= order table ================= */}
+
             <OrderMenuTable
                 rows={orderRows}
                 onChangeQty={updateQuantity}
                 onRemove={removeOrderRow}
             />
 
-            {/* ================= total ================= */}
+
             <div className="section-box flex justify-end items-center gap-6">
                 <span className="text-lg font-semibold">
                     총 주문 금액
@@ -180,7 +187,7 @@ export default function SalesOrderAddPage() {
                 </span>
             </div>
 
-            {/* ================= action ================= */}
+
             <div className="flex justify-end gap-2">
                 <Button
                     className="yellow-btn h-10"
@@ -199,7 +206,7 @@ export default function SalesOrderAddPage() {
                 </Button>
             </div>
 
-            {/* ================= modals ================= */}
+
             <StoreSearchModal
                 open={storeModalOpen}
                 onClose={() => setStoreModalOpen(false)}
