@@ -1,5 +1,6 @@
 import Button from "../../../shared/components/Button";
 import LabeledSelect from "../../../shared/components/LabeledSelect";
+import { useMenuViewStore } from "../stores/menuViewStore";
 
 interface MenuFilterBarProps {
   menuCategory: string;
@@ -14,6 +15,9 @@ export default function MenuFilterBar({
   onChangeCategory,
   onChangeStatus,
 }: MenuFilterBarProps) {
+  const viewMode = useMenuViewStore((s) => s.viewMode);
+  const setViewMode = useMenuViewStore((s) => s.setViewMode);
+
     return (
     <div className="flex items-center mb-4 gap-4">
         <LabeledSelect
@@ -52,8 +56,19 @@ export default function MenuFilterBar({
         <div className="ml-auto flex items-center gap-2">
             <span className="font-semibold">보기</span>
             <div className="toggle-group">
-              <Button className="toggle-btn active">목록</Button>
-              <Button className="toggle-btn">이미지</Button>
+              <Button
+                className={`toggle-btn ${viewMode === "list" ? "active" : ""}`}
+                onClick={() => setViewMode("list")}
+              >
+                목록
+              </Button>
+
+              <Button
+                className={`toggle-btn ${viewMode === "image" ? "active" : ""}`}
+                onClick={() => setViewMode("image")}
+              >
+                이미지
+              </Button>
             </div>
         </div>
     </div>);

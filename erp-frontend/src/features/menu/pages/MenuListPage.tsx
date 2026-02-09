@@ -4,10 +4,12 @@ import useNavigateTo from "../../../shared/hooks/useNavigateTo";
 import MenuFilterBar from "../components/MenuFilterBar";
 import MenuImageGridView from "../components/MenuImageGridView";
 import MenuTableView from "../components/MenuTableView";
+import { useMenuViewStore } from "../stores/menuViewStore";
 
 function MenuListPage() {
     const goToStoreMenu = useNavigateTo()("/store-menu");
     const goToMenuAdd = useNavigateTo()("/menu/add");
+      const viewMode = useMenuViewStore((s) => s.viewMode);
     const [menuCategory, setMenuCategory] = useState("");
     const [releaseStatus, setReleaseStatus] = useState("");
 
@@ -26,8 +28,11 @@ function MenuListPage() {
                         releaseStatus={releaseStatus}
                         onChangeCategory={setMenuCategory}
                         onChangeStatus={setReleaseStatus} />
+      {viewMode === "list" ? (
         <MenuTableView menuCategory={menuCategory} releaseStatus={releaseStatus} />
-        <MenuImageGridView />
+      ) : (
+        <MenuImageGridView menuCategory={menuCategory} releaseStatus={releaseStatus} />
+      )}
         </>
     );
 }

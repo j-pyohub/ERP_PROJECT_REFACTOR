@@ -97,7 +97,7 @@ export default function SalesOrderAddPage() {
                     unitPrice: m.menuPrice,
                     quantity: 1,
                     totalPrice: m.menuPrice,
-                })g
+                })
             );
 
 
