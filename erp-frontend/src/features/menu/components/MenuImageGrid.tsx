@@ -25,9 +25,9 @@ export function MenuImageGrid({ menus }: { menus: Menu[] }) {
                             <div className="font-bold mb-2">{first.menuName}</div>
                             
                             {/* 사이즈/가격/상태 박스 */}
-                            <div className="text-left text-sm">
+                            <div className="text-center text-sm">
                                 {group.map(menu => (
-                                    <div 
+                                    <div
                                         key={menu.menuNo}
                                         className="flex justify-between items-center py-1 border-b"
                                     >
